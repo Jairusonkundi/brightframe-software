@@ -1,0 +1,14 @@
+# Environment / credentials
+config/.env
+
+# Dependency folders
+/vendor/
+/node_modules/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
+.claude/

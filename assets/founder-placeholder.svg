@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#151A2C"/>
+      <stop offset="1" stop-color="#0B0E1A"/>
+    </linearGradient>
+  </defs>
+  <rect width="200" height="200" rx="28" fill="url(#bg)"/>
+  <rect x="1" y="1" width="198" height="198" rx="27" fill="none" stroke="#5B5FEF" stroke-width="1.5" stroke-dasharray="5 6" opacity="0.5"/>
+
+  <!-- Person silhouette -->
+  <circle cx="100" cy="82" r="30" fill="#2A3050"/>
+  <path d="M50 168c0-30 22-50 50-50s50 20 50 50" fill="#2A3050"/>
+
+  <!-- Camera icon badge -->
+  <circle cx="100" cy="150" r="22" fill="#0B0E1A" stroke="#00D9C0" stroke-width="2"/>
+  <path d="M90 144h4l2-3h8l2 3h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H90a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="none" stroke="#00D9C0" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="100" cy="153" r="3.2" fill="none" stroke="#00D9C0" stroke-width="1.8"/>
+
+  <text x="100" y="190" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#8A8FB0" letter-spacing="0.02em">Add headshot photo</text>
+</svg>

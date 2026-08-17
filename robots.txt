@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /config/
+Disallow: /handlers/
+
+Sitemap: https://www.brightframesoftware.com/sitemap.xml
