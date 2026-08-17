@@ -49,6 +49,8 @@ summary:focus-visible {
 
 .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; }
 .logo svg { flex: none; }
+a.logo { transition: color .18s ease; }
+a.logo:hover, a.logo:focus-visible { color: var(--indigo); }
 
 /* ---------------------------------------------------------------------
    Scroll-reveal — subtle fade + slide-up as sections enter the viewport.
@@ -84,10 +86,17 @@ html.reveal-js .reveal.is-visible { opacity: 1; transform: translateY(0); }
 .topbar-social-disabled { opacity: 0.5; cursor: default; }
 
 /* ---------------------------------------------------------------------
+   Site header — topbar + nav stick together as one unit. Previously only
+   <nav> was sticky while the topbar scrolled away on its own, which read
+   as broken (two bars behaving differently right next to each other).
+   --------------------------------------------------------------------- */
+.site-header { position: sticky; top: 0; z-index: 50; }
+
+/* ---------------------------------------------------------------------
    Main navigation
    --------------------------------------------------------------------- */
 nav {
-  position: sticky; top: 0; z-index: 50;
+  position: relative;
   background: rgba(255,255,255,0.9);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--line);
@@ -100,8 +109,23 @@ nav.is-scrolled {
 }
 .navbar-inner { display: flex; align-items: center; justify-content: space-between; height: 76px; gap: 24px; }
 .navlinks { display: flex; align-items: center; gap: 30px; font-size: 14.5px; font-weight: 600; color: var(--ink-soft); }
-.nav-link { display: inline-flex; align-items: center; gap: 5px; transition: color .18s ease; background: none; border: none; font: inherit; cursor: pointer; padding: 0; color: inherit; white-space: nowrap; }
-.nav-link:hover, .nav-link:focus-visible { color: var(--indigo); }
+.nav-link {
+  display: inline-flex; align-items: center; gap: 5px; position: relative;
+  transition: color .18s ease; background: none; border: none; font: inherit;
+  cursor: pointer; padding: 0; color: inherit; white-space: nowrap;
+}
+.nav-link:hover, .nav-link:focus-visible, .nav-link.is-current { color: var(--indigo); }
+/* Underline grows in from the left on hover, and stays fully drawn for
+   whichever nav item matches the current page — so "where am I" doesn't
+   depend on remembering to hover. Positioned below the link's own box
+   (negative bottom) into the extra vertical space the 76px nav bar
+   already has around the vertically-centered link text. */
+.nav-link::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -11px; height: 2px;
+  background: var(--indigo); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left; transition: transform .18s ease;
+}
+.nav-link:hover::after, .nav-link:focus-visible::after, .nav-link.is-current::after { transform: scaleX(1); }
 .nav-link-muted { color: #6B7280; cursor: default; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .soon-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; background: var(--paper-2); color: var(--ink-soft); padding: 2px 7px; border-radius: 999px; }
 
@@ -130,22 +154,60 @@ nav.is-scrolled {
   transition: background .15s ease, color .15s ease;
 }
 .dropdown-panel a:hover, .dropdown-panel a:focus-visible { background: var(--paper-2); color: var(--indigo); }
+.dropdown-panel a.is-current { background: rgba(91,95,239,0.1); color: var(--indigo); }
 .dropdown-item-muted { color: #6B7280; cursor: default; font-weight: 500; }
 .dropdown-note { font-size: 13px; color: var(--ink-soft); line-height: 1.5; padding: 6px 10px; white-space: normal; max-width: 220px; }
 
-/* Services mega menu — 4 columns (2 categories/col) rather than the literal
-   "2 columns" ask: with 8 categories and ~38 services, a true 2-column
-   panel runs 650px+ tall and risks clipping on shorter laptop screens.
-   4 columns keeps each column to ~2 categories / ~340px tall. */
+/* Services mega menu — categories only (not all 38 individual services);
+   each card links to its section on services.php. Centered under the
+   header (fixed to the viewport) instead of left-anchored to the
+   "Services" trigger like other dropdowns, since a left-anchored panel
+   this wide doesn't reliably fit at every desktop width (caught via a
+   horizontal-overflow check at 1280px in an earlier round). */
 .dropdown-mega {
-  display: grid; grid-template-columns: repeat(4, minmax(170px, 1fr));
-  gap: 4px 20px; min-width: 800px; max-height: 76vh; overflow-y: auto;
+  max-height: 76vh; overflow-y: auto;
+  position: fixed; left: 50%; top: calc(var(--header-h) + 14px);
+  transform: translateX(-50%) translateY(6px);
 }
-.dropdown-col-head {
-  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
-  color: var(--indigo); padding: 9px 10px 4px; white-space: normal;
+.nav-dropdown:hover .dropdown-mega,
+.nav-dropdown:focus-within .dropdown-mega,
+.nav-dropdown.is-open .dropdown-mega {
+  transform: translateX(-50%) translateY(0);
 }
-.dropdown-mega a { white-space: normal; font-size: 13px; padding: 6px 10px; line-height: 1.35; }
+.dropdown-mega-cats {
+  display: grid; grid-template-columns: repeat(2, minmax(230px, 1fr));
+  gap: 4px; min-width: 480px; max-width: calc(100vw - 40px);
+}
+/* .dropdown-panel a.dropdown-cat-card: out-specificity the plain
+   ".dropdown-panel a" rule above (display/padding/white-space), the same
+   fix needed the last time a dropdown item became a richer link. */
+.dropdown-panel a.dropdown-cat-card, .dropdown-cat-card {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px;
+  white-space: normal; transition: background .15s ease;
+}
+.dropdown-panel a.dropdown-cat-card:hover, .dropdown-panel a.dropdown-cat-card:focus-visible {
+  background: var(--paper-2);
+}
+.dropdown-cat-ico {
+  flex: none; width: 36px; height: 36px; border-radius: 10px; background: var(--paper-2); color: var(--indigo);
+  display: flex; align-items: center; justify-content: center;
+}
+.dropdown-cat-card:hover .dropdown-cat-ico, .dropdown-cat-card:focus-visible .dropdown-cat-ico { background: #fff; }
+.dropdown-cat-card.is-current { background: rgba(91,95,239,0.1); }
+.dropdown-cat-card.is-current .dropdown-cat-ico { background: #fff; }
+.dropdown-cat-card.is-current .dropdown-cat-name { color: var(--indigo); }
+.dropdown-cat-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.dropdown-cat-name { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.dropdown-cat-count { font-size: 11.5px; color: var(--ink-soft); }
+/* Same ".dropdown-panel a" specificity fix as .dropdown-cat-card above. */
+.dropdown-panel a.dropdown-cat-viewall, .dropdown-cat-viewall {
+  grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--line);
+  font-size: 13px; font-weight: 700; color: var(--indigo); white-space: normal;
+}
+.dropdown-cat-viewall:hover, .dropdown-cat-viewall:focus-visible { color: var(--indigo-dark); }
+.dropdown-cat-viewall svg { transition: transform .18s ease; }
+.dropdown-cat-viewall:hover svg { transform: translateX(3px); }
 
 /* CTAs */
 .nav-actions { display: flex; align-items: center; gap: 18px; flex: none; }
@@ -184,6 +246,13 @@ nav.is-scrolled {
   .navlinks.is-open { display: flex; }
   .nav-link { padding: 12px 4px; border-bottom: 1px solid var(--line); justify-content: space-between; width: 100%; }
   .nav-link-muted { border-bottom: 1px solid var(--line); padding: 12px 4px; }
+  /* The hover/current underline reads fine as a thin bar under inline
+     desktop links, but would collide with these full-width rows' own
+     border-bottom dividers — a background tint fits the row layout better. */
+  .nav-link::after { display: none; }
+  .nav-link:hover, .nav-link:focus-visible, .nav-link.is-current {
+    background: var(--paper-2); margin: 0 -8px; padding-left: 12px; padding-right: 12px; width: calc(100% + 16px);
+  }
 
   .nav-dropdown { width: 100%; }
   .dropdown-panel {
@@ -196,9 +265,21 @@ nav.is-scrolled {
   .dropdown-1col { min-width: 0; }
   .dropdown-panel a, .dropdown-panel .dropdown-item-muted { white-space: normal; }
 
-  .dropdown-mega { display: flex; flex-direction: column; min-width: 0; max-height: none; gap: 0; }
-  .dropdown-col-head { padding-top: 12px; }
-  .dropdown-col:first-child .dropdown-col-head { padding-top: 4px; }
+  /* No display/flex-direction here — .dropdown-panel (line 246) and
+     .nav-dropdown.is-open .dropdown-panel (line 251) already own
+     visibility, and both have equal-or-higher specificity than a bare
+     ".dropdown-mega" rule would. Redeclaring display:flex here without
+     the .is-open scope previously made the Services panel permanently
+     visible on mobile regardless of open/closed state. */
+  .dropdown-mega { min-width: 0; max-height: none; gap: 0; }
+  .dropdown-mega-cats { min-width: 0; }
+  /* .dropdown-mega's desktop centering (position:fixed + translateX(-50%))
+     needs an explicit reset here: .dropdown-panel above already resets
+     position/transform, but .nav-dropdown.is-open .dropdown-mega (used to
+     animate the desktop panel in) has higher specificity (0,2,0) than that
+     reset (0,1,0) and was winning even on mobile — shifting the open panel
+     ~171px off-screen to the left instead of sitting in normal flow. */
+  .nav-dropdown.is-open .dropdown-mega { position: static; transform: none; }
 
   .nav-actions-mobile { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
   .nav-actions-mobile .nav-cta, .nav-actions-mobile .btn-text-cta { text-align: center; padding: 13px; }
@@ -257,6 +338,10 @@ nav.is-scrolled {
 .btn-primary:hover, .btn-primary:focus-visible { background: var(--indigo-dark); }
 .btn-outline { border-color: rgba(255,255,255,0.24); color: #fff; }
 .btn-outline:hover, .btn-outline:focus-visible { border-color: var(--cyan); color: var(--cyan); }
+/* Light-background counterpart to .btn-outline (which assumes a navy
+   surface) — for outline buttons sitting directly on white/paper-2. */
+.btn-outline-dark { border-color: var(--line); color: var(--ink); }
+.btn-outline-dark:hover, .btn-outline-dark:focus-visible { border-color: var(--indigo); color: var(--indigo); }
 .hero-stats {
   display: flex; gap: 48px; margin-top: 64px; flex-wrap: wrap;
   border-top: 1px solid rgba(255,255,255,0.12); padding-top: 32px;
@@ -270,21 +355,40 @@ nav.is-scrolled {
   .hero-stats { gap: 28px; margin-top: 48px; }
 }
 
-.logostrip-section { padding: 44px 0; border-bottom: 1px solid var(--line); }
+.logostrip-section { padding: 44px 0; border-bottom: 1px solid var(--line); overflow: hidden; }
 .logostrip-head {
   font-size: 12.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
   color: var(--ink-soft); text-align: center; margin-bottom: 22px;
 }
-.logostrip { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+/* Infinite marquee: .logostrip-track holds the 6 items twice back to
+   back (see index.php) and scrolls exactly -50% on loop, so the moment
+   it resets, the (identical) second half is already in the first half's
+   position — no visible jump. Fade masks at each edge soften the cut. */
+.logostrip-marquee { position: relative; overflow: hidden; }
+.logostrip-marquee::before, .logostrip-marquee::after {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 80px; z-index: 1; pointer-events: none;
+}
+.logostrip-marquee::before { left: 0; background: linear-gradient(90deg, var(--paper), rgba(255,255,255,0)); }
+.logostrip-marquee::after { right: 0; background: linear-gradient(270deg, var(--paper), rgba(255,255,255,0)); }
+.logostrip-track {
+  display: flex; align-items: center; gap: 20px; width: max-content;
+  animation: logostrip-scroll 26s linear infinite;
+}
+.logostrip-marquee:hover .logostrip-track { animation-play-state: paused; }
+@keyframes logostrip-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 .logostrip-item {
-  flex: 1 1 140px; height: 60px; min-width: 140px;
+  flex: 0 0 160px; height: 60px;
   display: flex; align-items: center; justify-content: center;
   background: var(--paper-2); border: 1px dashed var(--line); border-radius: 10px;
-  color: #6B7280; font-size: 12.5px; font-weight: 600;
+  color: #6B7280; font-size: 12.5px; font-weight: 600; white-space: nowrap;
 }
-@media (max-width: 760px) {
-  .logostrip { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; padding-bottom: 6px; scroll-snap-type: x proximity; }
-  .logostrip-item { flex: 0 0 140px; scroll-snap-align: start; }
+@media (prefers-reduced-motion: reduce) {
+  .logostrip-track { animation: none; }
+  .logostrip-marquee { overflow-x: auto; }
+  .logostrip-marquee::before, .logostrip-marquee::after { display: none; }
 }
 
 .section { padding: 96px 0; scroll-margin-top: var(--header-h); }
@@ -295,13 +399,9 @@ nav.is-scrolled {
 .sec-head p { color: var(--ink-soft); font-size: 16px; margin-top: 14px; }
 @media (max-width: 560px) {
   .section { padding: 64px 0; }
-  .sec-head h2, .mission-text h2, .contact-panel h2 { font-size: 26px; }
+  .sec-head h2, .contact-panel h2 { font-size: 26px; }
 }
 
-.mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
-.mission-text h2 { font-size: 34px; font-weight: 700; margin-bottom: 20px; }
-.mission-text p { color: var(--ink-soft); font-size: 16.5px; margin-bottom: 16px; }
-.mission-text p:last-child { margin-bottom: 0; }
 .mission-card { background: var(--navy); color: #fff; border-radius: 18px; padding: 40px; position: relative; overflow: hidden; }
 .mission-card::after {
   content: ""; position: absolute; top: -80px; right: -80px;
@@ -309,60 +409,82 @@ nav.is-scrolled {
 }
 .mission-card .vtag { font-size: 13px; font-weight: 700; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; position: relative; }
 .mission-card p { font-size: 19px; font-weight: 500; line-height: 1.5; position: relative; font-family: 'Space Grotesk'; }
-@media (max-width: 860px) {
-  .mission-grid { grid-template-columns: 1fr; gap: 40px; }
-}
-
-/* Quick-nav pills: jump straight to a category, scrolls horizontally on mobile */
-.svc-quicknav {
-  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px;
-}
-.svc-quicknav a {
-  font-size: 13px; font-weight: 600; color: var(--ink-soft);
-  background: #fff; border: 1px solid var(--line); border-radius: 999px;
-  padding: 7px 14px; white-space: nowrap; transition: color .15s ease, border-color .15s ease;
-}
-.svc-quicknav a:hover, .svc-quicknav a:focus-visible { color: var(--indigo); border-color: var(--indigo); }
-@media (max-width: 760px) {
-  .svc-quicknav { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
-  .svc-quicknav a { padding: 13px 16px; }
-}
-
-/* Category groups — <details> so each is collapsible; open by default so
-   everything is scannable without JS, but a visitor can close categories
-   they don't care about to shorten the page. */
-.svc-cat { border: 1px solid var(--line); border-radius: 16px; background: #fff; margin-bottom: 16px; overflow: hidden; scroll-margin-top: var(--header-h); }
-.svc-cat:last-child { margin-bottom: 0; }
-.svc-cat-summary {
-  list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px;
-  padding: 20px 24px; font-family: 'Space Grotesk'; user-select: none;
-}
-.svc-cat-summary::-webkit-details-marker { display: none; }
-.svc-cat-name { font-size: 17px; font-weight: 700; color: var(--ink); }
-.svc-cat-count { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); background: var(--paper-2); padding: 3px 10px; border-radius: 999px; }
-.svc-cat-summary .chev { margin-left: auto; color: var(--ink-soft); transition: transform .18s ease; }
-.svc-cat[open] .svc-cat-summary .chev { transform: rotate(180deg); }
-
-.svc-cat-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1px; border-top: 1px solid var(--line);
-}
-.svc-mini-card {
-  background: #fff; padding: 18px 20px; display: flex; gap: 12px;
-  transition: background .15s ease; box-shadow: -1px 0 0 var(--line), 0 -1px 0 var(--line);
-}
-.svc-mini-card:hover { background: var(--paper-2); }
-.svc-mini-ico {
-  flex: none; width: 32px; height: 32px; border-radius: 9px; background: var(--paper-2);
-  display: flex; align-items: center; justify-content: center; color: var(--indigo);
-}
-.svc-mini-card:hover .svc-mini-ico { background: #fff; }
-.svc-mini-card h3 { font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 3px; line-height: 1.3; }
-.svc-mini-card p { font-size: 12px; color: var(--ink-soft); line-height: 1.45; }
+/* Pull-quote variant: full-width below the mission media-row, instead of
+   sitting beside the text in a two-column grid. */
+.mission-card-standalone { max-width: 720px; margin: 48px auto 0; }
 @media (max-width: 560px) {
-  .svc-cat-summary { padding: 16px 18px; }
-  .svc-cat-name { font-size: 15.5px; }
-  .svc-mini-card { padding: 16px; }
+  .mission-card-standalone { margin-top: 32px; padding: 28px; }
+}
+
+/* ---------------------------------------------------------------------
+   Services page — sticky category sidebar + always-open category
+   sections (no <details>/accordion — the sidebar is the navigation, so
+   collapsing sections no longer pulls its weight). Sidebar becomes a
+   wrapping pill row above the content on narrower screens.
+   --------------------------------------------------------------------- */
+.svc-layout { display: grid; grid-template-columns: 240px 1fr; gap: 48px; align-items: start; }
+.svc-layout > * { min-width: 0; }
+.svc-sidebar { display: flex; flex-direction: column; gap: 2px; position: sticky; top: calc(var(--header-h) + 24px); }
+.svc-sidebar-link {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px;
+  font-size: 13.5px; font-weight: 600; color: var(--ink-soft);
+  transition: background .15s ease, color .15s ease;
+}
+.svc-sidebar-link:hover, .svc-sidebar-link:focus-visible { background: var(--paper-2); color: var(--ink); }
+.svc-sidebar-link.is-active { background: rgba(91,95,239,0.1); color: var(--indigo); }
+.svc-sidebar-ico { flex: none; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
+.svc-sidebar-count { margin-left: auto; font-size: 11px; color: #9498AE; font-weight: 600; }
+.svc-sidebar-link.is-active .svc-sidebar-count { color: var(--indigo); }
+@media (max-width: 960px) {
+  .svc-layout { grid-template-columns: 1fr; gap: 24px; }
+  .svc-sidebar { position: static; flex-direction: row; flex-wrap: wrap; gap: 8px; }
+  .svc-sidebar-link { background: #fff; border: 1px solid var(--line); }
+  .svc-sidebar-link.is-active { border-color: var(--indigo); }
+}
+
+.svc-cat-block { padding-bottom: 48px; margin-bottom: 48px; border-bottom: 1px solid var(--line); scroll-margin-top: var(--header-h); }
+.svc-cat-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.svc-cat-block-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+.svc-cat-block-ico {
+  flex: none; width: 48px; height: 48px; border-radius: 14px; background: var(--paper-2); color: var(--indigo);
+  display: flex; align-items: center; justify-content: center;
+}
+.svc-cat-block-head h2 { font-size: 22px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.svc-cat-block-head p { font-size: 14px; color: var(--ink-soft); max-width: 520px; }
+.svc-cat-block-actions { margin-left: auto; flex: none; display: flex; align-items: center; gap: 14px; }
+.svc-cat-block-count {
+  flex: none; font-size: 12px; font-weight: 600; color: var(--ink-soft);
+  background: var(--paper-2); padding: 5px 12px; border-radius: 999px; white-space: nowrap;
+}
+.svc-cat-block-link {
+  display: inline-flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; color: var(--indigo); white-space: nowrap;
+}
+.svc-cat-block-link svg { transition: transform .18s ease; }
+.svc-cat-block-link:hover svg, .svc-cat-block-link:focus-visible svg { transform: translateX(3px); }
+@media (max-width: 560px) {
+  .svc-cat-block-head { flex-wrap: wrap; }
+  .svc-cat-block-actions { margin-left: 0; }
+}
+
+.svc-cat-block-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.svc-card {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px;
+  transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.svc-card:hover, .svc-card:focus-visible {
+  border-color: var(--indigo); transform: translateY(-2px); box-shadow: 0 10px 22px rgba(11,14,26,0.06);
+}
+.svc-card-ico {
+  flex: none; width: 38px; height: 38px; border-radius: 10px; background: var(--paper-2); color: var(--indigo);
+  display: flex; align-items: center; justify-content: center;
+}
+.svc-card:hover .svc-card-ico { background: #fff; }
+.svc-card h3 { font-size: 14.5px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.svc-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+@media (max-width: 560px) {
+  .svc-cat-block { padding-bottom: 36px; margin-bottom: 36px; }
+  .svc-cat-block-head h2 { font-size: 19px; }
 }
 
 .process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 28px 24px; position: relative; }
@@ -424,6 +546,15 @@ nav.is-scrolled {
 .contact-grid > * { min-width: 0; }
 .contact-panel h2 { font-size: 34px; font-weight: 700; margin-bottom: 14px; }
 .contact-intro p { color: #AEB2C9; font-size: 15.5px; margin-bottom: 28px; }
+.contact-intro p.quote-preselect-note {
+  display: flex; align-items: center; gap: 8px; margin-top: -16px;
+  color: var(--cyan); font-size: 13.5px;
+  background: rgba(0,217,192,0.1); border: 1px solid rgba(0,217,192,0.3); border-radius: 9px; padding: 10px 14px;
+}
+.quote-preselect-note svg { flex: none; }
+.quote-preselect-note strong { color: #fff; }
+.contact-intro p a { color: var(--cyan); font-weight: 600; text-decoration: underline; text-decoration-color: rgba(0,217,192,0.4); }
+.contact-intro p a:hover, .contact-intro p a:focus-visible { text-decoration-color: currentColor; }
 .contact-links { display: flex; flex-direction: column; gap: 14px; }
 .clink {
   display: flex; align-items: center; gap: 12px; font-size: 14.5px; font-weight: 600;
@@ -434,8 +565,8 @@ nav.is-scrolled {
 .clink svg { flex: none; }
 .clink:hover, .clink:focus-visible { background: rgba(255,255,255,0.12); }
 .clink:active { transform: scale(0.98); }
-.wa-btn { background: var(--cyan-dark); border-color: var(--cyan-dark); color: #fff; }
-.wa-btn:hover, .wa-btn:focus-visible { background: #00c2ab; }
+.clink-primary { background: var(--cyan-dark); border-color: var(--cyan-dark); color: #fff; }
+.clink-primary:hover, .clink-primary:focus-visible { background: #00c2ab; }
 
 /* min-width:0 throughout: form/.field/.quote-checkbox/.clink are all flex
    or grid ITEMS somewhere in this nesting, and flex/grid items default to
@@ -510,7 +641,11 @@ form { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
 /* ---------------------------------------------------------------------
    Footer — dark navy, matching the hero/contact-panel treatment
    --------------------------------------------------------------------- */
-footer { background: var(--navy); color: #AEB2C9; padding: 64px 0 0; }
+/* A richer, more saturated blue than --navy (used for the hero/panels
+   elsewhere) — footer gets its own brighter gradient so it doesn't read
+   as flat near-black, while staying in the same blue/indigo family
+   rather than introducing an unrelated color. */
+footer { background: linear-gradient(160deg, #0B1638 0%, #131B4A 55%, #171F5C 100%); color: #AEB2C9; padding: 64px 0 0; }
 .footer-grid {
   display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px;
   padding-bottom: 48px; border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -554,6 +689,44 @@ footer { background: var(--navy); color: #AEB2C9; padding: 64px 0 0; }
 }
 
 /* ---------------------------------------------------------------------
+   Floating actions: back-to-top + WhatsApp widget, fixed bottom-right,
+   present on every page (rendered once via includes/footer.php).
+   --------------------------------------------------------------------- */
+.floating-actions {
+  position: fixed; right: 20px; bottom: 20px; z-index: 70;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+}
+#back-to-top {
+  width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line);
+  background: #fff; color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 22px rgba(11,14,26,0.16);
+  opacity: 0; visibility: hidden; transform: translateY(10px);
+  transition: opacity .25s ease, transform .25s ease, visibility .25s,
+              background .18s ease, color .18s ease, border-color .18s ease;
+}
+#back-to-top.is-visible { opacity: 1; visibility: visible; transform: translateY(0); }
+#back-to-top:hover, #back-to-top:focus-visible { background: var(--navy); color: #fff; border-color: var(--navy); }
+#back-to-top:active { transform: scale(0.94); }
+
+.whatsapp-widget {
+  /* Real WhatsApp brand green, deliberately not the site's cyan/indigo
+     palette — this button's job is to be instantly recognizable as
+     WhatsApp, so it uses WhatsApp's own color rather than being brand-
+     matched to the rest of the site. */
+  width: 56px; height: 56px; border-radius: 50%; background: #25D366; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 26px rgba(37,211,102,0.45);
+  transition: background .18s ease, transform .12s ease;
+}
+.whatsapp-widget:hover, .whatsapp-widget:focus-visible { background: #1FBF5C; }
+.whatsapp-widget:active { transform: scale(0.95); }
+
+@media (max-width: 480px) {
+  .floating-actions { right: 14px; bottom: 14px; gap: 12px; }
+}
+
+/* ---------------------------------------------------------------------
    Admin submissions table (admin/submissions.php)
    --------------------------------------------------------------------- */
 .admin-wrap { max-width: 1140px; margin: 0 auto; padding: 48px 32px; }
@@ -562,6 +735,17 @@ footer { background: var(--navy); color: #AEB2C9; padding: 64px 0 0; }
   font-size: 13.5px; color: var(--ink-soft); background: var(--paper-2);
   border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; margin: 18px 0 28px;
 }
+.admin-quicknav { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 40px; }
+.admin-quicknav a {
+  font-size: 13.5px; font-weight: 600; color: var(--indigo-dark);
+  background: #EEEEFC; border-radius: 999px; padding: 8px 16px;
+  transition: background .15s ease;
+}
+.admin-quicknav a:hover, .admin-quicknav a:focus-visible { background: #E0E1FB; }
+.admin-section { margin-bottom: 56px; scroll-margin-top: 24px; }
+.admin-section:last-child { margin-bottom: 0; }
+.admin-section h2 { font-size: 21px; font-weight: 700; font-family: 'Space Grotesk'; margin-bottom: 4px; }
+.admin-section-note { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 18px; }
 .admin-table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .admin-table th, .admin-table td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .admin-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); }
@@ -578,6 +762,55 @@ footer { background: var(--navy); color: #AEB2C9; padding: 64px 0 0; }
 .admin-td-wrap { min-width: 220px; max-width: 320px; }
 .admin-tags { display: flex; flex-wrap: wrap; gap: 4px; min-width: 180px; }
 .admin-tag { font-size: 11.5px; font-weight: 600; color: var(--indigo-dark); background: #EEEEFC; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+
+/* ---------------------------------------------------------------------
+   Admin — reviews moderation (admin/reviews.php) and stats editor
+   (admin/stats.php). Both are plain light-background admin pages (not
+   inside a dark .contact-panel), so they get their own field/button
+   styles rather than reusing .field/.submit-btn, which assume a dark
+   navy surface.
+   --------------------------------------------------------------------- */
+.admin-field { display: flex; flex-direction: column; gap: 6px; }
+.admin-field label { font-size: 12.5px; font-weight: 600; color: var(--ink-soft); }
+.admin-field-hint { font-weight: 500; color: #9498AE; }
+.admin-field input {
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+  font: inherit; font-size: 14px; color: var(--ink); background: #fff;
+  transition: border-color .15s ease;
+}
+.admin-field input:focus { outline: none; border-color: var(--indigo); }
+
+.admin-stats-form { display: flex; flex-direction: column; gap: 16px; max-width: 640px; }
+.admin-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; }
+.admin-stats-submit { align-self: flex-start; }
+
+.admin-btn {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700;
+  padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line); background: #fff; color: var(--ink);
+  cursor: pointer; transition: background .15s ease, border-color .15s ease;
+}
+.admin-btn:hover { background: var(--paper-2); }
+.admin-btn-primary { background: var(--indigo); border-color: var(--indigo); color: #fff; }
+.admin-btn-primary:hover { background: var(--indigo-dark); }
+.admin-btn-approve { border-color: #007A55; color: #007A55; }
+.admin-btn-approve:hover { background: #E7F8F1; }
+.admin-btn-reject { border-color: #B91C1C; color: #B91C1C; }
+.admin-btn-reject:hover { background: #FDEAEA; }
+
+.admin-saved-note { font-size: 13.5px; font-weight: 600; color: #007A55; background: #E7F8F1; padding: 10px 14px; border-radius: 8px; margin-bottom: 20px; display: inline-block; }
+
+.admin-review-list { display: flex; flex-direction: column; gap: 14px; }
+.admin-review-card { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+.admin-review-card-muted { opacity: 0.7; }
+.admin-review-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.admin-review-company { color: var(--ink-soft); font-weight: 500; }
+.admin-review-rating { color: #FFD166; letter-spacing: 1px; }
+.admin-review-text { font-size: 14.5px; color: var(--ink); line-height: 1.6; margin-bottom: 10px; }
+.admin-review-meta { font-size: 12px; color: var(--ink-soft); margin-bottom: 12px; }
+.admin-review-actions { display: flex; gap: 10px; }
+@media (max-width: 560px) {
+  .admin-stats-row { grid-template-columns: 1fr; }
+}
 
 /* ---------------------------------------------------------------------
    Legal pages — terms.php is still a "coming soon" placeholder;
@@ -605,3 +838,224 @@ footer { background: var(--navy); color: #AEB2C9; padding: 64px 0 0; }
   .legal-content h1 { font-size: 26px; }
   .legal-content h2 { font-size: 18px; }
 }
+
+/* ---------------------------------------------------------------------
+   Homepage condensed services overview — 8 category cards linking out to
+   services.php#cat-x, instead of the full 38-service catalog.
+   --------------------------------------------------------------------- */
+.svc-overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.svc-overview-card {
+  display: flex; flex-direction: column; min-width: 0; background: #fff; border: 1px solid var(--line);
+  border-radius: 16px; padding: 26px 22px;
+  transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.svc-overview-card:hover, .svc-overview-card:focus-visible {
+  border-color: var(--indigo); transform: translateY(-3px); box-shadow: 0 14px 28px rgba(11,14,26,0.08);
+}
+.svc-overview-ico {
+  width: 40px; height: 40px; border-radius: 11px; background: var(--paper-2); color: var(--indigo);
+  display: flex; align-items: center; justify-content: center; margin-bottom: 16px; flex: none;
+}
+.svc-overview-card h3 { font-size: 15.5px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.svc-overview-card p { font-size: 13px; color: var(--ink-soft); line-height: 1.5; flex: 1; }
+.svc-overview-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: var(--indigo); margin-top: 16px; }
+.svc-overview-link svg { transition: transform .18s ease; }
+.svc-overview-card:hover .svc-overview-link svg, .svc-overview-card:focus-visible .svc-overview-link svg { transform: translateX(3px); }
+.svc-overview-cta { text-align: center; margin-top: 40px; }
+.btn-text-cta { display: inline-flex; align-items: center; gap: 6px; }
+.btn-text-cta svg { transition: transform .18s ease; }
+.btn-text-cta:hover svg, .btn-text-cta:focus-visible svg { transform: translateX(3px); }
+@media (max-width: 860px) { .svc-overview-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .svc-overview-grid { grid-template-columns: 1fr; } }
+
+/* ---------------------------------------------------------------------
+   Homepage why-us teaser — 3 of the 4 whyus-cards, condensed, linking to
+   the full why-us.php page.
+   --------------------------------------------------------------------- */
+.whyus-teaser-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: center; }
+.whyus-teaser-intro p { color: var(--ink-soft); font-size: 16px; margin: 14px 0 22px; }
+.whyus-teaser-list { display: flex; flex-direction: column; gap: 16px; }
+.whyus-teaser-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px;
+}
+.whyus-teaser-ico {
+  flex: none; width: 40px; height: 40px; border-radius: 11px; background: var(--paper-2); color: var(--indigo);
+  display: flex; align-items: center; justify-content: center;
+}
+.whyus-teaser-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 3px; }
+.whyus-teaser-item p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+@media (max-width: 860px) {
+  .whyus-teaser-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+
+/* ---------------------------------------------------------------------
+   CTA band — replaces the old inline quote section on the homepage;
+   points to the dedicated quote.php page instead. Same navy/radial-glow
+   treatment as .hero, in a rounded panel like .contact-panel/.mission-card.
+   --------------------------------------------------------------------- */
+.cta-band {
+  background: var(--navy); color: #fff; border-radius: 20px;
+  padding: 72px 40px; text-align: center; position: relative; overflow: hidden;
+}
+.cta-band::before {
+  content: ""; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(91,95,239,0.35), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(0,217,192,0.2), transparent 45%);
+}
+.cta-content { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; }
+.cta-band .eyebrow { margin: 0 auto 24px; }
+.cta-band h2 { font-size: 32px; font-weight: 700; margin-bottom: 14px; }
+.cta-band p { color: #AEB2C9; font-size: 16.5px; }
+.cta-actions { display: flex; gap: 14px; justify-content: center; margin-top: 32px; flex-wrap: wrap; }
+.cta-note { margin-top: 22px; font-size: 13px; color: #8A8FB0; }
+@media (max-width: 560px) {
+  .cta-band { padding: 48px 24px; }
+  .cta-band h2 { font-size: 26px; }
+}
+
+/* ---------------------------------------------------------------------
+   Media row — reusable side-by-side image/graphic + text pattern.
+   Markup order is always [media, text]; .media-row-reverse swaps which
+   side the media sits on via flex-direction (desktop only) rather than
+   reordering the DOM, so the mobile stacked view (media always on top)
+   works for both variants with one reset rule.
+   --------------------------------------------------------------------- */
+.media-row { display: flex; align-items: center; gap: 56px; }
+.media-row.media-row-reverse { flex-direction: row-reverse; }
+.media-row-media { flex: 1 1 0; min-width: 0; }
+.media-row-media svg, .media-row-media img {
+  width: 100%; height: auto; display: block; border-radius: 20px;
+}
+.media-row-text { flex: 1.05 1 0; min-width: 0; }
+.media-row-text .sec-eyebrow { margin-bottom: 12px; }
+.media-row-text h1, .media-row-text h2 { font-size: 32px; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
+.media-row-text p { color: var(--ink-soft); font-size: 16.5px; line-height: 1.65; }
+.media-row-text p + p { margin-top: 12px; }
+.media-row-actions { display: flex; gap: 14px; margin-top: 28px; flex-wrap: wrap; }
+@media (max-width: 860px) {
+  .media-row, .media-row.media-row-reverse { flex-direction: column; align-items: stretch; gap: 32px; }
+  .media-row-media { max-width: 420px; margin: 0 auto; width: 100%; }
+}
+@media (max-width: 560px) {
+  .media-row-text h1, .media-row-text h2 { font-size: 26px; }
+}
+
+/* ---------------------------------------------------------------------
+   Service detail list — used on services/<slug>.php instead of a card
+   grid: each service gets room to breathe (title + full description),
+   which a dense grid of 4-8 items doesn't afford on a single-category page.
+   --------------------------------------------------------------------- */
+.svc-detail-list { display: flex; flex-direction: column; }
+.svc-detail-row { display: flex; gap: 20px; padding: 28px 0; border-bottom: 1px solid var(--line); }
+.svc-detail-row:first-child { padding-top: 0; }
+.svc-detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+.svc-detail-ico {
+  flex: none; width: 48px; height: 48px; border-radius: 14px; background: var(--paper-2); color: var(--indigo);
+  display: flex; align-items: center; justify-content: center;
+}
+.svc-detail-row h3 { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.svc-detail-row p { font-size: 15px; color: var(--ink-soft); line-height: 1.6; max-width: 640px; }
+@media (max-width: 560px) {
+  .svc-detail-row { padding: 22px 0; gap: 16px; }
+  .svc-detail-row h3 { font-size: 16px; }
+}
+
+/* ---------------------------------------------------------------------
+   Homepage services-overview cards gained example-service tags this
+   round (2-3 sample service names per category card).
+   --------------------------------------------------------------------- */
+.svc-overview-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+/* max-width + ellipsis: a long service title (e.g. "Custom mobile app
+   development (Android/iOS)") as a single nowrap pill can exceed the
+   card's own width — flex-wrap moves it to its own line but can't shrink
+   it below its content width on that line, which pushed the whole card
+   wider than its grid column at 1024-1280px (4-up layout). */
+.svc-overview-tag {
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis;
+  font-size: 11px; font-weight: 600; color: var(--ink-soft); background: var(--paper-2);
+  border-radius: 999px; padding: 4px 10px; white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------
+   Category detail pages (services/<slug>.php) — "why this matters" copy
+   block and the "types of X" educational comparison grid. The "why
+   choose Brightframe" differentiator grid reuses .whyus-grid/.whyus-card
+   directly (same visual treatment, no new CSS needed).
+   --------------------------------------------------------------------- */
+.category-copy { max-width: 720px; }
+.category-copy p { color: var(--ink-soft); font-size: 16.5px; line-height: 1.7; margin-bottom: 16px; }
+.category-copy p:last-child { margin-bottom: 0; }
+
+.type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.type-card { background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--cyan); border-radius: 16px; padding: 26px; }
+.type-card h3 { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.type-card p { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+/* ---------------------------------------------------------------------
+   Reviews (reviews.php) — approved-review grid, empty state (shown
+   whenever there are zero approved reviews, which is the honest default
+   for a new studio), and the CSS-only star rating input on the
+   submission form.
+   --------------------------------------------------------------------- */
+.reviews-empty {
+  text-align: center; padding: 64px 24px; color: var(--ink-soft);
+  border: 1px dashed var(--line); border-radius: 16px;
+}
+.reviews-empty svg { margin: 0 auto 16px; color: #C4C7D6; }
+.reviews-empty-title { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.reviews-empty-note { font-size: 14.5px; max-width: 480px; margin: 0 auto; line-height: 1.6; }
+
+.review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+.review-card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 28px; }
+.review-stars { display: flex; gap: 2px; margin-bottom: 14px; }
+.review-text { font-size: 15px; color: var(--ink); line-height: 1.65; flex: 1; margin-bottom: 18px; }
+.review-author { display: flex; flex-direction: column; gap: 2px; padding-top: 14px; border-top: 1px solid var(--line); }
+.review-name { font-size: 14px; font-weight: 700; color: var(--ink); }
+.review-company { font-size: 13px; color: var(--ink-soft); }
+
+/* Classic CSS-only star input: DOM order is 5,4,3,2,1 with
+   flex-direction:row-reverse so it displays 1→5 left-to-right, which
+   lets the "highlight this star and everything before it" effect use a
+   plain ~ (general sibling) selector — siblings *after* the hovered/
+   checked star in DOM order are exactly the lower-numbered stars, which
+   are the ones visually to its left. */
+.star-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; gap: 4px; }
+.star-input input { position: absolute; opacity: 0; width: 0; height: 0; }
+.star-input label {
+  font-size: 30px; line-height: 1; color: rgba(255,255,255,0.2); cursor: pointer;
+  transition: color .15s ease;
+}
+.star-input input:checked ~ label,
+.star-input label:hover,
+.star-input label:hover ~ label { color: #FFD166; }
+.star-input input:focus-visible + label { outline: 2px solid var(--cyan); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------------------------------------------------------------------
+   Homepage stat tiles (includes/site-stats.php) — only ever rendered
+   when at least one tile has a real value (see that file).
+   --------------------------------------------------------------------- */
+.stats-section { padding: 48px 0; border-bottom: 1px solid var(--line); }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 32px; text-align: center; }
+.stat-value {
+  font-family: 'Space Grotesk', sans-serif; font-size: 42px; font-weight: 700;
+  background: linear-gradient(135deg, var(--indigo), var(--cyan));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.stat-label { font-size: 14px; color: var(--ink-soft); font-weight: 600; margin-top: 6px; }
+@media (max-width: 560px) {
+  .stats-section { padding: 36px 0; }
+  .stat-value { font-size: 34px; }
+}
+
+/* ---------------------------------------------------------------------
+   Homepage device-mockup switcher — 3 of the category illustrations
+   (render_category_illustration()), cross-fading automatically. Slides
+   stack via position:absolute on a container sized to the illustration's
+   own 480:360 aspect ratio, so layout doesn't jump between slides.
+   --------------------------------------------------------------------- */
+.hero-mockup-switch { position: relative; max-width: 560px; margin: 0 auto; aspect-ratio: 480 / 360; }
+.hero-mockup-slide { position: absolute; inset: 0; opacity: 0; transition: opacity .7s ease; }
+.hero-mockup-slide svg { width: 100%; height: 100%; }
+.hero-mockup-slide.is-active { opacity: 1; }

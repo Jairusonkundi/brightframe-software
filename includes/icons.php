@@ -1,7 +1,9 @@
 <?php
 /**
- * Maps a service's icon_name (the owning category's slug, from the
- * `services` table) to its inline SVG.
+ * Category-slug-keyed lookups shared across pages: icon SVGs (used both
+ * per-service, via icon_name, and per-category) and short one-line
+ * blurbs (used wherever a category needs summarizing rather than fully
+ * listing its services — the homepage overview, the services page).
  */
 function render_service_icon(string $iconName): string
 {
@@ -20,4 +22,58 @@ function render_service_icon(string $iconName): string
     $fallback = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg>';
 
     return $icons[$iconName] ?? $fallback;
+}
+
+/**
+ * Short one-line description for a service category, keyed by its slug.
+ */
+function category_blurb(string $slug): string
+{
+    $blurbs = [
+        'web-development-design'       => 'Full-stack web apps, e-commerce, and websites built to perform, not just look good.',
+        'mobile-development'           => 'Native and cross-platform apps built for Android and iOS.',
+        'software-systems-development' => 'Custom software, APIs, and databases built around how your business runs.',
+        'erp-business-systems'         => 'ERP, CRM, HR, and automation systems configured around your real workflows.',
+        'branding'                     => 'Visual identity and brand strategy that makes you recognizable.',
+        'digital-marketing'            => 'Social, content, email, and paid campaigns that bring in leads.',
+        'seo'                          => 'Technical and content SEO that gets you found by the right searches.',
+        'it-technical-consulting'      => 'An outside, technical view on what to build, fix, or modernize next.',
+    ];
+
+    return $blurbs[$slug] ?? '';
+}
+
+/**
+ * Hero intro for a category's dedicated detail page (services/<slug>.php)
+ * — 2-3 sentences, one level more detail than category_blurb(). The
+ * longer "why this matters" copy (a paragraph or two deeper) lives in
+ * category_why_matters() in includes/category-content.php.
+ */
+function category_intro(string $slug): string
+{
+    $intros = [
+        'web-development-design'       => "From your first website to a fully custom web application, we build for real use — fast to load, easy to maintain, and built around how your users actually behave online. Every project is built as one connected system: the interface, the backend, and the database behind it, not separate pieces stitched together.",
+        'mobile-development'           => "Native or cross-platform, Android or iOS — we build mobile apps that feel fast, work reliably, and stay easy to update as your product grows. Every app starts from how people will actually use it day to day, not a generic template adapted after the fact.",
+        'software-systems-development' => "Custom software, APIs, and the databases behind them — built around how your business actually operates, not a generic template. Where an off-the-shelf tool almost fits but not quite, custom software closes that gap without forcing your team to change how they work around the software's limitations.",
+        'erp-business-systems'         => "ERP, CRM, HR, and automation systems configured around your real workflows — so your team spends less time on manual, repetitive work. These are the systems that run the operational core of a business, which means getting the configuration right matters more here than almost anywhere else.",
+        'branding'                     => "A distinct visual identity, from logo to guidelines — built to make your business recognizable and consistent everywhere it shows up. Strong branding isn't decoration; it's what lets people recognize and trust you before they've read a word.",
+        'digital-marketing'            => "Social, content, email, and paid campaigns built to bring in leads — planned around your goals and budget, not a one-size-fits-all package. Marketing only earns its cost when it's aimed at a clear, measurable outcome, not just activity for its own sake.",
+        'seo'                          => "Technical and content SEO built to get you found by the searches that matter — from on-page fixes to a content strategy built around what your customers actually search. SEO is a long-term investment: the goal is being reliably findable, not a short-lived ranking spike.",
+        'it-technical-consulting'      => "An outside, technical view on what to build, fix, or modernize next — from infrastructure to system architecture, before you commit budget to it. Sometimes the most valuable deliverable isn't more code, it's an honest second opinion before a decision gets expensive to reverse.",
+    ];
+
+    return $intros[$slug] ?? category_blurb($slug);
+}
+
+/**
+ * Read-only star rating display (1-5 filled stars) for an approved
+ * review. Used on reviews.php.
+ */
+function render_star_rating(int $rating): string
+{
+    $rating = max(1, min(5, $rating));
+    $filled = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD166" stroke="#FFD166" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
+    $empty  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E4E5EE" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
+
+    return str_repeat($filled, $rating) . str_repeat($empty, 5 - $rating);
 }

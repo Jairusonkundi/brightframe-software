@@ -1,4 +1,24 @@
 /**
+ * Homepage device-mockup switcher — cross-fades between a few example
+ * illustrations automatically. Stays on the first slide (no rotation) if
+ * the visitor has requested reduced motion.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  var switcher = document.querySelector('.hero-mockup-switch');
+  if (!switcher) return;
+  var slides = switcher.querySelectorAll('.hero-mockup-slide');
+  if (slides.length < 2) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var index = 0;
+  setInterval(function () {
+    slides[index].classList.remove('is-active');
+    index = (index + 1) % slides.length;
+    slides[index].classList.add('is-active');
+  }, 4000);
+});
+
+/**
  * Sticky nav — gains a shadow once the page has scrolled past the topbar,
  * giving it a subtle "lifted" feel instead of an abrupt flat-to-shadow jump.
  */
@@ -11,6 +31,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   updateScrolledState();
   window.addEventListener('scroll', updateScrolledState, { passive: true });
+});
+
+/**
+ * Back-to-top button — appears once you've scrolled past roughly one
+ * viewport, scrolls smoothly to the top on click.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  var backToTop = document.getElementById('back-to-top');
+  if (!backToTop) return;
+
+  function updateVisibility() {
+    backToTop.classList.toggle('is-visible', window.scrollY > 500);
+  }
+  updateVisibility();
+  window.addEventListener('scroll', updateVisibility, { passive: true });
+
+  backToTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
 });
 
 /**
@@ -105,22 +144,31 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /**
- * Services quick-nav — jumping to a category should reveal it even if the
- * visitor had collapsed that <details> group, and land in the right spot
- * (setting `open` after the browser has already jumped would leave the
- * page scrolled to the wrong place).
+ * Services page sidebar — highlights the category currently in view as
+ * you scroll, so the sidebar always shows where you are in the catalog.
+ * rootMargin shrinks the "counts as visible" band to a strip near the
+ * top of the viewport, so the active link changes right as a section's
+ * heading reaches it rather than whenever any part of the section shows.
  */
 document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.svc-quicknav a').forEach(function (link) {
-    link.addEventListener('click', function (e) {
-      var target = document.querySelector(link.getAttribute('href'));
-      if (!target) return;
-      e.preventDefault();
-      target.open = true;
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      history.pushState(null, '', link.getAttribute('href'));
+  var sidebarLinks = document.querySelectorAll('.svc-sidebar-link');
+  var blocks = document.querySelectorAll('.svc-cat-block');
+  if (!sidebarLinks.length || !blocks.length || !('IntersectionObserver' in window)) return;
+
+  var linkByHash = {};
+  sidebarLinks.forEach(function (link) { linkByHash[link.getAttribute('href')] = link; });
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (!entry.isIntersecting) return;
+      var link = linkByHash['#' + entry.target.id];
+      if (!link) return;
+      sidebarLinks.forEach(function (l) { l.classList.remove('is-active'); });
+      link.classList.add('is-active');
     });
-  });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  blocks.forEach(function (block) { observer.observe(block); });
 });
 
 /**
@@ -185,6 +233,103 @@ document.addEventListener('DOMContentLoaded', function () {
       .finally(function () {
         submitBtn.disabled = false;
         submitBtn.textContent = 'Send request';
+      });
+  });
+});
+
+/**
+ * Contact form (contact.php) — the simple general-inquiry form, submits
+ * via fetch() to handlers/contact_handler.php. Separate from the quote
+ * form above (different form id, different endpoint, different page).
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  var form = document.getElementById('contact-form');
+  if (!form) return;
+
+  var statusEl = document.getElementById('form-status');
+  var submitBtn = form.querySelector('.submit-btn');
+
+  function showStatus(message, isSuccess) {
+    statusEl.textContent = message;
+    statusEl.classList.remove('is-success', 'is-error');
+    statusEl.classList.add('is-visible', isSuccess ? 'is-success' : 'is-error');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    fetch('handlers/contact_handler.php', {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      body: new FormData(form)
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.success) {
+          showStatus(data.message || 'Thanks — we\'ll be in touch soon.', true);
+          form.reset();
+        } else {
+          showStatus(data.message || 'Something went wrong. Please try again.', false);
+        }
+      })
+      .catch(function () {
+        showStatus('Could not reach the server. Please try again in a moment.', false);
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send message';
+      });
+  });
+});
+
+/**
+ * Review form (reviews.php) — submits via fetch() to
+ * handlers/review_handler.php. A submitted review is never shown back to
+ * its own submitter or anyone else immediately — it lands as 'pending'
+ * and only appears once an admin approves it in admin/reviews.php.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  var form = document.getElementById('review-form');
+  if (!form) return;
+
+  var statusEl = document.getElementById('review-form-status');
+  var submitBtn = form.querySelector('.submit-btn');
+
+  function showStatus(message, isSuccess) {
+    statusEl.textContent = message;
+    statusEl.classList.remove('is-success', 'is-error');
+    statusEl.classList.add('is-visible', isSuccess ? 'is-success' : 'is-error');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting…';
+
+    fetch('handlers/review_handler.php', {
+      method: 'POST',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      body: new FormData(form)
+    })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.success) {
+          showStatus(data.message || 'Thanks for sharing your experience.', true);
+          form.reset();
+        } else {
+          showStatus(data.message || 'Something went wrong. Please try again.', false);
+        }
+      })
+      .catch(function () {
+        showStatus('Could not reach the server. Please try again in a moment.', false);
+      })
+      .finally(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit review';
       });
   });
 });

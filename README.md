@@ -9,32 +9,57 @@ admin view of incoming leads.
 
 ```
 BrightFrame_Software/
-├── index.php               # Homepage (services + quote form pulled from MySQL)
-├── privacy-policy.php      # Placeholder legal page ("Coming soon"), linked from the footer
-├── terms.php               # Placeholder legal page ("Coming soon"), linked from the footer
+├── index.php               # Minimal homepage: hero, logo strip, condensed services overview,
+│                           #   why-us teaser, and a CTA band pointing to quote.php
+├── services.php            # Services directory (all categories/services from MySQL)
+├── services/                # Dedicated per-category detail pages — one level deep, see below
+│   ├── web-development-design.php
+│   ├── mobile-development.php
+│   ├── software-systems-development.php
+│   ├── erp-business-systems.php
+│   ├── branding.php
+│   ├── digital-marketing.php
+│   ├── seo.php
+│   └── it-technical-consulting.php
+├── about.php               # Mission/approach (media-row), process, and founder/team
+├── why-us.php               # Media-row intro + full "Why Choose Us" cards
+├── quote.php                # "Request a quote" structured form — accepts ?category=<slug>
+├── contact.php             # Simple general-inquiry form — separate from the quote form
+├── reviews.php              # Public testimonials — approved reviews + a submission form
+├── privacy-policy.php      # Real privacy policy content
+├── terms.php               # Real terms-of-service content
 ├── css/styles.css          # All styles (extracted from the original inline <style>)
-├── js/main.js              # Nav, scroll-reveal, quote-category filter, quote form AJAX submit
+├── js/main.js              # Nav, scroll-reveal, quote-category filter, all forms' AJAX submit
 ├── includes/
-│   ├── header.php          # <head>, meta tags, opens <body>, includes topbar.php + nav.php
+│   ├── header.php          # <head>, meta tags, opens <body>, wraps topbar+nav in .site-header
 │   ├── topbar.php           # Thin utility bar: location/hours, phone/email, social icons
-│   ├── nav.php              # Two-tier main nav: logo, dropdowns, hamburger, CTA
+│   ├── nav.php              # Two-tier main nav: logo (links home), dropdowns, hamburger, CTA
 │   ├── footer.php           # 4-column dark footer + bottom bar, closes </body></html>
-│   └── icons.php             # Maps a service's icon_name (category slug) to inline SVG
+│   ├── icons.php             # Category-slug-keyed lookups: icon SVGs, blurbs, hero intros
+│   ├── illustrations.php     # Larger inline SVG illustrations for media-row sections
+│   ├── category-content.php  # "Why this matters" / differentiators / "Types of X" copy
+│   ├── category-page.php     # Shared renderer for services/<slug>.php (see below)
+│   └── site-stats.php        # Homepage stat tiles — renders nothing until admin-populated
 ├── config/
 │   ├── db.php               # PDO connection (reads config/.env)
 │   ├── env.php               # Tiny .env parser (no Composer dependency)
 │   ├── .env.example          # Template — copy to .env and fill in your values
 │   └── .env                  # Your local credentials — gitignored, not committed
 ├── handlers/
-│   └── quote_handler.php    # Validates + saves + emails quote requests (was contact_handler.php)
+│   ├── quote_handler.php    # Validates + saves + emails quote requests (quote_requests table)
+│   ├── contact_handler.php  # Validates + saves + emails contact messages (contact_messages table)
+│   └── review_handler.php   # Validates + saves a review as 'pending' (reviews table)
 ├── admin/
-│   └── submissions.php      # Lists quote_requests — UNPROTECTED, see below
+│   ├── submissions.php      # Lists quote_requests + contact_messages — UNPROTECTED, see below
+│   ├── reviews.php           # Approve/reject queue for review submissions — UNPROTECTED
+│   └── stats.php             # Edit the homepage stat tiles' labels/values — UNPROTECTED
 ├── assets/
 │   ├── favicon.svg
 │   ├── og-image.svg
 │   └── founder-placeholder.svg   # Headshot placeholder — swap out when a real photo exists
 ├── database.sql             # Full schema + seed data: service_categories, services,
-│                             #   quote_requests, quote_request_services
+│                             #   quote_requests, quote_request_services, contact_messages,
+│                             #   reviews, site_stats
 ├── sitemap.xml
 ├── robots.txt
 └── .gitignore
@@ -143,10 +168,12 @@ Alternatively, from the command line:
 
 ## Admin view — no authentication yet
 
-`admin/submissions.php` lists every row in `quote_requests` (with its
-selected services shown as tags, pulled from `quote_request_services`)
-and has no login and no access control. It's fine for local development,
-but **do not deploy it publicly as-is**. Before going live, add one of:
+`admin/submissions.php` lists both `quote_requests` (with its selected
+services shown as tags, pulled from `quote_request_services`) and
+`contact_messages`, as two separate sections on one page with a jump-nav
+at the top. It has no login and no access control. It's fine for local
+development, but **do not deploy it publicly as-is**. Before going live,
+add one of:
 
 - HTTP Basic Auth via `.htaccess` / `.htpasswd` on the `/admin/` folder, or
 - A proper login/session gate, or
@@ -164,28 +191,37 @@ Services are organized in two tables:
   Systems Development, ERP & Business Systems, Branding, Digital
   Marketing, SEO, IT & Technical Consulting).
 - `services` — `id`, `category_id` (FK → `service_categories.id`, `ON
-  DELETE CASCADE`), `title`, `description`, `icon_name`, `display_order`.
-  Currently 38 services across the 8 categories. `icon_name` is set to the
-  owning category's slug — all services in a category share one icon,
-  defined once in `includes/icons.php`.
+  DELETE CASCADE`), `title`, `description`, `long_description`,
+  `icon_name`, `display_order`. Currently 38 services across the 8
+  categories. `icon_name` is set to the owning category's slug — all
+  services in a category share one icon, defined once in
+  `includes/icons.php`. `description` is the short one-liner used in
+  compact contexts (services.php's card grid, the quote form checklist);
+  `long_description` is the expanded 2-3 sentence version used only on
+  `services/<slug>.php`, which has room for it.
 
-Three places read from these tables, all driven by the same data:
+Several places read from these tables, all driven by the same data:
 
-1. **Services dropdown in the main nav** (`includes/nav.php`) — a 4-column
-   mega menu, one column per ~2 categories, each with a heading and its
-   service links underneath.
-2. **Homepage Services section** (`index.php`) — a quick-nav pill row (jump
-   links to each category) followed by one collapsible `<details>` block
-   per category, each containing a compact card grid (icon + title +
+1. **Services dropdown in the main nav** (`includes/nav.php`) — categories
+   only (not individual services): an icon, name, and service count per
+   category, each linking to its section on `services.php`.
+2. **`services.php`** — the full catalog: a sticky category sidebar
+   (scroll-spy highlights the section currently in view) alongside
+   always-open category sections, each a card grid (icon + title +
    one-line description) for that category's services.
-3. **Contact form's "Service needed" dropdown** — a single `<select>` with
-   one `<optgroup>` per category, native and searchable/typeable in every
-   browser without extra JS.
+3. **Homepage services overview** (`index.php`) — a condensed 8-card grid,
+   one per category (icon, name, one-line blurb from `category_blurb()` in
+   `includes/icons.php`), linking out to that category's section on
+   `services.php`.
+4. **`quote.php`'s service checklist** — checkboxes grouped by category
+   (`<fieldset>` per category), filterable by the category `<select>` above
+   it.
 
 To add, edit, reorder, or recategorize a service, edit these two tables
-directly (phpMyAdmin or SQL) — none of the three places above need code
-changes. To add a new icon for a new category, add a key to the array in
-`includes/icons.php` matching the category's `slug`.
+directly (phpMyAdmin or SQL) — none of the four places above need code
+changes. To add a new icon (or update the one-line blurb) for a new
+category, add a key to the respective array in `includes/icons.php`
+matching the category's `slug`.
 
 ## Header, navigation & footer
 
@@ -202,14 +238,11 @@ The header is two-tier:
   comment noting there's no account yet and exactly what to change
   (swap the `<span>` for an `<a href="...">`) once one exists.
 - `includes/nav.php` — logo, a hamburger toggle (mobile), Services/
-  Products/Company dropdowns, a plain "Contact Us" link, and a single
-  "Request a quote" button as the only CTA (an earlier "Schedule a call"
-  button was removed — it pointed at the same `#contact` anchor as
-  "Contact Us" and "Request a quote," so it was pure duplication rather
-  than a distinct action). "Contact Us" and "Request a quote" both scroll
-  to the same section on purpose: browsing vs. ready-to-act are different
-  intents worth supporting differently (a low-key text link vs. a
-  prominent button), even though they land in the same place.
+  Products/Company dropdowns, a plain "Contact Us" link (→ `contact.php`),
+  and a single "Request a quote" button as the only CTA (→ `quote.php`).
+  These are deliberately two separate pages/forms, not two links to the
+  same place: browsing a general question vs. requesting a structured
+  quote are different intents worth supporting differently.
 - The Company dropdown now holds exactly three items: About Us, Our Team,
   Why Choose Us. "Careers" and a nested "Contact Us" were removed —
   Contact Us lives only as its own top-level nav item now, not duplicated
@@ -229,20 +262,23 @@ The header is two-tier:
   page" below). "Terms" still goes to `terms.php`, which remains a
   "Coming soon" placeholder — no legal text was fabricated for it.
 
-## Privacy policy page
+## Privacy policy & terms pages
 
-`privacy-policy.php` has real content (provided by the site owner
-verbatim), not a placeholder. It covers: what's collected via the
-quote/contact form, how it's used, data storage, cookies, third-party
-services, the right to request deletion, policy changes, and contact
-info. Styled with the site's existing type system (Space Grotesk
-headings in indigo, Inter body text) at a ~680px reading width. The
-"Last updated" date is a **hardcoded literal string** ("August 14,
-2026" — today, when this content was added), not computed at request
-time: a "last updated" date is supposed to mark when the policy text
-itself last changed, so it shouldn't silently drift forward every day
-the page is viewed. Update that line by hand the next time the policy's
-actual content changes.
+Both `privacy-policy.php` and `terms.php` have real content (provided by
+the site owner verbatim), not placeholders — `terms.php` was the last one
+still saying "Coming soon" and is now real too. Each covers what you'd
+expect: privacy covers what's collected via the quote/contact forms, how
+it's used, data storage, cookies, third-party services, the right to
+request deletion, and policy changes; terms covers site use, that a quote
+request isn't a binding contract, IP ownership, liability, third-party
+links, and governing law (Kenya). Both styled with the site's existing
+type system (Space Grotesk headings in indigo, Inter body text) at a
+~680px reading width. Each "Last updated" date is a **hardcoded literal
+string** (privacy: "August 14, 2026"; terms: "August 17, 2026" — the
+actual date each was added), not computed at request time: a "last
+updated" date is supposed to mark when the text itself last changed, so
+it shouldn't silently drift forward every day the page is viewed. Update
+the relevant line by hand whenever that page's actual content changes.
 
 ## Why Choose Us
 
@@ -341,6 +377,85 @@ The handler moved too: `handlers/contact_handler.php` →
 `quote_requests` + `quote_request_services` and displays phone, selected
 services (as tags), budget, and timeline alongside the fields it already
 showed.
+
+## Header fix, real legal pages, and Contact Us vs. Request a Quote — this round
+
+**Database change**: one new table, `contact_messages` (`id`, `name`,
+`email`, `subject`, `message`, `submitted_at`, `status`) — a completely
+new table, not a migration of anything existing, so **re-importing
+`database.sql` is required but non-destructive**: it only adds
+`contact_messages` and re-seeds the catalog tables as always;
+`quote_requests` / `quote_request_services` are untouched. The filename
+`handlers/contact_handler.php` is back, but as an entirely new file for
+this new table — it's unrelated to the old contact_handler.php from
+before the quote-form rewrite (that one is long gone; this is a fresh
+build with a different table and different fields).
+
+**Header behavior fix**: the topbar and nav previously behaved
+inconsistently — only `<nav>` was `position: sticky`, so the topbar
+scrolled away while the nav stayed pinned, which read as broken. Both are
+now wrapped in one `.site-header` div with the sticky positioning moved
+to that wrapper, so they move together as a single unit. Verified
+programmatically (not just visually): topbar and nav report the exact
+same `getBoundingClientRect().top` values before and after an 800px
+scroll.
+
+**Logo/Home now link everywhere, and so does everything else that
+should**: the logo + "Brightframe Software" text in the nav are now a
+real `<a href="index.php">`, and this surfaced a bigger, pre-existing
+bug — every homepage-section link in the shared nav/footer (`#services`,
+`#about`, `#team`, `#why-us`, `#quote`, the Services mega-menu, the
+footer's Company/Services columns) was a bare `#fragment` href, which
+only worked when you were already on `index.php`. Clicking any of them
+from `privacy-policy.php` or `terms.php` silently did nothing. Fixed by
+prefixing all of them with `index.php#...` so they resolve correctly
+from any page (verified: clicking "Request a quote" from `terms.php`
+now lands on `index.php#quote`, confirmed via the resulting page URL and
+that the section is visible after navigation).
+
+**Logo redesign — proposed as 3 directions, then "Focus Frame" applied.**
+Three directions (SVG, using only the existing navy/indigo/cyan palette)
+were built and published as a review artifact first — nothing was swapped
+into the live site silently. Two of the three initial sketches failed my
+own visual review before you ever saw them (one read as a video "play"
+button instead of a prism, one read as a messy blob) — both were
+redesigned and re-tested before publishing. After reviewing, "Focus
+Frame" (four open corner brackets + a center four-point spark, gradient
+indigo→cyan) was chosen and is now live in all four places:
+- `assets/favicon.svg` — the mark on its navy badge, self-contained.
+- `includes/nav.php` — same mark + badge (needs the badge here since the
+  brackets are white and the nav bar itself is light).
+- `includes/footer.php` — same mark, **badge omitted**: the badge's fill
+  is the exact same navy as the footer background, so on that surface
+  it's invisible anyway — cleaner to just not draw it there.
+- `assets/og-image.svg` — the mark rebuilt at 2x scale (via an SVG
+  `scale(2)` transform on the same path data, not a separate redraw) in
+  the social-preview card's top-left corner.
+
+Each usage has its own `<linearGradient id="...">` with a unique id
+(`logoSparkNav`, `logoSparkFooter`, `logoSparkFavicon`, `logoSparkOg`) —
+SVG/HTML ids must be unique per document, and nav.php + footer.php render
+on the same page simultaneously, so reusing one id across both would have
+been invalid markup.
+
+**Contact Us vs. Request a Quote — now genuinely different forms, not
+the same content behind two labels:**
+
+| | Request a Quote | Contact Us |
+|---|---|---|
+| Location | `index.php#quote` (homepage section) | `contact.php` (own page) |
+| Purpose | Ready to describe a specific project | General question, not ready to commit to project details |
+| Fields | Category filter, multi-service checkboxes, project details, budget, timeline, name/email/phone | Name, email, subject, message |
+| Heading | "Request a quote" | "Have a question? Get in touch" |
+| Table | `quote_requests` + `quote_request_services` | `contact_messages` |
+| Handler | `handlers/quote_handler.php` | `handlers/contact_handler.php` |
+
+Each page cross-links to the other ("Just have a question instead?" /
+"Ready to talk pricing instead?"), so a visitor who lands on the wrong
+one isn't stuck. `admin/submissions.php` shows both tables as clearly
+separated sections (not tabs — a tab UI would hide one behind a click;
+plain sections with a jump-nav at the top keep both visible and
+scannable, and don't depend on JS to work).
 
 ## Visual & UX polish pass
 
@@ -590,3 +705,495 @@ first draft: I'd generated the "Last updated" date with PHP's `date()`
 at request time, which would silently advance every day the page loads —
 wrong for a field that's supposed to mark when the policy text itself
 was last changed. Replaced with a hardcoded date string.
+
+**Header fix, real terms page, and split Contact/Quote round** —
+re-imported `database.sql` and confirmed via `SHOW TABLES`/`SHOW COLUMNS`
+that `contact_messages` exists with the right shape and that
+`quote_requests`/`quote_request_services`/the catalog were untouched.
+Re-verified with Playwright/Chromium across `index.php`, `contact.php`,
+`terms.php`, and `privacy-policy.php` at all 5 required breakpoints —
+zero console errors, zero horizontal overflow on any of the 4 pages.
+- Sticky header: measured `getBoundingClientRect()` on both the topbar
+  and nav before and after an 800px scroll — identical positions both
+  times (`topbarTop: 0, navTop: 38` unchanged), confirming they move as
+  one unit rather than the old broken one-sticky-one-not behavior.
+- Cross-page navigation: clicked the logo from `privacy-policy.php` and
+  confirmed the resulting URL was `index.php`; clicked "Request a quote"
+  from `terms.php` and confirmed it landed on `index.php#quote` with the
+  section actually visible — both were silently broken before this round
+  (bare `#fragment` hrefs only work on the page that has that fragment).
+- Both new/changed handlers tested end-to-end: a full contact message
+  (validated, saved, honeypot-tested — bot submission correctly produced
+  no database row), and a full quote request re-run unchanged to confirm
+  the split didn't regress it. `admin/submissions.php` checked directly
+  and showed both a quote request and a contact message in their correct,
+  separate sections with accurate counts.
+- Logo proposal: built 3 SVG concepts, self-tested via a local Playwright
+  screenshot pass *before* showing them to the user — 2 of the first 3
+  sketches failed that review (one read as a video play button, one as a
+  messy overlapping blob) and were redesigned and re-tested. The final
+  comparison page was itself screenshotted in both light and dark theme
+  and at a 390px mobile width, which caught one real bug — the mock nav
+  bar's CTA button overflowed at narrow widths (the same flex
+  `min-width: auto` issue documented in the visual-polish round above,
+  recurring in new markup) — fixed and re-verified before publishing.
+
+**Sticky-header re-confirmation + Focus Frame applied** — re-verified the
+sticky header claim at full page depth rather than a single scroll
+position: checked `.site-header`'s `getBoundingClientRect()` at 6 scroll
+positions spanning the entire ~8,000px homepage, from the very top to
+the very bottom (footer visible). `top` stayed `0` at every checkpoint —
+confirmed, not assumed. After applying the Focus Frame mark to all 4
+files, re-ran the full check (all 4 pages × all 5 required breakpoints):
+zero console errors, zero horizontal overflow. Confirmed no leftover
+references to the old checkmark path anywhere in the codebase via a
+direct grep for its exact path data.
+
+## Floating back-to-top + WhatsApp widget; "Call" replaces inline WhatsApp
+
+No schema change this round. Two fixed-position buttons, bottom-right,
+rendered once in `includes/footer.php` (`.floating-actions`) so they
+appear on every page: a back-to-top button (hidden until you scroll past
+~500px, `#back-to-top` in `js/main.js`) stacked above an always-visible
+WhatsApp widget linking to `wa.me/254743192585`.
+
+Since WhatsApp is now reachable globally via that widget, the inline
+"WhatsApp: ..." button inside the two forms' contact-links (on
+`index.php#quote` and `contact.php`) was redundant — replaced with a
+`tel:` **Call** link instead, so those two spots now offer a genuinely
+different contact option rather than duplicating the widget. The CSS
+class backing that highlighted button was renamed `.wa-btn` →
+`.clink-primary`, since keeping a WhatsApp-branded class name on a phone
+button would have been misleading to anyone reading the CSS later.
+`includes/footer.php`'s own "Contact" info column still lists WhatsApp
+as before — that wasn't in scope, only the two forms were.
+
+Verified: back-to-top is `visibility:hidden` at the top of the page,
+becomes visible after scrolling 1200px, and clicking it drives
+`window.scrollY` back to `0`. Checked mobile (375px) at the very bottom
+of the page to confirm the floating buttons don't cover the footer's
+Privacy Policy / Terms links. Full 4-page × 5-breakpoint regression
+re-run afterward: zero console errors, zero horizontal overflow.
+
+## Cache-busting for CSS/JS, and a real overflow bug the breakpoint list missed
+
+A user report ("header disappears when I scroll") turned out to be two
+things layered together — one browser-side, one a genuine bug:
+
+**Stale browser cache.** `css/styles.css` and `js/main.js` were linked by
+plain filename with no version marker, so once a browser cached them, it
+had no reason to re-fetch after an edit — visitors could keep seeing
+whatever CSS was cached from before any given round's fixes indefinitely.
+Fixed by appending `?v=<the file's filemtime()>` to both links (and to
+`admin/submissions.php`'s separate stylesheet link, which isn't served
+through `includes/header.php`). This updates itself automatically
+whenever either file is actually edited — no manual version bumping, and
+existing caches invalidate the moment the file changes on disk.
+
+**A real, previously-uncaught overflow bug.** Reproducing the report's
+exact scenario (a hard navigation straight to `index.php#quote`, address
+bar and all) showed the header rendering correctly — so I widened the
+search instead of concluding "just cache." A sweep across every 40px from
+360–1920px (this project's earlier breakpoint checks only ever tested
+five fixed widths: 1440/1024/768/480/375) with the Services mega menu
+actually opened at each one found real horizontal overflow at 1280px
+specifically. Cause: `.dropdown-mega` was positioned `absolute`, anchored
+to the left edge of the "Services" nav trigger — at 800px wide, whether
+that placement fits depends on exactly where "Services" sits in the nav,
+which isn't the same at every viewport width. It happened to clear the
+five previously-tested widths and fail at 1280px, which nothing had
+checked before. Fixed by repositioning the mega menu as `position: fixed`
+and centered under the header (`left: 50%` + `transform: translateX(-50%)`,
+independent of the trigger's position) rather than anchored to its
+trigger — the standard approach for wide mega menus, and one that can't
+overflow regardless of where the triggering nav item happens to sit.
+Re-verified with the same 40-width × dropdown-open sweep: zero overflow.
+This class of bug (something invisible/`visibility:hidden` still
+affecting `scrollWidth`) doesn't show up by eyeballing a page — it needs
+an actual measurement, which is why the fixed breakpoint list had missed
+it across every previous round.
+
+## Multi-page restructuring — every nav destination is now a standalone page
+
+No schema change this round. Two requests drove this: the quote form
+shouldn't require scrolling through the whole homepage to reach, and
+clicking a nav item like "Contact Us" should open only that page, not
+scroll within `index.php`.
+
+**New standalone pages**, each following the same pattern as the
+pre-existing `contact.php` (own `$pageTitle`/`$pageDescription`, shared
+`includes/header.php`/`includes/footer.php` so the header, nav, footer,
+and floating WhatsApp/back-to-top widgets stay identical everywhere):
+
+- `services.php` — the full catalog (all 8 categories, all 38 services),
+  moved out of `index.php`'s old `#services` section.
+- `about.php` — mission/approach (`#about`), the 4-step process
+  (`#process`), and the founder/team card (`#team`) combined into one
+  page — these three used to be separate homepage sections.
+- `why-us.php` — the full 4-card "Why Choose Us" grid.
+- `quote.php` — the structured "Request a quote" form, moved out of
+  `index.php`'s old `#quote` section. Field names/ids (`#quote-form`,
+  `service_ids[]`, etc.) are unchanged, so `handlers/quote_handler.php`
+  and the existing `js/main.js` submit/filter logic needed no changes.
+
+**`index.php` was trimmed to a minimal home**: hero, trust logo strip, a
+new condensed services overview (8 category cards linking to
+`services.php#cat-x`, not all 38 services), a new short 3-point why-us
+teaser (linking to `why-us.php`), and a new CTA band (eyebrow, headline,
+buttons to `quote.php`/`contact.php`, reassurance line) replacing the old
+inline quote section. New CSS: `.svc-overview-grid`/`.svc-overview-card`,
+`.whyus-teaser-grid`/`.whyus-teaser-item`, and `.cta-band` (reuses the
+existing navy/radial-glow treatment from `.hero`/`.contact-panel`).
+
+**`includes/nav.php` and `includes/footer.php`** had every
+`index.php#anchor` href updated to point at the new pages
+(`about.php`, `about.php#team`, `why-us.php`, `services.php#cat-x`,
+`quote.php`). The Services mega-menu's category headings are now links
+too (previously plain text), which needed a small specificity fix in
+`css/styles.css` (`.dropdown-panel a` was otherwise overriding
+`.dropdown-col-head`'s color/size once the heading became an `<a>`).
+
+Verified: full 8-page × 8-breakpoint sweep (360–1920px) — zero console
+errors, zero horizontal overflow. Submitted both the quote and contact
+forms end-to-end from their new standalone pages and confirmed successful
+`POST` responses from `handlers/quote_handler.php` and
+`handlers/contact_handler.php` (relative paths still resolve correctly
+since both pages live in the project root, same as `index.php` did).
+Confirmed nav/footer link destinations resolve correctly, the header
+logo still links home, the WhatsApp/back-to-top widgets render on
+non-home pages, and in-page anchor scrolling (`services.php#cat-x`)
+still respects `--header-h` via `scroll-margin-top`.
+
+## Services mega-menu simplified to categories; services.php redesigned
+
+No schema change this round. Two related requests: the nav's Services
+dropdown was listing all 38 individual services (dense, slow to scan),
+and `services.php` itself needed a more modern layout.
+
+**Mega-menu**: `includes/nav.php` now queries categories with a
+`COUNT(s.id)` per category instead of the full category→services join it
+used before, and renders one card per category (icon, name, service
+count) linking to `services.php#cat-x` — not a per-service link list.
+This also shrank the panel from a `min-width: 800px` 4-column grid to a
+`min-width: 480px` 2-column one.
+
+**`services.php`**: replaced the quick-nav-pills + collapsible
+`<details>`-per-category layout with a sticky category sidebar
+(desktop) alongside always-open category sections — since the sidebar
+is now the navigation, collapsing sections no longer earned its
+complexity. `js/main.js` gained a small `IntersectionObserver` scroll-spy
+that highlights the sidebar link for whichever category section is
+currently in view (replacing the old JS that force-opened a `<details>`
+group before scrolling to it, which is no longer needed since nothing
+collapses). On narrow screens the sidebar becomes a static stack of
+full-width rows above the content instead of a floating sidebar; each
+category section's cards moved from a shared-border flush grid to
+individual bordered cards with a hover lift, matching the treatment
+already used for the homepage's services overview cards.
+
+Two small pieces of shared category metadata (icon lookup and a
+one-line blurb) were already duplicated between `index.php` and this
+page's design — consolidated into `render_service_icon()` and a new
+`category_blurb()`, both in `includes/icons.php`, so both pages (and any
+future one) pull from the same source instead of maintaining separate
+copies.
+
+**Dead CSS removed**: `.svc-quicknav`, `.svc-cat`/`.svc-cat-summary`/
+`.svc-cat-name`/`.svc-cat-count`/`.svc-cat-grid`, `.svc-mini-card`/
+`.svc-mini-ico`, and `.dropdown-col`/`.dropdown-col-head` — all only
+existed to support the layouts this round replaced, confirmed via a
+project-wide grep before deleting.
+
+Verified: PHP lint on every changed file; a 6-page × 8-breakpoint sweep
+(360–1920px) with the Services mega-menu opened at every width (this
+project's mega-menu has caused a real overflow bug before, at 1280px
+specifically — re-checked explicitly this round) — zero console errors,
+zero horizontal overflow at any width, open or closed. Confirmed via
+screenshot that the sidebar's sticky positioning and scroll-spy active
+state work while scrolling, and that the mobile stacked-sidebar layout
+renders cleanly.
+
+## Nav highlights the current page, hover shows an underline
+
+No schema change this round. `includes/nav.php` now computes which
+top-level nav item matches the page actually being requested
+(`basename($_SERVER['SCRIPT_NAME'])`) and marks it `is-current`: "Home" on
+`index.php`, "Services" on `services.php`, "Company" on `about.php` or
+`why-us.php` (plus the matching item inside that dropdown — "About Us" /
+"Our Team" vs. "Why Choose Us"), "Contact Us" on `contact.php`.
+
+CSS: `.nav-link` gained an animated underline (`::after`, `scaleX(0)` →
+`scaleX(1)`) that grows in on hover/focus and stays fully drawn for
+`.is-current` — so which page you're on doesn't depend on remembering to
+hover. On the mobile stacked menu the underline is disabled (it would
+collide with each row's existing `border-bottom` divider) in favor of a
+background tint, applied the same way for hover and `.is-current`.
+
+**A real bug this pass caught**: testing the mobile menu surfaced that
+the Services dropdown panel was opening automatically the moment the
+hamburger was tapped, before ever touching "Services" — a leftover from
+last round's mega-menu redesign. `.dropdown-mega`'s mobile rule was
+unconditionally declaring `display: flex`, with equal specificity to (and
+appearing after, in source order) the correct `.dropdown-panel { display:
+none }` default — so it always won, regardless of `.nav-dropdown.is-open`.
+Scoped it out. That same investigation found a second instance of the
+same shape of bug: `.nav-dropdown.is-open .dropdown-mega`'s desktop
+centering transform (`translateX(-50%)`, for centering the fixed-position
+panel under the header) has higher specificity than the mobile
+`.dropdown-panel { transform: none }` reset, so opening the panel on
+mobile shifted it ~171px off-screen to the left instead of sitting in
+normal document flow. Fixed with an explicit
+`.nav-dropdown.is-open .dropdown-mega { position: static; transform: none; }`
+inside the mobile media query.
+
+Verified: PHP lint; re-ran the 6-page × 8-breakpoint sweep with the
+mega-menu opened at every width (including the mobile accordion tap this
+round's fixes target) — zero console errors, zero overflow. Screenshots
+confirm hover/current states render correctly and independently (hovering
+"Home" while "Contact Us" is current shows both underlined at once), the
+Company dropdown highlights only the matching sub-item, and the mobile
+Services accordion now opens/closes only on tap, positioned correctly in
+the document flow.
+
+## Dedicated per-category service pages, image+text media rows, quote pre-select
+
+Each of the 8 service categories now has its own detail page at
+`services/<slug>.php` — hero (breadcrumb, category illustration, H1,
+intro, "Request a quote for this service" CTA), the full list of that
+category's specific services as a detail list (not a card grid — title +
+full description, room to breathe), and a closing CTA band. Every nav
+entry point that used to link to `services.php#cat-x` (homepage cards,
+the nav mega-menu, the footer's Services column) now links straight to
+the matching dedicated page instead; `services.php` itself keeps its full
+card-grid catalog for browsing everything at once, but each of its
+category sections gained a "Full details →" link out to the dedicated
+page, so the two pages point at each other.
+
+**Routing**: each `services/<slug>.php` is a two-line file
+(`$categorySlug = '...'; require '../includes/category-page.php';`) —
+plain files rather than a rewrite-based router, so nothing depends on
+Apache config the way `mod_rewrite` would. One deviation from the
+originally-requested filenames: IT & Technical Consulting is
+`services/it-technical-consulting.php`, matching the category's existing
+DB slug (already used for its icon key and its `services.php#cat-x`
+anchor) rather than the shorter `it-consulting.php` first suggested —
+since every nav/footer/homepage link to this page is generated as
+`services/<?= $cat['slug'] ?>.php`, a mismatched filename would have
+needed a special-case exception everywhere that link is built.
+
+**`$basePath`**: since the new pages live one level below the project
+root, `includes/header.php`, `nav.php`, and `footer.php` now read a
+`$basePath` variable (default `''`, root pages don't need to set it;
+`category-page.php` sets it to `'../'`) and prefix every internal
+asset/page link with it. This is the first subdirectory content page in
+the project — everything before this lived flat at root — so this was
+new plumbing, not an existing pattern to reuse. While in here, also fixed
+`<link rel="canonical">`, which had hardcoded the homepage URL on every
+page since it was first added — now reflects the actual requested path.
+
+**Illustrations**: 8 new hand-built inline SVGs (one per category —
+browser mockup, phone mockup, connected nodes, dashboard grid, color
+palette, megaphone, growth chart, network/gear), all sharing one navy
+dot-pattern "frame" (matching `index.php`'s existing hero-art) so the set
+reads as one family. Self-QA'd via a local test page + Playwright
+screenshot before wiring in (per the project's established pattern for
+new SVG work) — caught and fixed two disconnected stray shapes in an
+early pass. Per the no-fabricated-image-URLs rule, these are all
+original SVG, not stock photos.
+
+**Reusable media-row pattern**: `.media-row` / `.media-row-reverse` — a
+side-by-side image+text component, image always first in the DOM so the
+mobile stacked view (image on top) works for both the normal and reversed
+variant with one CSS reset. Category pages alternate which side the
+illustration sits on based on the category's `display_order` (odd/even).
+Also applied to `why-us.php` (new intro row above the existing 4-card
+grid, using a new "trust/direct-line" illustration) and `about.php` (the
+mission/approach section, using a new illustration built around the
+brand's existing "Focus Frame" spark motif — the pull-quote card that
+used to sit beside the mission text now sits full-width below the row
+instead, since a 2-column media-row only fits one media + one text
+column).
+
+**Quote pre-select**: a category page's CTA links to
+`quote.php?category=<slug>`. `quote.php` resolves the slug to a category
+id server-side, marks the matching `<option>` `selected`, and marks every
+*other* category's checkbox `<fieldset>` `hidden` — reusing the same
+`hidden` mechanism `js/main.js`'s existing category-select filter already
+used, so no JS changes were needed and the pre-narrowed state also works
+without JS. A small note ("Pre-selected: Mobile Development — change the
+category below to browse everything") makes the pre-selection visible
+rather than silent.
+
+**A real pre-existing bug found and fixed**: several service descriptions
+rendered with mojibake (`ÔÇô` instead of `—`) — confirmed present on the
+already-live `services.php` too, so not something this round introduced.
+`database.sql` itself has correct UTF-8 em-dashes; the corruption was in
+the previously-imported data. Re-imported with
+`mysql --default-character-set=utf8mb4 < database.sql` and confirmed the
+fix on both the old and new pages.
+
+**A second real bug found via testing**: the new homepage cards' example-
+service tags (`.svc-overview-tag`) used `white-space: nowrap` with no
+`max-width`, so a long, unwrappable title (e.g. "Custom mobile app
+development (Android/iOS)") could exceed the card's own width — invisible
+at most breakpoints but overflowing at 1024–1280px, where the 4-column
+grid gives each card its least horizontal room. Fixed with
+`max-width: 100%; overflow: hidden; text-overflow: ellipsis` on the tag,
+plus `min-width: 0` on `.svc-overview-card` itself (the same grid-item
+shrink issue this project has hit more than once now).
+
+Verified: PHP lint on every new/changed file. A 14-page × 8-breakpoint
+sweep (360–1920px, all 6 existing pages plus all 8 new category pages) —
+zero HTTP errors, zero console errors, zero horizontal overflow (this is
+what caught the tag-overflow bug above). Functional checks via Playwright:
+all 8 homepage cards link to the correct `services/<slug>.php`; clicking
+through lands on the right page with the right H1/breadcrumb; a category
+page's CTA correctly carries the slug to `quote.php` and the destination
+page arrives with the right option selected and the right (and only the
+right) service checklist visible; nav/footer/breadcrumb/stylesheet/script
+links all resolve correctly both from root pages and from one level deep;
+an unknown category slug returns a real 404. Screenshots confirm the
+illustrations, alternating media-row sides, and mobile stacking all
+render as intended.
+
+## Category detail pages gained real depth (content + one new column)
+
+Each `services/<slug>.php` grew from hero + service list + CTA into six
+sections: hero, **"Why this matters"** (1-2 paragraphs on the problem the
+category solves), **"Why choose Brightframe Software for X"** (3-4
+honest differentiators), the service list (now with 2-3 sentence
+descriptions instead of one line), an educational **"Types of X"**
+comparison (e.g. native vs. cross-platform for Mobile Development,
+on-page/technical/off-page for SEO), then the CTA band.
+
+**Content honesty rules** (the actual brief for this round): no invented
+client names, portfolios, or case studies; no specific years of company
+history; no multi-country claims; no unverifiable superlatives ("best",
+"top", "#1"); differentiators phrased honestly for a founder-led/small
+operation ("you work directly with the person building it") rather than
+implying a larger team. "Types of X" sections are general industry
+knowledge, not claims about Brightframe. All new copy lives in a new
+`includes/category-content.php` (`category_why_matters()`,
+`category_differentiators()`, `category_types()`, one entry per category,
+genuinely different content per category rather than a template with the
+name swapped in) — its file-level comment restates these rules so they're
+visible to whoever edits this content next. One nuance worth flagging:
+the brief asked to reference "the founder's ~3 years" from an existing
+CV/bio, but no specific year count actually appears anywhere on the
+current site (checked before writing) — so the founder's background is
+described qualitatively (full-stack development and enterprise systems
+implementation, matching `about.php`'s existing text) rather than with an
+unverifiable number. Say the word and a specific figure can be added.
+
+**Schema change**: `services` gained a `long_description` column
+(nullable — falls back to the existing short `description` if ever
+unset). The original `description` stays untouched and short, since it's
+still used in compact contexts (`services.php`'s card grid, the quote
+form's checklist) where a 2-3 sentence paragraph per item wouldn't fit;
+`long_description` is the expanded version used only on the detail pages,
+which have room for it. Populated for all 38 existing services in the
+seed data. Re-import required (`database.sql` does its usual drop +
+rebuild + reseed).
+
+Verified: PHP lint on every changed/new file. Re-ran the 14-page ×
+8-breakpoint sweep — zero HTTP errors, zero console errors, zero
+overflow. Checked all 8 pages' rendered output for stray PHP
+warnings/notices (none — one false-positive grep hit was just the word
+"notice" appearing naturally in the marketing copy). Re-confirmed the
+quote pre-select flow and homepage card links still work after the
+expansion, and that illustration side-alternation is unaffected.
+Grepped the new content files for the forbidden-claims list (superlatives,
+"years of experience," "our clients," "team of," etc.) — zero matches
+outside the rules comment itself describing what to avoid.
+
+## Breadcrumb removed from category detail pages
+
+Reversal of one piece of the round above: the breadcrumb
+(`Home / Services / [Category]`) on `services/<slug>.php` has been
+removed, at explicit request after review. Two things were checked
+before removing it, since an earlier report of "duplicate navigation" on
+these same pages had turned out (after a full DOM audit) to not be a
+real duplicate: confirmed via a fresh screenshot comparison that what was
+being pointed at genuinely was the breadcrumb row itself, and confirmed
+after removal that no other page or include still references it. The
+`.breadcrumb` CSS block in `css/styles.css` was also removed — it had no
+other caller once this markup was gone. Pages now flow directly from the
+shared header into the hero section, matching every other standalone
+page on the site.
+
+Verified: PHP lint. Re-ran the 14-page × 8-breakpoint sweep — zero HTTP
+errors, zero console errors, zero overflow, and confirmed `.breadcrumb`
+no longer appears in the DOM on any of the 8 category pages.
+
+## Reviews system, admin-editable stats, brighter theme touches
+
+This round was requested with reference screenshots from a competitor's
+live site (client logos, "client served" style stats, 5 testimonials).
+Three specific pieces of that request were declined rather than built as
+literally asked, since they'd have meant publishing fabricated content —
+flagged to the user directly before starting, consistent with this
+project's standing no-fabrication rule:
+
+- **Invented testimonials** — asked for 5 published reviews; Brightframe
+  has no clients yet, so 5 reviews would all be fiction. Built the
+  underlying *system* instead (see below) and launched it with zero
+  reviews, exactly as agreed.
+- **"Imaginary" client/partner logos** — asked for explicitly, by that
+  word. The reference screenshot was also a competitor's actual client
+  list (KRA, KenGen, Madison Insurance, etc.) — reproducing a real
+  company's real client roster on Brightframe's site would misrepresent
+  who Brightframe has actually worked with, regardless of intent. Kept
+  the existing honest "Client logo" placeholders, see below for what
+  changed about them.
+- **Invented stats ("fill in real numbers later")** — asked for made-up
+  numbers with a promise to edit them later; declined because a public
+  page shows whatever's there *now*, and "we'll fix it later" doesn't
+  change what a visitor sees in the meantime. Built an admin-editable
+  version instead (see below) seeded with empty values, not numbers.
+
+**Reviews system** — new `reviews` table (`status`: pending/approved/
+rejected). `reviews.php` is the public page: a grid of `status =
+'approved'` reviews (empty-state message if there are none — the honest
+default right now), plus a "Share your experience" submission form
+(`handlers/review_handler.php`, same honeypot pattern as the other two
+forms) that always lands as `'pending'`. Nothing submitted through the
+form is public until approved in the new `admin/reviews.php` moderation
+queue (approve / reject / unpublish, plain POST actions — no separate
+handler file). Star-rating input on the form uses the classic CSS-only
+technique (radio buttons + `~` sibling selector), no JS required.
+
+**Admin-editable homepage stats** — new `site_stats` table
+(`label`, `value`, `display_order`), seeded with 3 labeled rows and
+**no values**. `includes/site-stats.php` is the public display
+component: it queries only non-empty values and renders nothing at all
+if none exist yet — not a placeholder, not a zero, nothing. `admin/
+stats.php` is a simple label/value editor; the section will start
+appearing on the homepage the moment a real number goes in, no code
+changes needed.
+
+**Theme brightness pass** — three bounded, honest changes rather than a
+full recolor (which would need its own proposal-first cycle, per this
+project's standing rule for visual-identity changes): the footer now
+uses a richer blue gradient distinct from the near-black `--navy` used
+elsewhere (`css/styles.css`, scoped to `footer` only); the trust-logo
+strip is now an infinite auto-scrolling marquee (`prefers-reduced-motion`
+falls back to the previous manually-scrollable strip) — same honest
+"Client logo" placeholder content, just more visually alive; and a new
+"Built for every screen" homepage section shows 3 of the existing
+category illustrations (web, mobile, ERP dashboard) cross-fading
+automatically, as an original-illustration answer to "show it working on
+laptop and phone" without real product screenshots that don't exist yet
+or stock photos of strangers (both against this project's standing image
+rules).
+
+Verified: PHP lint on every new/changed file. Full regression sweep
+across all pages including the two new admin pages and reviews.php —
+zero HTTP errors, zero console errors, zero overflow. Full functional
+round-trip via Playwright: submitted a real review through the public
+form, confirmed it appeared in the admin pending queue and nowhere on
+the public site yet, approved it, confirmed it then appeared on
+reviews.php; edited a stat value in admin/stats.php, confirmed the
+homepage stats section appeared with the real value, then cleared it
+back to empty and confirmed the section disappeared again. All test data
+(the test review, the test stat value) was removed after verifying —
+the database was left in the same empty, honest state it started in.

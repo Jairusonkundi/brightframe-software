@@ -14,15 +14,28 @@ try {
     error_log('Failed to load footer service categories: ' . $e->getMessage());
     $footerCategories = [];
 }
+
+// Set by pages one level deep (services/<slug>.php) before including this
+// file directly — defaults to root-relative.
+$basePath = $basePath ?? '';
 ?>
 <footer>
   <div class="wrap">
     <div class="footer-grid">
       <div class="footer-col footer-col-brand">
         <div class="logo footer-logo">
-          <svg width="26" height="26" viewBox="0 0 30 30" role="img" aria-label="Brightframe Software logo">
-            <rect x="4" y="4" width="22" height="22" rx="6" fill="none" stroke="#ffffff" stroke-width="2.2"/>
-            <path d="M10 15 L13.5 18.5 L20 11" stroke="#00D9C0" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg width="26" height="26" viewBox="0 0 32 32" role="img" aria-label="Brightframe Software logo">
+            <defs>
+              <linearGradient id="logoSparkFooter" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#5B5FEF"/>
+                <stop offset="1" stop-color="#00D9C0"/>
+              </linearGradient>
+            </defs>
+            <path d="M6 13 L6 7 L13 7" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 7 L26 7 L26 13" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 19 L6 25 L13 25" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M26 19 L26 25 L19 25" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="url(#logoSparkFooter)"/>
           </svg>
           Brightframe Software
         </div>
@@ -54,16 +67,17 @@ try {
 
       <div class="footer-col">
         <div class="footer-col-head">Company</div>
-        <a href="#about">About Us</a>
-        <a href="#team">Our Team</a>
-        <a href="#why-us">Why Choose Us</a>
-        <a href="#contact">Contact Us</a>
+        <a href="<?= $basePath ?>about.php">About Us</a>
+        <a href="<?= $basePath ?>about.php#team">Our Team</a>
+        <a href="<?= $basePath ?>why-us.php">Why Choose Us</a>
+        <a href="<?= $basePath ?>reviews.php">Reviews</a>
+        <a href="<?= $basePath ?>contact.php">Contact Us</a>
       </div>
 
       <div class="footer-col">
         <div class="footer-col-head">Services</div>
         <?php foreach ($footerCategories as $cat): ?>
-          <a href="#cat-<?= htmlspecialchars($cat['slug'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?></a>
+          <a href="<?= $basePath ?>services/<?= htmlspecialchars($cat['slug'], ENT_QUOTES, 'UTF-8') ?>.php"><?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?></a>
         <?php endforeach; ?>
       </div>
 
@@ -78,13 +92,28 @@ try {
     <div class="footer-bottom">
       <div>&copy; <?= date('Y') ?> Brightframe Software Limited &middot; Nairobi, Kenya</div>
       <div class="footer-legal">
-        <a href="privacy-policy.php">Privacy Policy</a>
-        <a href="terms.php">Terms</a>
+        <a href="<?= $basePath ?>privacy-policy.php">Privacy Policy</a>
+        <a href="<?= $basePath ?>terms.php">Terms</a>
       </div>
     </div>
   </div>
 </footer>
 
-<script src="js/main.js"></script>
+<!-- Site-wide floating actions: back-to-top + WhatsApp widget. Fixed
+     position, so DOM placement doesn't matter — this lives in the footer
+     include so it renders once on every page. -->
+<div class="floating-actions">
+  <button type="button" id="back-to-top" aria-label="Back to top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+  </button>
+  <a class="whatsapp-widget" href="https://wa.me/254743192585" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+    <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.87 9.87 0 0 0 4.79 1.22h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Z" fill="#fff"/>
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" fill="#25D366"/>
+    </svg>
+  </a>
+</div>
+
+<script src="<?= $basePath ?>js/main.js?v=<?= @filemtime(__DIR__ . '/../js/main.js') ?: '1' ?>"></script>
 </body>
 </html>
