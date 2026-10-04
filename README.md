@@ -39,7 +39,11 @@ BrightFrame_Software/
 │   ├── illustrations.php     # Larger inline SVG illustrations for media-row sections
 │   ├── category-content.php  # "Why this matters" / differentiators / "Types of X" copy
 │   ├── category-page.php     # Shared renderer for services/<slug>.php (see below)
-│   └── site-stats.php        # Homepage stat tiles — renders nothing until admin-populated
+│   ├── site-stats.php        # Homepage stat tiles — renders nothing until admin-populated
+│   ├── mailer.php            # Shared PHPMailer+SMTP helper used by the form handlers
+│   ├── admin-auth.php         # Session guard — require at the top of any protected admin page
+│   ├── admin-layout-header.php # Admin sidebar shell (opens html, nav, badge counts) — see below
+│   └── admin-layout-footer.php # Closes the admin shell opened above
 ├── config/
 │   ├── db.php               # PDO connection (reads config/.env)
 │   ├── env.php               # Tiny .env parser (no Composer dependency)
@@ -49,19 +53,26 @@ BrightFrame_Software/
 │   ├── quote_handler.php    # Validates + saves + emails quote requests (quote_requests table)
 │   ├── contact_handler.php  # Validates + saves + emails contact messages (contact_messages table)
 │   └── review_handler.php   # Validates + saves a review as 'pending' (reviews table)
-├── admin/
-│   ├── submissions.php      # Lists quote_requests + contact_messages — UNPROTECTED, see below
-│   ├── reviews.php           # Approve/reject queue for review submissions — UNPROTECTED
-│   └── stats.php             # Edit the homepage stat tiles' labels/values — UNPROTECTED
+├── admin/                    # See "Admin view" below for what each page does
+│   ├── login.php
+│   ├── logout.php
+│   ├── index.php             # Dashboard (landing page after login)
+│   ├── quotes.php / quote-view.php
+│   ├── messages.php / message-view.php
+│   ├── reviews.php
+│   ├── services.php          # CRUD for service_categories + services
+│   └── stats.php              # Analytics + the homepage stat-tile editor
 ├── assets/
 │   ├── favicon.svg
 │   ├── og-image.svg
 │   └── founder-placeholder.svg   # Headshot placeholder — swap out when a real photo exists
 ├── database.sql             # Full schema + seed data: service_categories, services,
 │                             #   quote_requests, quote_request_services, contact_messages,
-│                             #   reviews, site_stats
+│                             #   reviews, site_stats, admin_users, login_attempts
 ├── sitemap.xml
 ├── robots.txt
+├── composer.json            # PHPMailer dependency — run `composer install` (see §5)
+├── vendor/                  # Composer packages (gitignored, created by `composer install`)
 └── .gitignore
 ```
 
@@ -99,7 +110,7 @@ Alternatively, from the command line:
 `config/.env`, which is gitignored.
 
 1. Copy `config/.env.example` to `config/.env`.
-2. Edit `config/.env` with your local MySQL credentials:
+2. Edit `config/.env` with your local MySQL credentials **and** email settings:
 
    ```
    DB_HOST=localhost
@@ -107,8 +118,16 @@ Alternatively, from the command line:
    DB_USER=root
    DB_PASS=
    DB_PORT=3306
-   ADMIN_EMAIL=hello@brightframesoftware.com
-   MAIL_FROM=no-reply@brightframesoftware.local
+
+   ADMIN_EMAIL=jairusonkundi@gmail.com
+
+   SMTP_HOST=smtp.gmail.com
+   SMTP_PORT=465
+   SMTP_SECURE=ssl
+   SMTP_USER=jairusonkundi@gmail.com
+   SMTP_PASS=PASTE_YOUR_GMAIL_APP_PASSWORD_HERE
+   MAIL_FROM=jairusonkundi@gmail.com
+   MAIL_FROM_NAME=Brightframe Software
    ```
 
    A stock XAMPP install uses the default MySQL port `3306` with user
@@ -119,12 +138,34 @@ Alternatively, from the command line:
    also on the machine and XAMPP has been reconfigured to avoid the
    conflict.
 
-## 4. Start Apache and MySQL, then view the site
+   `SMTP_PASS` is the one secret you must supply yourself: Gmail won't
+   accept your normal sign-in password via SMTP. Create an **App Password**
+   (Google Account → *Security* → *2-Step Verification* → *App passwords*)
+   and paste it in — see includes/mailer.php for the full key list. If you
+   leave `SMTP_USER`/`SMTP_PASS` empty the mailer falls back to PHP's
+   `mail()` so local dev keeps working.
+
+## 4. Install PHP dependencies (email)
+
+Form notifications use PHPMailer, managed by Composer. Once, from the
+project root:
+
+```
+composer install
+```
+
+This creates `vendor/` (gitignored). Composer is the only requirement —
+there are no other dependencies. Skip this and the site still works; only
+the email notifications need it, and even then the forms still save to the
+database if the SMTP settings aren't filled in yet.
+
+## 5. Start Apache and MySQL, then view the site
 
 1. Open the XAMPP Control Panel and click **Start** next to both **Apache**
    and **MySQL**.
 2. Visit: `http://localhost/BrightFrame_Software/`
-3. Admin quote requests view: `http://localhost/BrightFrame_Software/admin/submissions.php`
+3. Admin panel (requires login — see "Admin login" below for the seeded
+   username and how to change the password): `http://localhost/BrightFrame_Software/admin/login.php`
 
 ## Quote request form notes
 
@@ -155,32 +196,95 @@ Alternatively, from the command line:
   only (via `js/main.js`) — without JS, every category's checkboxes stay
   visible (just a longer form), so the form is fully usable without
   JavaScript.
-- **Email delivery**: the handler uses PHP's `mail()` function. A stock
-  XAMPP install on Windows has **no configured mail server**, so `mail()`
-  will typically return `false`/fail locally — this is expected and is
-  logged, not fatal. The request is still saved to the database either
-  way. To get real local email delivery you have two options:
-  - Point `php.ini`'s `[mail function]` section at an SMTP relay (e.g.
-    Mercury Mail, bundled with XAMPP, or a real SMTP account), or
-  - Swap `mail()` in `handlers/quote_handler.php` for
-    [PHPMailer](https://github.com/PHPMailer/PHPMailer) configured with
-    SMTP credentials — recommended for production.
+- **Email delivery**: notifications are sent via
+  [PHPMailer](https://github.com/PHPMailer/PHPMailer) + SMTP (see
+  `includes/mailer.php`), driven by the `ADMIN_EMAIL` / `SMTP_*` values in
+  `config/.env`. A failed email is logged but never breaks the form — the
+  request is already saved to the database by that point. Both the quote
+  handler and the contact handler go through the same helper, so changing
+  the recipient or relay is a single `.env` edit.
 
-## Admin view — no authentication yet
+## Admin view — session login required, sidebar dashboard
 
-`admin/submissions.php` lists both `quote_requests` (with its selected
-services shown as tags, pulled from `quote_request_services`) and
-`contact_messages`, as two separate sections on one page with a jump-nav
-at the top. It has no login and no access control. It's fine for local
-development, but **do not deploy it publicly as-is**. Before going live,
-add one of:
+Every page under `/admin/` (except `login.php` itself, which IS the
+login) requires login — `includes/admin-auth.php` (required at the top
+of each one, before any output) redirects to `admin/login.php` if
+`$_SESSION['admin_user_id']` isn't set. It also generates a per-session
+CSRF token (`$_SESSION['admin_csrf']`) and exposes `admin_csrf_check()`,
+which every admin POST handler calls before touching the database. See
+"Admin login" below for the full auth setup. All admin pages share one
+shell (`includes/admin-layout-header.php` / `admin-layout-footer.php`,
+mirroring the public site's own header.php/footer.php split): a dark
+sidebar with per-section icons, badge counts, and a user card (avatar
+initial, username, "Administrator", log out), plus a slim topbar above
+the content area (mobile menu toggle, current section name, a "View
+site" link out to the public site, and the avatar again) — the site's
+navy/indigo/cyan branding and type system throughout, not a generic
+scaffold.
 
-- HTTP Basic Auth via `.htaccess` / `.htpasswd` on the `/admin/` folder, or
-- A proper login/session gate, or
-- An IP allowlist at the web server level.
+- `admin/index.php` — **Dashboard**, the landing page after login. New/
+  total counts for quotes and messages, pending review count, and a
+  merged recent-activity feed across all three submission types.
+- `admin/quotes.php` — quote request list, filterable by status and
+  sortable by date. `admin/quote-view.php?id=<n>` — full detail (project
+  description, requested services, budget, timeline, contact info) plus
+  a status dropdown (New / Contacted / In discussion / Closed).
+- `admin/messages.php` — contact message list, same filter/sort pattern.
+  `admin/message-view.php?id=<n>` — full detail; viewing a "new" message
+  auto-advances it to "read" (standard inbox behavior), with a status
+  dropdown (New / Read / Replied) for manual control.
+- `admin/reviews.php` — the review moderation queue (Pending / Approved /
+  Rejected tabs). Rejecting can optionally record a short internal reason
+  (`reviews.reject_reason`) — admin-facing only, never shown publicly.
+- `admin/services.php` — CRUD for `service_categories` and `services`,
+  so the catalog no longer requires direct database edits. Adding a
+  category auto-creates its dedicated `services/<slug>.php` detail page
+  too (a 3-line shim through `includes/category-page.php`, which renders
+  from the database) — see the comment at the top of that file. Renaming
+  an *existing* category's slug still breaks its existing detail page,
+  since that file is keyed to the old slug on disk (flagged inline on
+  the edit form); `includes/icons.php`'s `category_detail_url()` falls
+  back to `services.php#cat-<slug>` if a page is ever missing, so nothing
+  404s either way.
+- `admin/stats.php` — two distinct things on one page: real analytics
+  (counts pulled live from the database, plus a submissions-per-week bar
+  chart) at the top, and the admin-editable homepage stat-tile editor
+  below it. These are genuinely different — the analytics are automatic
+  and admin-only; the tiles are manual and public.
 
-The page is also excluded from search indexing (`robots.txt` and a
-`noindex` meta tag) but that is not a security control by itself.
+All admin pages are also excluded from search indexing (`robots.txt` and
+a `noindex` meta tag), on top of the login requirement.
+
+## Admin login
+
+Credentials live in the `admin_users` table (`username`,
+`password_hash` — bcrypt via PHP's `password_hash()`/`password_verify()`,
+never plaintext). Seeded with one user on first import — see the comment
+above `admin_users` in `database.sql` for the seeded username and how to
+change the password later. That table is deliberately **not**
+dropped/rebuilt when `database.sql` is re-imported after a future schema
+change, unlike every other table in this file — re-seeding it every time
+would silently reset the password back to the original value with no
+warning.
+
+`admin/login.php` handles the form: CSRF token (session-bound, checked
+via `hash_equals()`), a generic "Invalid username or password" error
+either way (doesn't confirm which part was wrong), and IP-based rate
+limiting — 5 failed attempts from one IP within 15 minutes blocks further
+attempts (including a *correct* password) until the window passes; see
+the `login_attempts` table. A successful login clears that IP's attempt
+history, regenerates the session id (`session_regenerate_id(true)`,
+prevents session fixation), and sets the session cookie `httponly` +
+`samesite=Lax`. `admin/logout.php` clears the session and its cookie.
+
+`?redirect=<page>` on the login URL sends you back to whatever admin
+page you originally requested — validated against a strict
+`^[a-zA-Z0-9_-]+\.php$` pattern first, so it can't be turned into an
+open redirect to an external URL.
+
+This covers the admin panel specifically. It does not add HTTPS,
+firewall rules, or anything at the hosting/infrastructure level — add
+those before this goes on a real domain.
 
 ## Services are database-driven (2-level: categories → services)
 
@@ -217,11 +321,14 @@ Several places read from these tables, all driven by the same data:
    (`<fieldset>` per category), filterable by the category `<select>` above
    it.
 
-To add, edit, reorder, or recategorize a service, edit these two tables
-directly (phpMyAdmin or SQL) — none of the four places above need code
-changes. To add a new icon (or update the one-line blurb) for a new
-category, add a key to the respective array in `includes/icons.php`
-matching the category's `slug`.
+To add, edit, or delete a category or service, use `admin/services.php`
+(see "Admin view" above) rather than editing these tables directly —
+none of the four places above need code changes either way, and adding
+a category through the admin page also creates its dedicated detail
+page automatically. Direct SQL is still fine for bulk changes (reordering
+via `display_order`, etc.). To add a new icon (or update the one-line
+blurb) for a new category, add a key to the respective array in
+`includes/icons.php` matching the category's `slug`.
 
 ## Header, navigation & footer
 
@@ -1197,3 +1304,159 @@ homepage stats section appeared with the real value, then cleared it
 back to empty and confirmed the section disappeared again. All test data
 (the test review, the test stat value) was removed after verifying —
 the database was left in the same empty, honest state it started in.
+
+## Admin login — the panel finally requires one
+
+Every `admin/*.php` page now requires a real session login instead of
+being open to anyone with the URL. Two new tables: `admin_users`
+(bcrypt password hash, seeded with one user — see the comment above it
+in `database.sql` for the username and how to change the password) and
+`login_attempts` (rolling log for rate limiting). `admin_users` is
+deliberately exempt from this file's usual drop-and-rebuild-on-reimport
+pattern — every other table gets wiped and reseeded when `database.sql`
+is re-run, which would be fine for catalog/lead data but would silently
+reset the admin password back to the seed value every time otherwise.
+
+`includes/admin-auth.php` is a one-line-to-use guard (`require_once` at
+the top of a page, before any output) that redirects to `admin/login.php`
+if the session isn't authenticated; all three existing admin pages
+(`submissions.php`, `reviews.php`, `stats.php`) now start with it, and
+their "Unprotected page" warning banners are gone, replaced by a
+"Logged in as X · Log out" bar (`includes/admin-bar.php`).
+
+`admin/login.php` itself: CSRF token, a generic error message regardless
+of whether the username or password was wrong (no enumeration hint),
+IP-based rate limiting (5 failed attempts / 15 minutes — checked
+*before* even a correct password is accepted, so a lockout can't be
+raced), `session_regenerate_id(true)` on success, `httponly` +
+`samesite=Lax` session cookie, and a `?redirect=` param (strictly
+pattern-validated against `^[a-zA-Z0-9_-]+\.php$`, so it can't become an
+open redirect) that sends you back to whatever admin page you originally
+tried to reach. `admin/logout.php` clears the session and its cookie.
+
+Verified via Playwright, using real HTTP requests (not just reading the
+code): all three admin pages redirect to login when logged out; a wrong
+password fails with the generic message and no session is granted; the
+correct password logs in, shows the userbar, and grants access to all
+three pages; logging out revokes access again; the `?redirect=` param
+round-trips correctly; 6 failed attempts in a row triggers the lockout
+message, and — the case that actually matters — the *correct* password
+is also rejected while that IP is locked out. Full site regression sweep
+(all public pages × 4 breakpoints, plus all 3 admin pages logged in)
+afterward: zero HTTP errors, zero console errors, zero overflow. All
+test rows (failed login_attempts, the wrong-password ones included) were
+cleared from the database after verifying, so nothing is left locked out
+or polluted.
+
+## Admin panel rebuilt into a real internal dashboard
+
+The 3-page admin panel (a login gate bolted onto one big submissions
+table) became an 8-page dashboard: sidebar navigation, a landing page
+with at-a-glance counts, dedicated list + detail views for quotes and
+messages with real status pipelines, and a new Services CRUD page — see
+"Admin view" above for what each page does. `admin/submissions.php` and
+`includes/admin-bar.php` were removed, fully superseded by the new
+per-section pages and the sidebar's built-in user card.
+
+**Schema**: `quote_requests.status` gained `'in_discussion'` (between
+`'contacted'` and `'closed'`). `contact_messages.status` changed shape
+entirely — it used to share `quote_requests`' new/contacted/closed
+values, but a message doesn't get "contacted", it gets "replied", so it's
+now its own new/read/replied enum. `reviews` gained `reject_reason`
+(admin-facing only, never shown publicly).
+
+**Security**: `includes/admin-auth.php` now also issues a per-session
+CSRF token and exposes `admin_csrf_check()`; every admin POST handler
+(quote/message status changes, review moderation, services CRUD, stat
+tile edits) calls it before touching the database, and every admin form
+carries the token as a hidden field.
+
+**Shared layout**: `includes/admin-layout-header.php` /
+`admin-layout-footer.php` mirror the public site's own header.php/
+footer.php split — a dark sidebar (per-section icons, badge counts for
+new quotes/messages/pending reviews, and a user card with an avatar
+initial, username, "Administrator" label, and a log-out icon) plus a
+slim topbar above the content area (hamburger toggle, current section
+name, a "View site" link, and the avatar again), reusing the site's
+actual navy/indigo/cyan palette and type system rather than a generic
+admin scaffold. Collapses to a hamburger-triggered drawer under 900px,
+same interaction pattern as the public nav's mobile menu.
+
+**Services CRUD** (`admin/services.php`): adding a category now also
+auto-creates its dedicated `services/<slug>.php` detail page — a 3-line
+shim that sets `$categorySlug` and includes the new shared
+`includes/category-page.php` renderer (which pulls the category and its
+services straight from the database, including a generic fallback intro/
+"why it matters" via `includes/category-content.php` for categories that
+don't have hand-written editorial copy yet). This closes the gap from
+earlier in the build, where a new category only ever got a
+`services.php#cat-<slug>` anchor link — new categories now get a real
+page immediately. `includes/icons.php`'s `category_detail_url()` still
+exists as a defensive fallback (checks the file actually exists on disk
+before linking to it) for the edge case of a slug created outside this
+form. Renaming an *existing* category's slug still breaks its existing
+detail page, since that file is keyed to the old slug on disk — flagged
+inline on the edit form. One known gap: deleting a category removes the
+database rows but does **not** delete its generated `services/<slug>.php`
+file, so a deleted category can leave an orphaned (unreachable, harmless)
+page file behind — worth a manual cleanup if you delete a category, or a
+follow-up if this becomes annoying. `icon_name` is intentionally not a
+field on the add/edit-service form — the established convention (every
+service in a category shares one icon, keyed by the category's slug) is
+preserved by auto-setting it server-side on every save, not exposed as
+free text an admin could mistype.
+
+**Site Stats page** does two genuinely different things, kept visually
+and textually separate on the page: real analytics (KPI cards for total
+quotes/messages/reviews-by-status/categories/services, plus a plain-div
+submissions-per-week bar chart — no charting library needed for 8 bars)
+computed live from the database every page load, and the pre-existing
+homepage stat-tile editor below it. The analytics are automatic and
+admin-only; the tiles are manual and public — it's expected and correct
+for the analytics to show real activity while the public tiles stay
+empty, if there's nothing worth publishing yet.
+
+**Two real bugs caught during testing, both fixed:**
+1. Adding a category with the slug field left blank (the normal case —
+   it's meant to auto-generate from the name) failed with "could not
+   generate a slug from that name," even for perfectly normal names. Cause:
+   `slugify($_POST['slug'] ?? $name)` — the slug input is always present
+   in the submitted form (just empty when left blank), so `??` never
+   actually reached its fallback; an empty string satisfies `isset()`, it
+   isn't null. Fixed by explicitly checking `trim(...) !== ''` before
+   deciding whether to fall back to the name.
+2. `admin/stats.php`'s 8-bar weekly chart overflowed the page horizontally
+   on a 360px-wide phone (8 columns don't fit). Fixed the same way the
+   public site's mobile logo strip already handles the same shape of
+   problem: `overflow-x: auto` on the chart container below 560px rather
+   than squeezing or breaking the layout — confirmed after the fix that
+   the *page* no longer scrolls horizontally, only the chart does.
+
+Verified: PHP lint on every admin page and every include it touches. CSS
+audited class-by-class against the new sidebar/topbar/dashboard markup —
+every class referenced actually has a rule. Explicit auth audit (the
+user's request) — all 8 protected admin pages checked individually via
+real HTTP requests with no session cookie, confirmed each redirects to
+`login.php`: `index.php`, `quotes.php`, `quote-view.php`, `messages.php`,
+`message-view.php`, `reviews.php`, `services.php`, `stats.php`. Full
+public-to-admin integration test via a real Playwright browser session
+(logged in through the actual login form, not a seeded session) —
+submitted a real quote request, contact message, and review through
+their public (fetch-based) forms; confirmed all three appeared
+immediately in their respective admin list pages; changed a quote's
+status and confirmed it persisted and displayed; confirmed a viewed
+message auto-advances new → read; approved the review in the admin queue
+and **confirmed it then appeared on the public reviews.php page** — the
+specific connection the user asked to have verified, not just assumed.
+Also exercised the full Services CRUD cycle (add category → confirmed
+its new `services/<slug>.php` page loads with HTTP 200 → add a service →
+delete it → delete the category) and the Site Stats page (KPI cards and
+the 8-column bar chart both render from real data). Full regression
+sweep: all 8 admin pages checked unauthenticated, then the full flow
+above while logged in, then all 6 sidebar admin pages re-checked at a
+360px mobile viewport for horizontal overflow — 34/34 automated checks
+passed, zero console errors. Every row of test data created during this
+pass (the test quote, message, review, category, and service, plus the
+one orphaned test category page file the delete-category gap above
+leaves behind) was removed afterward; the database was confirmed back to
+its pre-test state before finishing.

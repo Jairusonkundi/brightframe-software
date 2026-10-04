@@ -41,15 +41,15 @@ $navIsContact   = $navCurrentPage === 'contact.php';
       <svg width="30" height="30" viewBox="0 0 32 32" role="img" aria-hidden="true">
         <defs>
           <linearGradient id="logoSparkNav" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-            <stop offset="0" stop-color="#5B5FEF"/>
-            <stop offset="1" stop-color="#00D9C0"/>
+            <stop offset="0" stop-color="#159F7A"/>
+            <stop offset="1" stop-color="#5660EF"/>
           </linearGradient>
         </defs>
-        <rect x="1" y="1" width="30" height="30" rx="9" fill="#0B0E1A"/>
-        <path d="M6 13 L6 7 L13 7" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M19 7 L26 7 L26 13" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M6 19 L6 25 L13 25" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M26 19 L26 25 L19 25" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="1" y="1" width="30" height="30" rx="9" fill="#EEF6F2"/>
+        <path d="M6 13 L6 7 L13 7" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M19 7 L26 7 L26 13" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6 19 L6 25 L13 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M26 19 L26 25 L19 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="url(#logoSparkNav)"/>
       </svg>
       Brightframe Software
@@ -73,7 +73,7 @@ $navIsContact   = $navCurrentPage === 'contact.php';
           <?php else: ?>
             <?php foreach ($navCategories as $cat): ?>
               <?php $catIsCurrent = $navCurrentPage === $cat['slug'] . '.php'; ?>
-              <a class="dropdown-cat-card<?= $catIsCurrent ? ' is-current' : '' ?>" href="<?= $basePath ?>services/<?= htmlspecialchars($cat['slug'], ENT_QUOTES, 'UTF-8') ?>.php">
+              <a class="dropdown-cat-card<?= $catIsCurrent ? ' is-current' : '' ?>" href="<?= htmlspecialchars(category_detail_url($cat['slug'], $basePath), ENT_QUOTES, 'UTF-8') ?>">
                 <span class="dropdown-cat-ico"><?= render_service_icon($cat['slug']) ?></span>
                 <span class="dropdown-cat-text">
                   <span class="dropdown-cat-name"><?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?></span>
@@ -114,13 +114,21 @@ $navIsContact   = $navCurrentPage === 'contact.php';
 
       <a href="<?= $basePath ?>contact.php" class="nav-link<?= $navIsContact ? ' is-current' : '' ?>">Contact Us</a>
 
-      <!-- Mobile-only: primary CTA lives inside the collapsed menu too -->
+      <!-- Mobile-only: primary CTA + theme toggle live inside the collapsed menu too -->
       <div class="nav-actions-mobile">
         <a href="<?= $basePath ?>quote.php" class="nav-cta">Request a quote</a>
+        <button type="button" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+        </button>
       </div>
     </div>
 
     <div class="nav-actions">
+      <button type="button" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">
+        <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+        <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
       <a href="<?= $basePath ?>quote.php" class="nav-cta">Request a quote</a>
     </div>
   </div>

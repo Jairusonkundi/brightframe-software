@@ -1,8 +1,6 @@
 <?php
 /**
  * Real terms-of-service content, provided directly by the site owner.
- * Was a "Coming soon" placeholder — see privacy-policy.php for the
- * earlier page built the same way.
  */
 require_once __DIR__ . '/config/db.php';
 

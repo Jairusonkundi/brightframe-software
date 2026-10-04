@@ -73,7 +73,31 @@ function render_star_rating(int $rating): string
 {
     $rating = max(1, min(5, $rating));
     $filled = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD166" stroke="#FFD166" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
-    $empty  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E4E5EE" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
+    $empty  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D3DDD8" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
 
     return str_repeat($filled, $rating) . str_repeat($empty, 5 - $rating);
+}
+
+/**
+ * Where a category's "learn more" link should point: its dedicated
+ * services/<slug>.php page if one actually exists as a file, otherwise
+ * falling back to its section on the main services.php catalog. Needed
+ * because admin/services.php can create new categories in the database,
+ * but a dedicated detail page is a separate static file that doesn't get
+ * generated automatically (see the note at the top of admin/services.php)
+ * — without this fallback, a category added there would produce dead
+ * /services/<slug>.php links in the nav, footer, and homepage until a
+ * developer added that file by hand.
+ */
+function category_detail_url(string $slug, string $basePath = ''): string
+{
+    // Defensive: only ever treat a slug matching this shape as a possible
+    // filename, regardless of where it came from — slugify() already
+    // guarantees this for anything created through admin/services.php,
+    // but this function shouldn't trust that if the value came from
+    // somewhere else (e.g. a direct database edit).
+    if (preg_match('/^[a-z0-9-]+$/', $slug) && file_exists(__DIR__ . '/../services/' . $slug . '.php')) {
+        return $basePath . 'services/' . $slug . '.php';
+    }
+    return $basePath . 'services.php#cat-' . $slug;
 }

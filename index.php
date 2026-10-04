@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Homepage — kept minimal by design: hero, trust strip, a condensed
  * services overview, a short why-us teaser, and a CTA band pointing to
@@ -135,21 +135,29 @@ include __DIR__ . '/includes/header.php';
   </div>
   <div class="logostrip-marquee">
     <div class="logostrip-track">
-      <div class="logostrip-item">Client logo</div>
-      <div class="logostrip-item">Client logo</div>
-      <div class="logostrip-item">Client logo</div>
-      <div class="logostrip-item">Client logo</div>
-      <div class="logostrip-item">Client logo</div>
-      <div class="logostrip-item">Client logo</div>
-      <!-- Same 6 items again, back to back — creates a seamless loop when
-           the track scrolls exactly -50% (see @keyframes logostrip-scroll).
-           Hidden from assistive tech so it doesn't announce "Client logo" twice. -->
-      <div class="logostrip-item" aria-hidden="true">Client logo</div>
-      <div class="logostrip-item" aria-hidden="true">Client logo</div>
-      <div class="logostrip-item" aria-hidden="true">Client logo</div>
-      <div class="logostrip-item" aria-hidden="true">Client logo</div>
-      <div class="logostrip-item" aria-hidden="true">Client logo</div>
-      <div class="logostrip-item" aria-hidden="true">Client logo</div>
+      <?php
+      // Neutral abstract emblems rather than named client logos — no real
+      // client marks to show yet, and inventing names would be misleading.
+      // Swap each <svg> for a real, permission-cleared client logo later;
+      // keep the count at 6 (the track repeats them once, back to back).
+      $brandEmblems = [
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 20 7.3v9.4L12 21.4 4 16.7V7.3L12 2.6Z"/><circle cx="12" cy="12" r="2.4"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4.5"/><path d="M8.5 15.5 15.5 8.5"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 20.5 19h-17L12 4Z"/><path d="M8 15h8"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="7.5"/><circle cx="18.6" cy="5.4" r="2.1"/></svg>',
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 20.5 12 12 20.5 3.5 12 12 3.5Z"/><path d="M12 8.5 15.5 12 12 15.5 8.5 12 12 8.5Z"/></svg>',
+      ];
+      // Same six items twice, back to back — creates a seamless loop when
+      // the track scrolls exactly -50% (see @keyframes logostrip-scroll).
+      // The duplicate is hidden from assistive tech so it isn't announced twice.
+      ?>
+      <?php foreach ($brandEmblems as $emblem): ?>
+        <div class="logostrip-item"><?= $emblem ?></div>
+      <?php endforeach; ?>
+      <?php foreach ($brandEmblems as $emblem): ?>
+        <div class="logostrip-item" aria-hidden="true"><?= $emblem ?></div>
+      <?php endforeach; ?>
     </div>
   </div>
 </section>
@@ -171,7 +179,7 @@ include __DIR__ . '/includes/header.php';
       <div class="svc-overview-grid">
         <?php foreach ($categories as $i => $cat): ?>
           <?php $ovDelayClass = $ovRevealDelays[$i % 4]; ?>
-          <a class="svc-overview-card reveal <?= $ovDelayClass ?>" href="services/<?= htmlspecialchars($cat['slug'], ENT_QUOTES, 'UTF-8') ?>.php">
+          <a class="svc-overview-card reveal <?= $ovDelayClass ?>" href="<?= htmlspecialchars(category_detail_url($cat['slug']), ENT_QUOTES, 'UTF-8') ?>">
             <div class="svc-overview-ico"><?= render_service_icon($cat['slug']) ?></div>
             <h3><?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?></h3>
             <p><?= htmlspecialchars(category_blurb($cat['slug']), ENT_QUOTES, 'UTF-8') ?></p>

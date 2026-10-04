@@ -1,9 +1,8 @@
 <?php
 /**
  * Contact Us — a simple general-inquiry form, deliberately separate from
- * the "Request a quote" form on the homepage (index.php#quote). This is
- * for someone with a question, not yet ready to describe a project
- * (that form lives at quote.php).
+ * the "Request a quote" form (which lives at quote.php). This is for
+ * someone with a question, not yet ready to describe a project.
  */
 require_once __DIR__ . '/config/db.php';
 

@@ -1,4 +1,63 @@
 /**
+ * Theme toggle — dark/light mode switch. Persists preference in
+ * localStorage under "bf-theme". The toggle button (class .theme-toggle)
+ * is rendered in includes/nav.php (public site), includes/admin-layout-
+ * header.php (admin panel), and admin/login.php (login page).
+ *
+ * An inline anti-flash script in header.php / admin-layout-header.php /
+ * login.php reads localStorage before first paint to apply the saved
+ * theme immediately — this handler just wires up the click behaviour
+ * and syncs the button state.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  var toggles = document.querySelectorAll('.theme-toggle');
+  if (!toggles.length) return;
+
+  function syncLabels() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    toggles.forEach(function (t) {
+      t.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      t.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+    });
+  }
+
+  syncLabels();
+
+  toggles.forEach(function (toggle) {
+    toggle.addEventListener('click', function () {
+      var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      var next = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try { localStorage.setItem('bf-theme', next); } catch (e) { /* quota or private */ }
+      syncLabels();
+    });
+  });
+});
+
+/**
+ * Admin sidebar toggle (admin/*.php, via includes/admin-layout-header.php)
+ * — collapses to a hamburger-triggered drawer on narrow screens, mirroring
+ * the public nav's mobile pattern.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  var toggle = document.getElementById('admin-sidebar-toggle');
+  var sidebar = document.getElementById('admin-sidebar');
+  if (!toggle || !sidebar) return;
+
+  toggle.addEventListener('click', function () {
+    var isOpen = sidebar.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  sidebar.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      sidebar.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+});
+
+/**
  * Homepage device-mockup switcher — cross-fades between a few example
  * illustrations automatically. Stays on the first slide (no rotation) if
  * the visitor has requested reduced motion.
@@ -60,7 +119,14 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
   if (!document.documentElement.classList.contains('reveal-js')) return;
   var targets = document.querySelectorAll('.reveal');
-  if (!targets.length || !('IntersectionObserver' in window)) return;
+  if (!targets.length) return;
+  // Inline gate in header.php already checks for IntersectionObserver, but
+  // if we somehow get here without it, drop the class so the CSS fallback
+  // ("just show it") takes over instead of leaving content invisible.
+  if (!('IntersectionObserver' in window)) {
+    document.documentElement.classList.remove('reveal-js');
+    return;
+  }
 
   var observer = new IntersectionObserver(function (entries) {
     entries.forEach(function (entry) {

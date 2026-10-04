@@ -70,13 +70,11 @@ try {
 }
 
 // --- Notify by email ------------------------------------------------------
-// NOTE: PHP's mail() requires a configured local mail server (sendmail/SMTP).
-// A stock XAMPP install on Windows has no mail server, so mail() will
-// typically return false locally — that's expected in local development.
-// The message is still saved to the database either way. For real
-// delivery, configure sendmail in php.ini or switch to PHPMailer + SMTP.
-$adminEmail = env('ADMIN_EMAIL', 'hello@brightframesoftware.com');
-$mailFrom   = env('MAIL_FROM', 'no-reply@brightframesoftware.local');
+// Sent through includes/mailer.php (PHPMailer + SMTP from config/.env).
+// Delivery failing never breaks the flow — the message is already saved.
+require_once __DIR__ . '/../includes/mailer.php';
+
+$adminEmail = env('ADMIN_EMAIL', 'jairusonkundi@gmail.com');
 
 $subjectLine = 'New contact message — Brightframe Software';
 $body        = "New message from the website contact form:\n\n"
@@ -84,11 +82,7 @@ $body        = "New message from the website contact form:\n\n"
              . "Email: {$email}\n"
              . "Subject: {$subject}\n\n"
              . "Message:\n{$message}\n";
-$headers = "From: {$mailFrom}\r\nReply-To: {$email}\r\nContent-Type: text/plain; charset=UTF-8";
 
-$mailSent = @mail($adminEmail, $subjectLine, $body, $headers);
-if (!$mailSent) {
-    error_log('Contact message: mail() failed or is not configured on this server — message was still saved to the database.');
-}
+send_email_notification($adminEmail, $subjectLine, $body, $email);
 
 respond(true, "Thanks — we'll be in touch soon.");

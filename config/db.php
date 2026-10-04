@@ -6,6 +6,8 @@
  * for the template). This file only reads them; it never hardcodes them.
  */
 
+date_default_timezone_set('Africa/Nairobi');
+
 require_once __DIR__ . '/env.php';
 
 $dbHost = env('DB_HOST', 'localhost');

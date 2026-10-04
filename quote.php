@@ -91,7 +91,7 @@ include __DIR__ . '/includes/header.php';
           </div>
 
           <div class="field">
-            <label>Specific service(s) needed</label>
+            <span class="field-title">Specific service(s) needed</span>
             <div class="quote-services" id="quote-services">
               <?php foreach ($categories as $cat): ?>
                 <?php $catServices = $servicesByCategory[$cat['id']] ?? []; ?>
@@ -122,21 +122,21 @@ include __DIR__ . '/includes/header.php';
               <label for="budget_range">Budget range <span class="field-optional">optional</span></label>
               <select id="budget_range" name="budget_range">
                 <option value="">Select a range</option>
-                <option>Under KSh 50,000</option>
-                <option>KSh 50,000&ndash;150,000</option>
-                <option>KSh 150,000&ndash;500,000</option>
-                <option>Above KSh 500,000</option>
-                <option>Not sure yet</option>
+                <option value="Under KSh 50,000">Under KSh 50,000</option>
+                <option value="KSh 50,000&ndash;150,000">KSh 50,000&ndash;150,000</option>
+                <option value="KSh 150,000&ndash;500,000">KSh 150,000&ndash;500,000</option>
+                <option value="Above KSh 500,000">Above KSh 500,000</option>
+                <option value="Not sure yet">Not sure yet</option>
               </select>
             </div>
             <div class="field">
               <label for="timeline">Timeline <span class="field-optional">optional</span></label>
               <select id="timeline" name="timeline">
                 <option value="">Select a timeline</option>
-                <option>ASAP</option>
-                <option>Within 1 month</option>
-                <option>1&ndash;3 months</option>
-                <option>Flexible</option>
+                <option value="ASAP">ASAP</option>
+                <option value="Within 1 month">Within 1 month</option>
+                <option value="1&ndash;3 months">1&ndash;3 months</option>
+                <option value="Flexible">Flexible</option>
               </select>
             </div>
           </div>

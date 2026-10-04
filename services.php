@@ -72,7 +72,7 @@ include __DIR__ . '/includes/header.php';
                 </div>
                 <div class="svc-cat-block-actions">
                   <span class="svc-cat-block-count"><?= count($catServices) ?> service<?= count($catServices) === 1 ? '' : 's' ?></span>
-                  <a class="svc-cat-block-link" href="services/<?= htmlspecialchars($cat['slug'], ENT_QUOTES, 'UTF-8') ?>.php">
+                  <a class="svc-cat-block-link" href="<?= htmlspecialchars(category_detail_url($cat['slug']), ENT_QUOTES, 'UTF-8') ?>">
                     Full details
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                   </a>

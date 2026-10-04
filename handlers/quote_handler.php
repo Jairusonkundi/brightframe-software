@@ -120,14 +120,11 @@ try {
 }
 
 // --- Notify by email ------------------------------------------------------
-// NOTE: PHP's mail() requires a configured local mail server (sendmail/SMTP).
-// A stock XAMPP install on Windows has no mail server, so mail() will
-// typically return false locally — that's expected in local development.
-// The request is still saved to the database either way. For real
-// delivery, configure sendmail in php.ini or switch to PHPMailer + SMTP.
-$adminEmail = env('ADMIN_EMAIL', 'hello@brightframesoftware.com');
-$mailFrom   = env('MAIL_FROM', 'no-reply@brightframesoftware.local');
+// Sent through includes/mailer.php (PHPMailer + SMTP from config/.env).
+// Delivery failing never breaks the flow — the request is already saved.
+require_once __DIR__ . '/../includes/mailer.php';
 
+$adminEmail    = env('ADMIN_EMAIL', 'jairusonkundi@gmail.com');
 $serviceTitles = implode(', ', array_column($matchedServices, 'title'));
 
 $subject = 'New quote request — Brightframe Software';
@@ -139,11 +136,7 @@ $body    = "New quote request from the website:\n\n"
          . 'Budget: ' . ($budgetRange !== '' ? $budgetRange : '—') . "\n"
          . 'Timeline: ' . ($timeline !== '' ? $timeline : '—') . "\n\n"
          . "Project details:\n{$projectDetails}\n";
-$headers = "From: {$mailFrom}\r\nReply-To: {$email}\r\nContent-Type: text/plain; charset=UTF-8";
 
-$mailSent = @mail($adminEmail, $subject, $body, $headers);
-if (!$mailSent) {
-    error_log('Quote request: mail() failed or is not configured on this server — request was still saved to the database.');
-}
+send_email_notification($adminEmail, $subject, $body, $email);
 
 respond(true, "Thanks — we'll be in touch soon.");

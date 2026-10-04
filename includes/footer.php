@@ -5,6 +5,7 @@
  * works regardless of what the including page already loaded.
  */
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/icons.php';
 
 try {
     $footerCategories = $pdo->query(
@@ -27,14 +28,14 @@ $basePath = $basePath ?? '';
           <svg width="26" height="26" viewBox="0 0 32 32" role="img" aria-label="Brightframe Software logo">
             <defs>
               <linearGradient id="logoSparkFooter" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#5B5FEF"/>
-                <stop offset="1" stop-color="#00D9C0"/>
+                <stop offset="0" stop-color="#159F7A"/>
+                <stop offset="1" stop-color="#5660EF"/>
               </linearGradient>
             </defs>
-            <path d="M6 13 L6 7 L13 7" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M19 7 L26 7 L26 13" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 19 L6 25 L13 25" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M26 19 L26 25 L19 25" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 13 L6 7 L13 7" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M19 7 L26 7 L26 13" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6 19 L6 25 L13 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M26 19 L26 25 L19 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="url(#logoSparkFooter)"/>
           </svg>
           Brightframe Software
@@ -54,12 +55,12 @@ $basePath = $basePath ?? '';
           <a href="https://x.com/jairus_onkundi" target="_blank" rel="noopener" aria-label="Jairus Onkundi on X">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-6.9l-5.4-6.9L4.8 22H1.7l8.1-9.3L1 2h7.1l4.9 6.3L18.9 2Zm-1.2 18h1.9L7.4 4h-2l12.3 16Z"/></svg>
           </a>
-          <!-- Placeholder — no Facebook account yet. Add href + swap span for a once one exists. -->
-          <span class="footer-social-disabled" title="Facebook — coming soon">
+          <!-- Placeholder — no Facebook account yet. If one is created, add a href and swap this span for an <a>. -->
+          <span class="footer-social-disabled" title="Facebook — coming soon" aria-label="Facebook — coming soon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.87.24-1.46 1.5-1.46H16.5V4.34C16.24 4.3 15.36 4.22 14.33 4.22c-2.15 0-3.62 1.31-3.62 3.72V10.5H8.2v3h2.5V21h2.8Z"/></svg>
           </span>
-          <!-- Placeholder — no Instagram account yet. Add href + swap span for a once one exists. -->
-          <span class="footer-social-disabled" title="Instagram — coming soon">
+          <!-- Placeholder — no Instagram account yet. If one is created, add a href and swap this span for an <a>. -->
+          <span class="footer-social-disabled" title="Instagram — coming soon" aria-label="Instagram — coming soon">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
           </span>
         </div>
@@ -77,7 +78,7 @@ $basePath = $basePath ?? '';
       <div class="footer-col">
         <div class="footer-col-head">Services</div>
         <?php foreach ($footerCategories as $cat): ?>
-          <a href="<?= $basePath ?>services/<?= htmlspecialchars($cat['slug'], ENT_QUOTES, 'UTF-8') ?>.php"><?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?></a>
+          <a href="<?= htmlspecialchars(category_detail_url($cat['slug'], $basePath), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8') ?></a>
         <?php endforeach; ?>
       </div>
 

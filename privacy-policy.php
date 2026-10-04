@@ -1,7 +1,6 @@
 <?php
 /**
  * Real privacy policy content, provided directly by the site owner.
- * Not a placeholder — see terms.php for the still-pending "coming soon" page.
  */
 require_once __DIR__ . '/config/db.php';
 

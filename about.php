@@ -99,7 +99,7 @@ include __DIR__ . '/includes/header.php';
       <img
         class="founder-avatar"
         src="assets/founder-placeholder.svg"
-        alt="Placeholder headshot — swap in a real photo of Jairus Onkundi Morwabe at assets/founder-placeholder.svg or update the src here"
+        alt="Jairus Onkundi Morwabe, founder of Brightframe Software (photo coming soon)"
         width="104" height="104" loading="lazy">
       <div>
         <h4>Jairus Onkundi Morwabe</h4>

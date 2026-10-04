@@ -2,19 +2,27 @@
 -- Brightframe Software — database schema
 -- Import this file directly via phpMyAdmin (or `mysql -u root -p < database.sql`)
 --
--- SCHEMA CHANGE (this version): services gained a `long_description`
--- column — 2-3 sentence expanded copy for each of the 38 services, used
--- on the dedicated services/<slug>.php detail pages (which have room for
--- more depth than a card grid). The original `description` column is
--- untouched and stays short, for the compact contexts that still use it
--- (services.php's card grid, the quote form). Nullable, and populated for
--- all 38 rows in the seed data below — the app falls back to `description`
--- if it's ever null for a row added later without one.
+-- SCHEMA CHANGE (this version): richer admin status pipelines, to match
+-- the rebuilt admin panel (admin/quotes.php, admin/messages.php).
+-- quote_requests.status gained 'in_discussion' (between 'contacted' and
+-- 'closed'). contact_messages.status changed shape entirely — it used
+-- to share quote_requests' new/contacted/closed values, but the admin
+-- panel now tracks it separately as new/read/replied (a message doesn't
+-- get "contacted", it gets "replied"). reviews gained `reject_reason`
+-- (admin-facing only, never shown publicly) — an optional note on why a
+-- review was turned down.
 --
--- (Earlier history: "Request a quote" and "Contact Us" became two
--- separate forms/tables — quote_requests + quote_request_services, and
--- contact_messages — replacing an older single-service contact_submissions
--- table that no longer exists.)
+-- (Earlier history: two new tables backed a real admin login —
+-- `admin_users` and `login_attempts` — see the comment above
+-- `admin_users` below for why it's exempt from this file's usual
+-- drop-and-rebuild. Before that, services gained a `long_description`
+-- column — 2-3 sentence expanded copy for the dedicated
+-- services/<slug>.php detail pages, alongside the original short
+-- `description` still used in compact contexts. Before that, "Request a
+-- quote" and "Contact Us" became two separate forms/tables —
+-- quote_requests + quote_request_services, and contact_messages —
+-- replacing an older
+-- single-service contact_submissions table that no longer exists.)
 -- =====================================================================
 
 CREATE DATABASE IF NOT EXISTS brightframe_db
@@ -73,7 +81,7 @@ CREATE TABLE quote_requests (
   budget_range     VARCHAR(60) DEFAULT NULL,
   timeline         VARCHAR(60) DEFAULT NULL,
   submitted_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  status           ENUM('new', 'contacted', 'closed') NOT NULL DEFAULT 'new',
+  status           ENUM('new', 'contacted', 'in_discussion', 'closed') NOT NULL DEFAULT 'new',
   INDEX idx_status (status),
   INDEX idx_submitted_at (submitted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -109,7 +117,7 @@ CREATE TABLE contact_messages (
   subject        VARCHAR(150) NOT NULL,
   message        TEXT NOT NULL,
   submitted_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  status         ENUM('new', 'contacted', 'closed') NOT NULL DEFAULT 'new',
+  status         ENUM('new', 'read', 'replied') NOT NULL DEFAULT 'new',
   INDEX idx_status (status),
   INDEX idx_submitted_at (submitted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -120,7 +128,9 @@ CREATE TABLE contact_messages (
 -- (admin/reviews.php) — status starts at 'pending' and the public page
 -- only ever queries WHERE status = 'approved'. No seed data on purpose:
 -- Brightframe has no completed client reviews yet, so this table starts
--- empty rather than pre-filled with invented testimonials.
+-- empty rather than pre-filled with invented testimonials. reject_reason
+-- is admin-facing only (an internal note on why something was turned
+-- down) — never shown anywhere on the public site.
 -- ---------------------------------------------------------------------
 CREATE TABLE reviews (
   id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -129,6 +139,7 @@ CREATE TABLE reviews (
   rating         TINYINT UNSIGNED NOT NULL,
   review_text    TEXT NOT NULL,
   status         ENUM('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+  reject_reason  VARCHAR(255) DEFAULT NULL,
   display_order  INT NOT NULL DEFAULT 0,
   submitted_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_status (status),
@@ -156,6 +167,49 @@ INSERT INTO site_stats (label, value, display_order) VALUES
 ('Projects completed', NULL, 1),
 ('Clients served', NULL, 2),
 ('Businesses using our systems', NULL, 3);
+
+-- ---------------------------------------------------------------------
+-- admin_users: login credentials for admin/login.php.
+--
+-- Deliberately NOT dropped/rebuilt like every table above — this file is
+-- normally re-run wholesale after any schema change (see the testing
+-- notes elsewhere in this project), and doing that to this table would
+-- silently reset the admin password back to the seed value below every
+-- single time, undoing any password change with no warning. Uses
+-- CREATE TABLE IF NOT EXISTS + an existence-checked INSERT instead, so
+-- re-running this file is safe: the table and seed user are only created
+-- once, and never touched again on subsequent imports.
+--
+-- Seed login: username "jairus". The password hash below corresponds to
+-- the password provided directly by the site owner when this was set
+-- up — change it any time via `UPDATE admin_users SET password_hash =
+-- <new hash> WHERE username = 'jairus';` (generate a new hash with
+-- `password_hash($newPassword, PASSWORD_DEFAULT)` in PHP).
+-- ---------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS admin_users (
+  id             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  username       VARCHAR(60) NOT NULL UNIQUE,
+  password_hash  VARCHAR(255) NOT NULL,
+  created_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO admin_users (username, password_hash)
+SELECT 'jairus', '$2y$10$P066ABqUZH22szs3kT2qSew5NcgPX83muAyucgG2mJbTP50gfXTS.'
+WHERE NOT EXISTS (SELECT 1 FROM admin_users WHERE username = 'jairus');
+
+-- ---------------------------------------------------------------------
+-- login_attempts: lightweight IP-based rate limiting for admin/login.php
+-- (blocks further attempts from an IP after too many failures in a short
+-- window). Just a rolling log — safe to drop/rebuild like the tables
+-- above, unlike admin_users.
+-- ---------------------------------------------------------------------
+DROP TABLE IF EXISTS login_attempts;
+CREATE TABLE login_attempts (
+  id            INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  ip_address    VARCHAR(45) NOT NULL,
+  attempted_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_ip_time (ip_address, attempted_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------------------
 -- Seed: 8 categories

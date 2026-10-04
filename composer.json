@@ -1,0 +1,12 @@
+{
+    "name": "brightframe/brightframe-software",
+    "description": "Brightframe Software — company website with quote/contact form email notifications (PHPMailer + SMTP)",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}
