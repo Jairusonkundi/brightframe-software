@@ -25,7 +25,7 @@ $basePath = $basePath ?? '';
     <div class="footer-grid">
       <div class="footer-col footer-col-brand">
         <div class="logo footer-logo">
-          <svg width="26" height="26" viewBox="0 0 32 32" role="img" aria-label="Brightframe Software logo">
+          <svg width="26" height="26" viewBox="0 0 32 32" role="img" aria-label="Brightframe Technologies logo">
             <defs>
               <linearGradient id="logoSparkFooter" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
                 <stop offset="0" stop-color="#159F7A"/>
@@ -38,7 +38,7 @@ $basePath = $basePath ?? '';
             <path d="M26 19 L26 25 L19 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="url(#logoSparkFooter)"/>
           </svg>
-          Brightframe Software
+          Brightframe Technologies
         </div>
         <p class="footer-tagline">Full-stack web, mobile, and business software — built clear, built to last.</p>
 
@@ -84,14 +84,14 @@ $basePath = $basePath ?? '';
 
       <div class="footer-col">
         <div class="footer-col-head">Contact</div>
-        <a href="mailto:hello@brightframesoftware.com">hello@brightframesoftware.com</a>
+        <a href="mailto:hello@brightframetechnologies.com">hello@brightframetechnologies.com</a>
         <a href="https://wa.me/254743192585" target="_blank" rel="noopener">WhatsApp: +254 743 192 585</a>
         <span class="footer-location">Nairobi, Kenya</span>
       </div>
     </div>
 
     <div class="footer-bottom">
-      <div>&copy; <?= date('Y') ?> Brightframe Software Limited &middot; Nairobi, Kenya</div>
+      <div>&copy; <?= date('Y') ?> Brightframe Technologies Limited &middot; Nairobi, Kenya</div>
       <div class="footer-legal">
         <a href="<?= $basePath ?>privacy-policy.php">Privacy Policy</a>
         <a href="<?= $basePath ?>terms.php">Terms</a>

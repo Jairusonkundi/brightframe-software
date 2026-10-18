@@ -18,7 +18,7 @@ try {
 
 if (!empty($siteStats)):
 ?>
-<section class="stats-section reveal" aria-label="Brightframe Software in numbers">
+<section class="stats-section reveal" aria-label="Brightframe Technologies in numbers">
   <div class="wrap">
     <div class="stats-grid">
       <?php foreach ($siteStats as $stat): ?>

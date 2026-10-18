@@ -10,8 +10,8 @@
  * copy indefinitely. filemtime() changes automatically whenever either
  * file is actually edited, so this needs no manual bumping.
  */
-$pageTitle       = $pageTitle ?? 'Brightframe Software — Software, web, and product development';
-$pageDescription = $pageDescription ?? "Brightframe Software builds full-stack web applications, custom software, and the integrations that connect them — designed to be clear, reliable, and easy for your team to actually use.";
+$pageTitle       = $pageTitle ?? 'Brightframe Technologies — Software, web, mobile, ERP, and IT consulting';
+$pageDescription = $pageDescription ?? "Brightframe Technologies delivers web and mobile applications, custom software, ERP systems, and IT consulting — designed to be clear, reliable, and easy for your team to actually use.";
 $siteUrl         = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https://' : 'http://') . ($_SERVER['HTTP_HOST'] ?? 'localhost');
 $canonicalPath   = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
 
@@ -33,7 +33,7 @@ $basePath = $basePath ?? '';
 <meta property="og:title" content="<?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>">
 <meta property="og:description" content="<?= htmlspecialchars($pageDescription, ENT_QUOTES, 'UTF-8') ?>">
 <meta property="og:url" content="<?= htmlspecialchars($siteUrl . $canonicalPath, ENT_QUOTES, 'UTF-8') ?>">
-<meta property="og:site_name" content="Brightframe Software">
+<meta property="og:site_name" content="Brightframe Technologies">
 <meta property="og:image" content="<?= htmlspecialchars($siteUrl, ENT_QUOTES, 'UTF-8') ?>/assets/og-image.svg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="<?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?>">

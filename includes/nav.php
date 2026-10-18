@@ -37,7 +37,7 @@ $navIsContact   = $navCurrentPage === 'contact.php';
 ?>
 <nav>
   <div class="wrap navbar-inner">
-    <a href="<?= $basePath ?>index.php" class="logo" aria-label="Brightframe Software — home">
+    <a href="<?= $basePath ?>index.php" class="logo" aria-label="Brightframe Technologies — home">
       <svg width="30" height="30" viewBox="0 0 32 32" role="img" aria-hidden="true">
         <defs>
           <linearGradient id="logoSparkNav" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
@@ -52,7 +52,7 @@ $navIsContact   = $navCurrentPage === 'contact.php';
         <path d="M26 19 L26 25 L19 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="url(#logoSparkNav)"/>
       </svg>
-      Brightframe Software
+      Brightframe Technologies
     </a>
 
     <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle menu">

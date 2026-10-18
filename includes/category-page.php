@@ -38,7 +38,7 @@ try {
 
 if (!$category) {
     http_response_code(404);
-    $pageTitle = 'Service category not found — Brightframe Software';
+    $pageTitle = 'Service category not found — Brightframe Technologies';
     $basePath  = '../';
     include __DIR__ . '/header.php';
     ?>
@@ -56,7 +56,7 @@ if (!$category) {
     exit;
 }
 
-$pageTitle       = $category['name'] . ' — Brightframe Software';
+$pageTitle       = $category['name'] . ' — Brightframe Technologies';
 $pageDescription = category_intro($category['slug']);
 
 // Alternate which side the illustration sits on, category to category, so
@@ -113,7 +113,7 @@ include __DIR__ . '/header.php';
   <div class="wrap">
     <div class="sec-head reveal">
       <div class="sec-eyebrow">Why Brightframe</div>
-      <h2>Why choose Brightframe Software for <?= htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8') ?></h2>
+      <h2>Why choose Brightframe Technologies for <?= htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8') ?></h2>
     </div>
     <div class="whyus-grid">
       <?php foreach ($differentiators as $i => $point): ?>

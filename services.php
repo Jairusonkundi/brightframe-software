@@ -7,7 +7,7 @@
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/includes/icons.php';
 
-$pageTitle       = 'Services — Brightframe Software';
+$pageTitle       = 'Services — Brightframe Technologies';
 $pageDescription = 'Web and mobile development, custom software, ERP and business systems, branding, digital marketing, SEO, and IT consulting — explore our full range of services.';
 
 try {

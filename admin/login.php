@@ -96,7 +96,7 @@ if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-$pageTitle = 'Admin Login — Brightframe Software';
+$pageTitle = 'Admin Login — Brightframe Technologies';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -139,7 +139,7 @@ $pageTitle = 'Admin Login — Brightframe Software';
         <path d="M26 19 L26 25 L19 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="url(#logoSparkLogin)"/>
       </svg>
-      Brightframe Software
+      Brightframe Technologies
     </div>
     <h1>Admin Login</h1>
     <p class="admin-login-sub">Sign in to manage submissions, reviews, and site stats.</p>

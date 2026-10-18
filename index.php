@@ -9,8 +9,8 @@ require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/includes/icons.php';
 require_once __DIR__ . '/includes/illustrations.php';
 
-$pageTitle       = 'Brightframe Software — Software, web, and product development';
-$pageDescription = "Brightframe Software builds full-stack web applications, custom software, and the integrations that connect them — designed to be clear, reliable, and easy for your team to actually use.";
+$pageTitle       = 'Brightframe Technologies — Software, web, mobile, ERP, and IT consulting';
+$pageDescription = "Brightframe Technologies delivers web and mobile applications, custom software, ERP systems, and IT consulting — designed to be clear, reliable, and easy for your team to actually use.";
 
 try {
     $categories = $pdo->query(
@@ -48,8 +48,8 @@ include __DIR__ . '/includes/header.php';
     <div class="hero-layout">
       <div class="hero-copy">
         <div class="eyebrow"><span class="dot"></span> Now taking on new projects</div>
-        <h1>Software that gives your business a <span>clear frame to work from</span>.</h1>
-        <p class="lede">Brightframe Software builds full-stack web applications, custom software, and the integrations that connect them — designed to be clear, reliable, and easy for your team to actually use.</p>
+        <h1>Technology that gives your business a <span>clear frame to work from</span>.</h1>
+        <p class="lede">Brightframe Technologies delivers web and mobile applications, custom software, ERP systems, and IT consulting — designed to be clear, reliable, and easy for your team to actually use.</p>
         <div class="hero-actions">
           <a href="quote.php" class="btn btn-primary">Start a project</a>
           <a href="services.php" class="btn btn-outline">See our services</a>

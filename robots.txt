@@ -4,4 +4,4 @@ Disallow: /admin/
 Disallow: /config/
 Disallow: /handlers/
 
-Sitemap: https://www.brightframesoftware.com/sitemap.xml
+Sitemap: https://www.brightframetechnologies.com/sitemap.xml

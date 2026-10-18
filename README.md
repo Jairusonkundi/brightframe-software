@@ -1,4 +1,4 @@
-# Brightframe Software — website
+# Brightframe Technologies — website
 
 A PHP + MySQL rebuild of the original single-file HTML site, structured for
 XAMPP: DB-driven services, a working contact form (with server-side
@@ -8,7 +8,7 @@ admin view of incoming leads.
 ## Project structure
 
 ```
-BrightFrame_Software/
+brightframe-software/
 ├── index.php               # Minimal homepage: hero, logo strip, condensed services overview,
 │                           #   why-us teaser, and a CTA band pointing to quote.php
 ├── services.php            # Services directory (all categories/services from MySQL)
@@ -82,7 +82,7 @@ This folder is already named for and intended to live directly under XAMPP's
 `htdocs`, e.g.:
 
 ```
-C:\xampp\htdocs\BrightFrame_Software\
+C:\xampp\htdocs\brightframe-software\
 ```
 
 If you're starting from a copy elsewhere, just move/copy the whole folder
@@ -127,7 +127,7 @@ Alternatively, from the command line:
    SMTP_USER=jairusonkundi@gmail.com
    SMTP_PASS=PASTE_YOUR_GMAIL_APP_PASSWORD_HERE
    MAIL_FROM=jairusonkundi@gmail.com
-   MAIL_FROM_NAME=Brightframe Software
+   MAIL_FROM_NAME=Brightframe Technologies
    ```
 
    A stock XAMPP install uses the default MySQL port `3306` with user
@@ -163,9 +163,9 @@ database if the SMTP settings aren't filled in yet.
 
 1. Open the XAMPP Control Panel and click **Start** next to both **Apache**
    and **MySQL**.
-2. Visit: `http://localhost/BrightFrame_Software/`
+2. Visit: `http://localhost/brightframe-software/`
 3. Admin panel (requires login — see "Admin login" below for the seeded
-   username and how to change the password): `http://localhost/BrightFrame_Software/admin/login.php`
+   username and how to change the password): `http://localhost/brightframe-software/admin/login.php`
 
 ## Quote request form notes
 
@@ -508,7 +508,7 @@ same `getBoundingClientRect().top` values before and after an 800px
 scroll.
 
 **Logo/Home now link everywhere, and so does everything else that
-should**: the logo + "Brightframe Software" text in the nav are now a
+should**: the logo + "Brightframe Technologies" text in the nav are now a
 real `<a href="index.php">`, and this surfaced a bigger, pre-existing
 bug — every homepage-section link in the shared nav/footer (`#services`,
 `#about`, `#team`, `#why-us`, `#quote`, the Services mega-menu, the
@@ -1167,7 +1167,7 @@ render as intended.
 
 Each `services/<slug>.php` grew from hero + service list + CTA into six
 sections: hero, **"Why this matters"** (1-2 paragraphs on the problem the
-category solves), **"Why choose Brightframe Software for X"** (3-4
+category solves), **"Why choose Brightframe Technologies for X"** (3-4
 honest differentiators), the service list (now with 2-3 sentence
 descriptions instead of one line), an educational **"Types of X"**
 comparison (e.g. native vs. cross-platform for Mobile Development,

@@ -1,5 +1,5 @@
 -- =====================================================================
--- Brightframe Software — seed data
+-- Brightframe Technologies — seed data
 -- Realistic reviews, quote requests, and contact messages for the admin panel.
 --
 -- Run AFTER database.sql, ideally on a fresh import (database.sql drops and

@@ -76,7 +76,7 @@ require_once __DIR__ . '/../includes/mailer.php';
 
 $adminEmail = env('ADMIN_EMAIL', 'jairusonkundi@gmail.com');
 
-$subjectLine = 'New contact message — Brightframe Software';
+$subjectLine = 'New contact message — Brightframe Technologies';
 $body        = "New message from the website contact form:\n\n"
              . "Name: {$name}\n"
              . "Email: {$email}\n"

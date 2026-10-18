@@ -15,9 +15,9 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92Z"/></svg>
         <span class="topbar-link-text">+254 743 192 585</span>
       </a>
-      <a class="topbar-item topbar-link" href="mailto:hello@brightframesoftware.com">
+      <a class="topbar-item topbar-link" href="mailto:hello@brightframetechnologies.com">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18v12H3z"/><path d="m3 6 9 7 9-7"/></svg>
-        <span class="topbar-link-text">hello@brightframesoftware.com</span>
+        <span class="topbar-link-text">hello@brightframetechnologies.com</span>
       </a>
       <!--
         LinkedIn/GitHub/X are Jairus's personal profile links (not company

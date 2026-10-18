@@ -1,5 +1,5 @@
 -- =====================================================================
--- Brightframe Software — database schema
+-- Brightframe Technologies — database schema
 -- Import this file directly via phpMyAdmin (or `mysql -u root -p < database.sql`)
 --
 -- SCHEMA CHANGE (this version): richer admin status pipelines, to match

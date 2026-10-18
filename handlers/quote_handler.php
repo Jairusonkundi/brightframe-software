@@ -127,7 +127,7 @@ require_once __DIR__ . '/../includes/mailer.php';
 $adminEmail    = env('ADMIN_EMAIL', 'jairusonkundi@gmail.com');
 $serviceTitles = implode(', ', array_column($matchedServices, 'title'));
 
-$subject = 'New quote request — Brightframe Software';
+$subject = 'New quote request — Brightframe Technologies';
 $body    = "New quote request from the website:\n\n"
          . "Name: {$name}\n"
          . "Email: {$email}\n"

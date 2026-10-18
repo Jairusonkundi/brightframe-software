@@ -5,8 +5,8 @@
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/includes/illustrations.php';
 
-$pageTitle       = 'Why Choose Us — Brightframe Software';
-$pageDescription = 'Founder-led, full-stack under one roof, clear communication, and software built to last — here\'s why teams choose Brightframe Software.';
+$pageTitle       = 'Why Choose Us — Brightframe Technologies';
+$pageDescription = 'Founder-led, full-stack under one roof, clear communication, and software built to last — here\'s why teams choose Brightframe Technologies.';
 
 include __DIR__ . '/includes/header.php';
 ?>

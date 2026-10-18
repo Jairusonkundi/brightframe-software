@@ -13,7 +13,7 @@
  *   SMTP_USER       authenticated account, e.g. the Gmail address
  *   SMTP_PASS       the account's App Password (NOT the normal password)
  *   MAIL_FROM       envelope From address (defaults to SMTP_USER)
- *   MAIL_FROM_NAME  display name                      (default "Brightframe Software")
+ *   MAIL_FROM_NAME  display name                      (default "Brightframe Technologies")
  *
  * Gmail App Passwords require 2-Step Verification enabled on the account —
  * see Google's "App passwords" settings. Keep SMTP_PASS out of git: it lives
@@ -34,8 +34,8 @@ function send_email_notification(string $to, string $subject, string $plainBody,
     $secure   = strtolower(env('SMTP_SECURE', 'ssl'));
     $user     = env('SMTP_USER', '');
     $pass     = env('SMTP_PASS', '');
-    $from     = env('MAIL_FROM', $user !== '' ? $user : 'no-reply@brightframesoftware.local');
-    $fromName = env('MAIL_FROM_NAME', 'Brightframe Software');
+    $from     = env('MAIL_FROM', $user !== '' ? $user : 'no-reply@brightframetechnologies.local');
+    $fromName = env('MAIL_FROM_NAME', 'Brightframe Technologies');
 
     require_once __DIR__ . '/../vendor/autoload.php';
 

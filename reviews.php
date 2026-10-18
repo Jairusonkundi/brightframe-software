@@ -10,8 +10,8 @@
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/includes/icons.php';
 
-$pageTitle       = 'Reviews — Brightframe Software';
-$pageDescription = 'What it\'s like to work with Brightframe Software, from the people who have. Worked with us? Share your own experience.';
+$pageTitle       = 'Reviews — Brightframe Technologies';
+$pageDescription = 'What it\'s like to work with Brightframe Technologies, from the people who have. Worked with us? Share your own experience.';
 
 try {
     $reviews = $pdo->query(
@@ -32,14 +32,14 @@ include __DIR__ . '/includes/header.php';
     <div class="sec-head reveal">
       <div class="sec-eyebrow">Client feedback</div>
       <h2>What it's like to work with us</h2>
-      <p>Reviews from people who've worked with Brightframe Software directly — moderated before they're published, so what's here is genuine.</p>
+      <p>Reviews from people who've worked with Brightframe Technologies directly — moderated before they're published, so what's here is genuine.</p>
     </div>
 
     <?php if (empty($reviews)): ?>
       <div class="reviews-empty reveal">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>
         <p class="reviews-empty-title">No reviews published yet</p>
-        <p class="reviews-empty-note">Brightframe Software is a new studio — we don't have published client reviews to show yet. If you've worked with us, we'd genuinely value your feedback below.</p>
+        <p class="reviews-empty-note">Brightframe Technologies is a new studio — we don't have published client reviews to show yet. If you've worked with us, we'd genuinely value your feedback below.</p>
       </div>
     <?php else: ?>
       <div class="review-grid reveal">

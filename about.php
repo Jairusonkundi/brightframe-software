@@ -7,8 +7,8 @@
 require_once __DIR__ . '/config/db.php';
 require_once __DIR__ . '/includes/illustrations.php';
 
-$pageTitle       = 'About Us — Brightframe Software';
-$pageDescription = 'Founder-led software development company building full-stack web applications and custom software with a clear, structured process — from scope to launch.';
+$pageTitle       = 'About Us — Brightframe Technologies';
+$pageDescription = 'Founder-led technology company delivering web and mobile applications, custom software, ERP systems, and IT consulting with a clear, structured process — from scope to launch.';
 
 include __DIR__ . '/includes/header.php';
 ?>
@@ -22,7 +22,7 @@ include __DIR__ . '/includes/header.php';
       <div class="media-row-text">
         <div class="sec-eyebrow">Our approach</div>
         <h2>A clear frame for every build</h2>
-        <p>We're a software development company focused on building web applications and custom software that hold up under real, everyday use — not just demo day.</p>
+        <p>We're a technology company delivering web and mobile applications, custom software, ERP systems, and IT consulting — building systems that hold up under real, everyday use, not just demo day.</p>
         <p>Every project starts with a clear structure: what the system needs to do, how it connects to the tools you already use, and how your team will actually use it once it's live.</p>
       </div>
     </div>
@@ -99,12 +99,12 @@ include __DIR__ . '/includes/header.php';
       <img
         class="founder-avatar"
         src="assets/founder-placeholder.svg"
-        alt="Jairus Onkundi Morwabe, founder of Brightframe Software (photo coming soon)"
+        alt="Jairus Onkundi Morwabe, founder of Brightframe Technologies (photo coming soon)"
         width="104" height="104" loading="lazy">
       <div>
         <h4>Jairus Onkundi Morwabe</h4>
-        <div class="role">Founder, Brightframe Software</div>
-        <p>Software developer with a background spanning full-stack development and enterprise systems implementation. Every project at Brightframe Software is built with that same clarity-first thinking — from the interface down to the database underneath.</p>
+        <div class="role">Founder, Brightframe Technologies</div>
+        <p>Software developer with a background spanning full-stack development and enterprise systems implementation. Every project at Brightframe Technologies is built with that same clarity-first thinking — from the interface down to the database underneath.</p>
       </div>
     </div>
   </div>
