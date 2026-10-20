@@ -20,23 +20,17 @@ try {
 // file directly — defaults to root-relative.
 $basePath = $basePath ?? '';
 ?>
-<footer>
+<footer class="bf-dark">
   <div class="wrap">
     <div class="footer-grid">
       <div class="footer-col footer-col-brand">
         <div class="logo footer-logo">
           <svg width="26" height="26" viewBox="0 0 32 32" role="img" aria-label="Brightframe Technologies logo">
-            <defs>
-              <linearGradient id="logoSparkFooter" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="#159F7A"/>
-                <stop offset="1" stop-color="#5660EF"/>
-              </linearGradient>
-            </defs>
-            <path d="M6 13 L6 7 L13 7" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M19 7 L26 7 L26 13" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 19 L6 25 L13 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M26 19 L26 25 L19 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="url(#logoSparkFooter)"/>
+            <path class="bf-logo-frame" d="M6 13 L6 7 L13 7" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="bf-logo-frame" d="M19 7 L26 7 L26 13" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="bf-logo-frame" d="M6 19 L6 25 L13 25" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="bf-logo-frame" d="M26 19 L26 25 L19 25" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="bf-logo-spark" d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="#00C8BF"/>
           </svg>
           Brightframe Technologies
         </div>

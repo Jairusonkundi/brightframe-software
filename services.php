@@ -99,7 +99,7 @@ include __DIR__ . '/includes/header.php';
 
 <section class="section section-alt">
   <div class="wrap">
-    <div class="cta-band reveal">
+    <div class="cta-band bf-dark reveal">
       <div class="cta-content">
         <div class="eyebrow"><span class="dot"></span> Not sure where to start</div>
         <h2>Tell us what you're building</h2>

@@ -42,7 +42,7 @@ foreach ($exampleServiceRows as $row) {
 include __DIR__ . '/includes/header.php';
 ?>
 
-<header class="hero">
+<header class="hero bf-dark">
   <div class="hero-grid"></div>
   <div class="wrap hero-inner">
     <div class="hero-layout">
@@ -65,12 +65,12 @@ include __DIR__ . '/includes/header.php';
         <svg viewBox="0 0 480 440" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="heroLine" x1="0" y1="0" x2="480" y2="440" gradientUnits="userSpaceOnUse">
-              <stop offset="0" stop-color="#5B5FEF"/>
-              <stop offset="1" stop-color="#00D9C0"/>
+              <stop offset="0" stop-color="#0A7570"/>
+              <stop offset="1" stop-color="#00C8BF"/>
             </linearGradient>
             <linearGradient id="heroBar" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#00D9C0"/>
-              <stop offset="1" stop-color="#5B5FEF"/>
+              <stop offset="0" stop-color="#00C8BF"/>
+              <stop offset="1" stop-color="#0A7570"/>
             </linearGradient>
             <pattern id="heroDots" width="26" height="26" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="1.4" fill="#ffffff" opacity="0.14"/>
@@ -83,28 +83,28 @@ include __DIR__ . '/includes/header.php';
           <!-- Main dashboard panel -->
           <g>
             <rect x="76" y="86" width="228" height="150" rx="16" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.16)"/>
-            <circle cx="100" cy="112" r="5" fill="#00D9C0"/>
+            <circle cx="100" cy="112" r="5" fill="#00C8BF"/>
             <rect x="116" y="107" width="70" height="10" rx="5" fill="rgba(255,255,255,0.32)"/>
             <rect x="96" y="136" width="188" height="7" rx="3.5" fill="rgba(255,255,255,0.16)"/>
             <rect x="96" y="152" width="140" height="7" rx="3.5" fill="rgba(255,255,255,0.16)"/>
             <rect x="216" y="184" width="14" height="34" rx="3" fill="url(#heroBar)" opacity="0.9"/>
             <rect x="238" y="196" width="14" height="22" rx="3" fill="url(#heroBar)" opacity="0.65"/>
             <rect x="260" y="174" width="14" height="44" rx="3" fill="url(#heroBar)"/>
-            <rect x="96" y="184" width="100" height="34" rx="8" fill="rgba(0,217,192,0.1)" stroke="rgba(0,217,192,0.3)"/>
-            <path d="M110 201 L118 209 L134 191" stroke="#00D9C0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="96" y="184" width="100" height="34" rx="8" fill="rgba(0,200,191,0.1)" stroke="rgba(0,200,191,0.3)"/>
+            <path d="M110 201 L118 209 L134 191" stroke="#00C8BF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
           </g>
 
           <!-- Status pill panel, top right -->
           <g>
-            <rect x="300" y="56" width="120" height="42" rx="21" fill="rgba(0,217,192,0.12)" stroke="rgba(0,217,192,0.35)"/>
-            <circle cx="322" cy="77" r="5" fill="#00D9C0"/>
+            <rect x="300" y="56" width="120" height="42" rx="21" fill="rgba(0,200,191,0.12)" stroke="rgba(0,200,191,0.35)"/>
+            <circle cx="322" cy="77" r="5" fill="#00C8BF"/>
             <rect x="336" y="72" width="66" height="9" rx="4.5" fill="rgba(255,255,255,0.5)"/>
           </g>
 
           <!-- Secondary card, lower right -->
           <g>
-            <rect x="252" y="252" width="150" height="104" rx="14" fill="rgba(91,95,239,0.14)" stroke="rgba(91,95,239,0.35)"/>
-            <circle cx="278" cy="280" r="14" fill="rgba(91,95,239,0.35)"/>
+            <rect x="252" y="252" width="150" height="104" rx="14" fill="rgba(0,200,191,0.14)" stroke="rgba(0,200,191,0.35)"/>
+            <circle cx="278" cy="280" r="14" fill="rgba(0,200,191,0.35)"/>
             <path d="M271 280 L276 285 L286 273" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
             <rect x="300" y="273" width="82" height="8" rx="4" fill="rgba(255,255,255,0.4)"/>
             <rect x="272" y="308" width="110" height="7" rx="3.5" fill="rgba(255,255,255,0.18)"/>
@@ -113,15 +113,15 @@ include __DIR__ . '/includes/header.php';
 
           <!-- Connector lines linking the panels ("integration") -->
           <path d="M304 160 C 330 160, 330 200, 300 210" stroke="url(#heroLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
-          <circle cx="300" cy="210" r="3.5" fill="#00D9C0"/>
+          <circle cx="300" cy="210" r="3.5" fill="#00C8BF"/>
           <path d="M270 236 C 270 260, 300 255, 300 252" stroke="url(#heroLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
-          <circle cx="270" cy="236" r="3.5" fill="#5B5FEF"/>
+          <circle cx="270" cy="236" r="3.5" fill="#0A7570"/>
           <path d="M310 98 C 330 90, 330 75, 320 66" stroke="url(#heroLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
-          <circle cx="310" cy="98" r="3.5" fill="#5B5FEF"/>
+          <circle cx="310" cy="98" r="3.5" fill="#0A7570"/>
 
           <!-- Floating particles for depth -->
-          <circle cx="94" cy="270" r="3" fill="#5B5FEF" opacity="0.5"/>
-          <circle cx="360" cy="380" r="4" fill="#00D9C0" opacity="0.4"/>
+          <circle cx="94" cy="270" r="3" fill="#0A7570" opacity="0.5"/>
+          <circle cx="360" cy="380" r="4" fill="#00C8BF" opacity="0.4"/>
           <circle cx="400" cy="150" r="2.5" fill="#ffffff" opacity="0.4"/>
         </svg>
       </div>
@@ -269,7 +269,7 @@ include __DIR__ . '/includes/header.php';
 
 <section class="section section-alt">
   <div class="wrap">
-    <div class="cta-band reveal">
+    <div class="cta-band bf-dark reveal">
       <div class="cta-content">
         <div class="eyebrow"><span class="dot"></span> Free project consultation</div>
         <h2>Ready to build something clear?</h2>

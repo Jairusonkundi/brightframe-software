@@ -63,7 +63,7 @@ include __DIR__ . '/includes/header.php';
 
 <section class="section">
   <div class="wrap">
-    <div class="cta-band reveal">
+    <div class="cta-band bf-dark reveal">
       <div class="cta-content">
         <div class="eyebrow"><span class="dot"></span> Ready when you are</div>
         <h2>Let's build something clear</h2>

@@ -72,8 +72,8 @@ function category_intro(string $slug): string
 function render_star_rating(int $rating): string
 {
     $rating = max(1, min(5, $rating));
-    $filled = '<svg width="16" height="16" viewBox="0 0 24 24" fill="#FFD166" stroke="#FFD166" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
-    $empty  = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D3DDD8" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
+    $filled = '<svg width="16" height="16" viewBox="0 0 24 24" class="bf-star-filled" fill="#FFD166" stroke="#C27803" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
+    $empty  = '<svg width="16" height="16" viewBox="0 0 24 24" class="bf-star-empty" fill="none" stroke="#7B8D9A" stroke-width="1.5" aria-hidden="true"><path d="M12 2.5 15.1 9 22.3 10 17 15 18.3 22 12 18.6 5.7 22 7 15 1.7 10 8.9 9Z"/></svg>';
 
     return str_repeat($filled, $rating) . str_repeat($empty, 5 - $rating);
 }

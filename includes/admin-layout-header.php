@@ -49,6 +49,7 @@ $adminSection  = $adminNavItems[$adminActive]['label'] ?? 'Admin';
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#122533">
 <meta name="robots" content="noindex, nofollow">
 <title><?= htmlspecialchars($pageTitle ?? 'Admin', ENT_QUOTES, 'UTF-8') ?> — Brightframe Technologies Admin</title>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
@@ -66,21 +67,15 @@ $adminSection  = $adminNavItems[$adminActive]['label'] ?? 'Admin';
 <body class="admin-body">
 <div class="admin-shell">
 
-  <aside class="admin-sidebar" id="admin-sidebar">
+  <aside class="admin-sidebar bf-dark" id="admin-sidebar">
     <div class="admin-sidebar-brand">
       <span class="admin-brand-logo">
         <svg width="22" height="22" viewBox="0 0 32 32" role="img" aria-hidden="true">
-          <defs>
-            <linearGradient id="logoSparkAdmin" x1="10" y1="10" x2="22" y2="22" gradientUnits="userSpaceOnUse">
-              <stop offset="0" stop-color="#159F7A"/>
-              <stop offset="1" stop-color="#5660EF"/>
-            </linearGradient>
-          </defs>
-          <path d="M6 13 L6 7 L13 7" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M19 7 L26 7 L26 13" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6 19 L6 25 L13 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M26 19 L26 25 L19 25" stroke="#134E4A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="url(#logoSparkAdmin)"/>
+          <path class="bf-logo-frame" d="M6 13 L6 7 L13 7" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-frame" d="M19 7 L26 7 L26 13" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-frame" d="M6 19 L6 25 L13 25" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-frame" d="M26 19 L26 25 L19 25" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-spark" d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="#00C8BF"/>
         </svg>
       </span>
       <div>
@@ -122,10 +117,11 @@ $adminSection  = $adminNavItems[$adminActive]['label'] ?? 'Admin';
       </button>
       <div class="admin-topbar-brand">
         <svg width="18" height="18" viewBox="0 0 32 32" role="img" aria-hidden="true">
-          <path d="M6 13 L6 7 L13 7" stroke="#159F7A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M19 7 L26 7 L26 13" stroke="#159F7A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6 19 L6 25 L13 25" stroke="#159F7A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M26 19 L26 25 L19 25" stroke="#159F7A" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-frame" d="M6 13 L6 7 L13 7" stroke="#122533" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-frame" d="M19 7 L26 7 L26 13" stroke="#122533" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-frame" d="M6 19 L6 25 L13 25" stroke="#122533" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-frame" d="M26 19 L26 25 L19 25" stroke="#122533" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path class="bf-logo-spark" d="M16 11 L17.3 14.7 L21 16 L17.3 17.3 L16 21 L14.7 17.3 L11 16 L14.7 14.7 Z" fill="#00C8BF"/>
         </svg>
         <span><?= htmlspecialchars($adminSection, ENT_QUOTES, 'UTF-8') ?></span>
       </div>
