@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="200" y2="200" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#F7FCFA"/>
-      <stop offset="1" stop-color="#F1EFFB"/>
+      <stop offset="0" stop-color="#F4F7F8"/>
+      <stop offset="1" stop-color="#F4F7F8"/>
     </linearGradient>
   </defs>
   <rect width="200" height="200" rx="28" fill="url(#bg)"/>
-  <rect x="1" y="1" width="198" height="198" rx="27" fill="none" stroke="#2DD4A0" stroke-width="1.5" stroke-dasharray="5 6" opacity="0.4"/>
+  <rect x="1" y="1" width="198" height="198" rx="27" fill="none" stroke="#00C8BF" stroke-width="1.5" stroke-dasharray="5 6" opacity="0.4"/>
 
   <!-- Person silhouette -->
-  <circle cx="100" cy="82" r="30" fill="#D7E9E2"/>
-  <path d="M50 168c0-30 22-50 50-50s50 20 50 50" fill="#D7E9E2"/>
+  <circle cx="100" cy="82" r="30" fill="#DDE5E8"/>
+  <path d="M50 168c0-30 22-50 50-50s50 20 50 50" fill="#DDE5E8"/>
 
   <!-- Camera icon badge -->
-  <circle cx="100" cy="150" r="22" fill="#FFFFFF" stroke="#2DD4A0" stroke-width="2"/>
-  <path d="M90 144h4l2-3h8l2 3h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H90a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="none" stroke="#159F7A" stroke-width="1.8" stroke-linejoin="round"/>
-  <circle cx="100" cy="153" r="3.2" fill="none" stroke="#159F7A" stroke-width="1.8"/>
+  <circle cx="100" cy="150" r="22" fill="#FFFFFF" stroke="#00C8BF" stroke-width="2"/>
+  <path d="M90 144h4l2-3h8l2 3h4a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H90a2 2 0 0 1-2-2v-10a2 2 0 0 1 2-2Z" fill="none" stroke="#0A7570" stroke-width="1.8" stroke-linejoin="round"/>
+  <circle cx="100" cy="153" r="3.2" fill="none" stroke="#0A7570" stroke-width="1.8"/>
 
-  <text x="100" y="190" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#64706F" letter-spacing="0.02em">Add headshot photo</text>
+  <text x="100" y="190" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#4F6270" letter-spacing="0.02em">Add headshot photo</text>
 </svg>

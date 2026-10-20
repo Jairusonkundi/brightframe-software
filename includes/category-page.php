@@ -180,7 +180,7 @@ include __DIR__ . '/header.php';
 
 <section class="section section-alt">
   <div class="wrap">
-    <div class="cta-band reveal">
+    <div class="cta-band bf-dark reveal">
       <div class="cta-content">
         <div class="eyebrow"><span class="dot"></span> Ready when you are</div>
         <h2>Get a quote for <?= htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8') ?></h2>
