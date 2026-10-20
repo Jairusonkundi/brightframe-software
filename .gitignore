@@ -1,5 +1,9 @@
 # Environment / credentials
-config/.env
+.env
+!.env.example
+
+# Runtime error log (errors are written here instead of the browser)
+error.log
 
 # Dependency folders
 /vendor/

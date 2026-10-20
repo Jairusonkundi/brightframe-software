@@ -1,5 +1,10 @@
 -- =====================================================================
--- Brightframe Technologies — seed data
+-- Brightframe Technologies — seed data (LEGACY REFERENCE)
+--
+-- This demo content now lives in db/seeds/DemoContentSeeder.php (data in
+-- db/data/demo-content.json). Run `composer seed` instead. Kept only as a
+-- historical reference for the pre-Phinx setup.
+--
 -- Realistic reviews, quote requests, and contact messages for the admin panel.
 --
 -- Run AFTER database.sql, ideally on a fresh import (database.sql drops and

@@ -2,8 +2,10 @@
 /**
  * Admin: single quote request — full detail + status change.
  */
+require_once __DIR__ . '/../config/functions.php';
 require_once __DIR__ . '/../includes/admin-auth.php';
-require_once __DIR__ . '/../config/db.php';
+
+$pdo = db();
 
 $id = (int) ($_GET['id'] ?? 0);
 if ($id <= 0) {

@@ -1,11 +1,13 @@
-﻿<?php
+<?php
 /**
  * Homepage — kept minimal by design: hero, trust strip, a condensed
  * services overview, a short why-us teaser, and a CTA band pointing to
  * the dedicated services.php / why-us.php / quote.php pages, which carry
  * the full detail.
  */
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/functions.php';
+
+$pdo = db();
 require_once __DIR__ . '/includes/icons.php';
 require_once __DIR__ . '/includes/illustrations.php';
 
@@ -40,45 +42,124 @@ foreach ($exampleServiceRows as $row) {
 }
 
 include __DIR__ . '/includes/header.php';
+
+$companyName = env('COMPANY_NAME', 'Brightframe Technologies');
+$companySlogan = env('COMPANY_SLOGAN', 'Technology that gives your business a clear frame to work from');
+// Slider images - easy to customize per slide. Add/replace images in assets/img/ and update paths here.
+$sliderImages = [
+    '/assets/img/hero-slider-bg.webp',           // Slide 1 - Welcome
+    '/assets/img/hero-slide-2.webp',             // Slide 2 - Custom Software
+    '/assets/img/hero-slide-3.webp',             // Slide 3 - Web & Mobile
+    '/assets/img/hero-slide-4.webp',             // Slide 4 - ERP & Business Systems
+    '/assets/img/hero-slide-5.webp',             // Slide 5 - Branding & Marketing
+];
+// Fallback if specific slide image doesn't exist
+$defaultSliderImage = '/assets/img/hero-slider-bg.webp';
+
+// Slider slides data - each slide has its own content and image
+$slides = [
+    [
+        'title' => 'Welcome to ' . $companyName,
+        'subtitle' => $companySlogan,
+        'cta_text' => 'Get Started',
+        'cta_link' => '/quote/',
+        'image' => $sliderImages[0] ?? $defaultSliderImage,
+    ],
+    [
+        'title' => 'Custom Software Development',
+        'subtitle' => 'Built around how your business actually operates — not a generic template.',
+        'cta_text' => 'Explore Services',
+        'cta_link' => '/services/',
+        'image' => $sliderImages[1] ?? $defaultSliderImage,
+    ],
+    [
+        'title' => 'Web & Mobile Applications',
+        'subtitle' => 'Fast, reliable, and easy to maintain — from first wireframe to deployed product.',
+        'cta_text' => 'Request a Quote',
+        'cta_link' => '/quote/',
+        'image' => $sliderImages[2] ?? $defaultSliderImage,
+    ],
+    [
+        'title' => 'ERP & Business Systems',
+        'subtitle' => 'ERP, CRM, HR, and automation configured around your real workflows.',
+        'cta_text' => 'Learn More',
+        'cta_link' => '/services/#cat-erp-business-systems',
+        'image' => $sliderImages[3] ?? $defaultSliderImage,
+    ],
+    [
+        'title' => 'Branding & Digital Marketing',
+        'subtitle' => 'Visual identity, strategy, and campaigns that bring in leads.',
+        'cta_text' => 'Start a Project',
+        'cta_link' => '/quote/',
+        'image' => $sliderImages[4] ?? $defaultSliderImage,
+    ],
+];
 ?>
 
-<header class="hero bf-dark">
-  <div class="hero-grid"></div>
-  <div class="wrap hero-inner">
-    <div class="hero-layout">
-      <div class="hero-copy">
-        <div class="eyebrow"><span class="dot"></span> Now taking on new projects</div>
-        <h1>Technology that gives your business a <span>clear frame to work from</span>.</h1>
+<!-- Hero Slider -->
+<section class="hero-slider" aria-label="Company showcase">
+    <div class="hero-slider-track" role="list">
+        <?php foreach ($slides as $index => $slide): ?>
+            <div class="hero-slider-slide <?= $index === 0 ? 'is-active' : '' ?>" role="listitem" style="background-image: url('<?= htmlspecialchars($slide['image'], ENT_QUOTES, 'UTF-8') ?>');">
+                <div class="hero-slider-overlay"></div>
+                <div class="hero-slider-content">
+                    <h1 class="hero-slider-title"><?= htmlspecialchars($slide['title'], ENT_QUOTES, 'UTF-8') ?></h1>
+                    <p class="hero-slider-subtitle"><?= htmlspecialchars($slide['subtitle'], ENT_QUOTES, 'UTF-8') ?></p>
+                    <a href="<?= htmlspecialchars($slide['cta_link'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary hero-slider-cta"><?= htmlspecialchars($slide['cta_text'], ENT_QUOTES, 'UTF-8') ?></a>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    </div>
+    <button class="hero-slider-btn hero-slider-prev" aria-label="Previous slide" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="hero-slider-btn hero-slider-next" aria-label="Next slide" type="button">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 6 15 12 9 18"/></svg>
+    </button>
+    <div class="hero-slider-dots" aria-label="Slide navigation">
+        <?php foreach ($slides as $index => $slide): ?>
+            <button class="hero-slider-dot <?= $index === 0 ? 'is-active' : '' ?>" data-slide="<?= $index ?>" aria-label="Go to slide <?= $index + 1 ?>" type="button"></button>
+        <?php endforeach; ?>
+    </div>
+</section>
+
+<!-- About Us Section (replaces old hero) -->
+<section class="about-hero bf-dark reveal" aria-labelledby="about-heading">
+  <div class="wrap about-hero-inner">
+    <div class="about-hero-layout">
+      <div class="about-hero-copy">
+        <div class="eyebrow"><span class="dot"></span> About Us</div>
+        <h1 id="about-heading">We build technology that gives your business a <span>clear frame to work from</span>.</h1>
         <p class="lede">Brightframe Technologies delivers web and mobile applications, custom software, ERP systems, and IT consulting — designed to be clear, reliable, and easy for your team to actually use.</p>
-        <div class="hero-actions">
-          <a href="quote.php" class="btn btn-primary">Start a project</a>
-          <a href="services.php" class="btn btn-outline">See our services</a>
+        <div class="about-hero-actions">
+          <a href="/about/" class="btn btn-primary">Learn more about us</a>
+          <a href="/quote/" class="btn btn-outline">Start a project</a>
         </div>
-        <div class="hero-stats">
-          <div class="item"><div class="n">Full-stack</div><div class="l">Web and software development</div></div>
-          <div class="item"><div class="n">Integration-ready</div><div class="l">Built to connect with your systems</div></div>
-          <div class="item"><div class="n">End-to-end</div><div class="l">From build to launch support</div></div>
+        <div class="about-hero-stats">
+          <div class="item"><div class="n">Founder-led</div><div class="l">Direct line to the builder</div></div>
+          <div class="item"><div class="n">Full-stack</div><div class="l">Web, mobile, systems, ERP</div></div>
+          <div class="item"><div class="n">End-to-end</div><div class="l">From idea to launch support</div></div>
         </div>
       </div>
 
-      <div class="hero-art" aria-hidden="true">
+      <div class="about-hero-art" aria-hidden="true">
         <svg viewBox="0 0 480 440" fill="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="heroLine" x1="0" y1="0" x2="480" y2="440" gradientUnits="userSpaceOnUse">
+            <linearGradient id="aboutLine" x1="0" y1="0" x2="480" y2="440" gradientUnits="userSpaceOnUse">
               <stop offset="0" stop-color="#0A7570"/>
               <stop offset="1" stop-color="#00C8BF"/>
             </linearGradient>
-            <linearGradient id="heroBar" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="aboutBar" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0" stop-color="#00C8BF"/>
               <stop offset="1" stop-color="#0A7570"/>
             </linearGradient>
-            <pattern id="heroDots" width="26" height="26" patternUnits="userSpaceOnUse">
+            <pattern id="aboutDots" width="26" height="26" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="1.4" fill="#ffffff" opacity="0.14"/>
             </pattern>
           </defs>
 
-          <rect x="0" y="0" width="480" height="440" fill="url(#heroDots)"/>
-          <rect x="46" y="34" width="380" height="360" rx="26" stroke="url(#heroLine)" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.55"/>
+          <rect x="0" y="0" width="480" height="440" fill="url(#aboutDots)"/>
+          <rect x="46" y="34" width="380" height="360" rx="26" stroke="url(#aboutLine)" stroke-width="1.5" stroke-dasharray="5 7" opacity="0.55"/>
 
           <!-- Main dashboard panel -->
           <g>
@@ -87,9 +168,9 @@ include __DIR__ . '/includes/header.php';
             <rect x="116" y="107" width="70" height="10" rx="5" fill="rgba(255,255,255,0.32)"/>
             <rect x="96" y="136" width="188" height="7" rx="3.5" fill="rgba(255,255,255,0.16)"/>
             <rect x="96" y="152" width="140" height="7" rx="3.5" fill="rgba(255,255,255,0.16)"/>
-            <rect x="216" y="184" width="14" height="34" rx="3" fill="url(#heroBar)" opacity="0.9"/>
-            <rect x="238" y="196" width="14" height="22" rx="3" fill="url(#heroBar)" opacity="0.65"/>
-            <rect x="260" y="174" width="14" height="44" rx="3" fill="url(#heroBar)"/>
+            <rect x="216" y="184" width="14" height="34" rx="3" fill="url(#aboutBar)" opacity="0.9"/>
+            <rect x="238" y="196" width="14" height="22" rx="3" fill="url(#aboutBar)" opacity="0.65"/>
+            <rect x="260" y="174" width="14" height="44" rx="3" fill="url(#aboutBar)"/>
             <rect x="96" y="184" width="100" height="34" rx="8" fill="rgba(0,200,191,0.1)" stroke="rgba(0,200,191,0.3)"/>
             <path d="M110 201 L118 209 L134 191" stroke="#00C8BF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
           </g>
@@ -112,11 +193,11 @@ include __DIR__ . '/includes/header.php';
           </g>
 
           <!-- Connector lines linking the panels ("integration") -->
-          <path d="M304 160 C 330 160, 330 200, 300 210" stroke="url(#heroLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
+          <path d="M304 160 C 330 160, 330 200, 300 210" stroke="url(#aboutLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
           <circle cx="300" cy="210" r="3.5" fill="#00C8BF"/>
-          <path d="M270 236 C 270 260, 300 255, 300 252" stroke="url(#heroLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
+          <path d="M270 236 C 270 260, 300 255, 300 252" stroke="url(#aboutLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
           <circle cx="270" cy="236" r="3.5" fill="#0A7570"/>
-          <path d="M310 98 C 330 90, 330 75, 320 66" stroke="url(#heroLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
+          <path d="M310 98 C 330 90, 330 75, 320 66" stroke="url(#aboutLine)" stroke-width="1.5" stroke-dasharray="3 6" opacity="0.7"/>
           <circle cx="310" cy="98" r="3.5" fill="#0A7570"/>
 
           <!-- Floating particles for depth -->
@@ -127,7 +208,7 @@ include __DIR__ . '/includes/header.php';
       </div>
     </div>
   </div>
-</header>
+</section>
 
 <section class="logostrip-section reveal" aria-label="Companies we've worked with">
   <div class="wrap">
@@ -198,7 +279,7 @@ include __DIR__ . '/includes/header.php';
         <?php endforeach; ?>
       </div>
       <div class="svc-overview-cta">
-        <a href="services.php" class="btn-text-cta">
+        <a href="/services/" class="btn-text-cta">
           View all services
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
@@ -229,7 +310,7 @@ include __DIR__ . '/includes/header.php';
         <div class="sec-eyebrow">Why work with us</div>
         <h2>Built around getting it right</h2>
         <p>No account managers, no vendor juggling, no jargon — just a direct line to the person building your software.</p>
-        <a href="why-us.php" class="btn-text-cta">
+        <a href="/why-us/" class="btn-text-cta">
           See why teams choose us
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
@@ -275,8 +356,8 @@ include __DIR__ . '/includes/header.php';
         <h2>Ready to build something clear?</h2>
         <p>Tell us what you're building and we'll get back to you within a day with next steps — no obligation, no sales runaround.</p>
         <div class="cta-actions">
-          <a href="quote.php" class="btn btn-primary">Request a quote</a>
-          <a href="contact.php" class="btn btn-outline">Contact us</a>
+          <a href="/quote/" class="btn btn-primary">Request a quote</a>
+          <a href="/contact/" class="btn btn-outline">Contact us</a>
         </div>
         <p class="cta-note">Takes less than 5 minutes — no obligation, no commitment.</p>
       </div>

@@ -18,8 +18,10 @@
  *    to show real activity while the public tiles stay empty because
  *    there's nothing worth publishing yet.
  */
+require_once __DIR__ . '/../config/functions.php';
 require_once __DIR__ . '/../includes/admin-auth.php';
-require_once __DIR__ . '/../config/db.php';
+
+$pdo = db();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     admin_csrf_check();

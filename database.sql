@@ -1,5 +1,10 @@
 -- =====================================================================
--- Brightframe Technologies — database schema
+-- Brightframe Technologies — database schema (LEGACY REFERENCE)
+--
+-- The schema is now managed by Phinx: see db/migrations/. Run
+-- `composer migrate` instead of importing this file. It is kept only as a
+-- historical reference for the pre-Phinx setup.
+--
 -- Import this file directly via phpMyAdmin (or `mysql -u root -p < database.sql`)
 --
 -- SCHEMA CHANGE (this version): richer admin status pipelines, to match

@@ -7,7 +7,9 @@
  * with invented testimonials — see database.sql's note on the `reviews`
  * table for the full reasoning.
  */
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/functions.php';
+
+$pdo = db();
 require_once __DIR__ . '/includes/icons.php';
 
 $pageTitle       = 'Reviews — Brightframe Technologies';
@@ -66,7 +68,7 @@ include __DIR__ . '/includes/header.php';
       <div class="contact-grid">
         <div class="contact-intro">
           <h2>Worked with us? Share your experience</h2>
-          <p>Reviews are checked before they're published, so please leave your honest experience — good or bad. Just have a question instead? <a href="contact.php">Contact us</a>.</p>
+          <p>Reviews are checked before they're published, so please leave your honest experience — good or bad. Just have a question instead? <a href="/contact/">Contact us</a>.</p>
         </div>
 
         <form id="review-form" novalidate>

@@ -3,8 +3,10 @@
  * Admin: quote requests list. Full detail + status changes happen on
  * quote-view.php — this page is just the filterable/sortable overview.
  */
+require_once __DIR__ . '/../config/functions.php';
 require_once __DIR__ . '/../includes/admin-auth.php';
-require_once __DIR__ . '/../config/db.php';
+
+$pdo = db();
 
 $validStatuses = ['new', 'contacted', 'in_discussion', 'closed'];
 $statusFilter  = $_GET['status'] ?? '';

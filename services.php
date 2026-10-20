@@ -4,7 +4,9 @@
  * always-open sections (the sidebar is the navigation now, so the old
  * per-category <details> accordion no longer pulls its weight).
  */
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/functions.php';
+
+$pdo = db();
 require_once __DIR__ . '/includes/icons.php';
 
 $pageTitle       = 'Services — Brightframe Technologies';
@@ -105,8 +107,8 @@ include __DIR__ . '/includes/header.php';
         <h2>Tell us what you're building</h2>
         <p>Pick the services you need on the request form, or just describe the project — we'll help you figure out the right scope.</p>
         <div class="cta-actions">
-          <a href="quote.php" class="btn btn-primary">Request a quote</a>
-          <a href="contact.php" class="btn btn-outline">Contact us</a>
+          <a href="/quote/" class="btn btn-primary">Request a quote</a>
+          <a href="/contact/" class="btn btn-outline">Contact us</a>
         </div>
         <p class="cta-note">Takes less than 5 minutes — no obligation, no commitment.</p>
       </div>

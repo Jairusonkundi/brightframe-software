@@ -9,7 +9,9 @@ if (!isset($categorySlug)) {
     die('category-page.php requires $categorySlug to be set before including.');
 }
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/functions.php';
+
+$pdo = db();
 require_once __DIR__ . '/icons.php';
 require_once __DIR__ . '/illustrations.php';
 require_once __DIR__ . '/category-content.php';
@@ -37,17 +39,25 @@ try {
 }
 
 if (!$category) {
-    http_response_code(404);
-    $pageTitle = 'Service category not found — Brightframe Technologies';
+    $dbUnavailable = !db_available();
+    http_response_code($dbUnavailable ? 503 : 404);
+    $pageTitle = $dbUnavailable
+        ? 'Services temporarily unavailable — Brightframe Technologies'
+        : 'Service category not found — Brightframe Technologies';
     $basePath  = '../';
     include __DIR__ . '/header.php';
     ?>
     <section class="section">
       <div class="wrap">
         <div class="legal-placeholder">
-          <h1>Service category not found</h1>
-          <p>That service category doesn't exist, or may have been renamed.</p>
-          <a href="../services.php" class="btn btn-primary">Browse all services</a>
+          <?php if ($dbUnavailable): ?>
+            <h1>Services are temporarily unavailable</h1>
+            <p>We couldn't load this service category right now. Please try again in a few minutes, or browse everything from the services page.</p>
+          <?php else: ?>
+            <h1>Service category not found</h1>
+            <p>That service category doesn't exist, or may have been renamed.</p>
+          <?php endif; ?>
+          <a href="../services/" class="btn btn-primary">Browse all services</a>
         </div>
       </div>
     </section>
@@ -84,8 +94,8 @@ include __DIR__ . '/header.php';
         <h1><?= htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8') ?></h1>
         <p><?= htmlspecialchars(category_intro($category['slug']), ENT_QUOTES, 'UTF-8') ?></p>
         <div class="media-row-actions">
-          <a href="../quote.php?category=<?= urlencode($category['slug']) ?>" class="btn btn-primary">Request a quote for this service</a>
-          <a href="../services.php" class="btn btn-outline-dark">Browse all services</a>
+          <a href="../quote/?category=<?= urlencode($category['slug']) ?>" class="btn btn-primary">Request a quote for this service</a>
+          <a href="../services/" class="btn btn-outline-dark">Browse all services</a>
         </div>
       </div>
     </div>
@@ -186,8 +196,8 @@ include __DIR__ . '/header.php';
         <h2>Get a quote for <?= htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8') ?></h2>
         <p>Tell us about your project and get a quote — we'll get back to you within a day with next steps.</p>
         <div class="cta-actions">
-          <a href="../quote.php?category=<?= urlencode($category['slug']) ?>" class="btn btn-primary">Request a quote for this service</a>
-          <a href="../contact.php" class="btn btn-outline">Have a question instead?</a>
+          <a href="../quote/?category=<?= urlencode($category['slug']) ?>" class="btn btn-primary">Request a quote for this service</a>
+          <a href="../contact/" class="btn btn-outline">Have a question instead?</a>
         </div>
         <p class="cta-note">Takes less than 5 minutes — no obligation, no commitment.</p>
       </div>

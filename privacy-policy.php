@@ -2,7 +2,9 @@
 /**
  * Real privacy policy content, provided directly by the site owner.
  */
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/functions.php';
+
+$pdo = db();
 
 $pageTitle       = 'Privacy Policy — Brightframe Technologies';
 $pageDescription = 'How Brightframe Technologies collects, uses, and protects information submitted through this website.';
@@ -50,7 +52,7 @@ include __DIR__ . '/includes/header.php';
       <h2>Contact us</h2>
       <p>If you have questions about this policy, contact us at <a href="mailto:hello@brightframetechnologies.com">hello@brightframetechnologies.com</a>.</p>
 
-      <a href="index.php" class="btn btn-primary legal-back">Back to home</a>
+      <a href="/" class="btn btn-primary legal-back">Back to home</a>
     </div>
   </div>
 </section>

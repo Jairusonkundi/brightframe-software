@@ -21,8 +21,10 @@
  * category shares one icon, keyed by the category's slug — so it's
  * always auto-set to match, on both add and edit.
  */
+require_once __DIR__ . '/../config/functions.php';
 require_once __DIR__ . '/../includes/admin-auth.php';
-require_once __DIR__ . '/../config/db.php';
+
+$pdo = db();
 
 function slugify(string $text): string
 {

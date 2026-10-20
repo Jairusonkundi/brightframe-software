@@ -1,0 +1,396 @@
+{
+  "categories": [
+    {
+      "id": 1,
+      "name": "Web Development & Design",
+      "slug": "web-development-design",
+      "display_order": 1
+    },
+    {
+      "id": 2,
+      "name": "Mobile Development",
+      "slug": "mobile-development",
+      "display_order": 2
+    },
+    {
+      "id": 3,
+      "name": "Software & Systems Development",
+      "slug": "software-systems-development",
+      "display_order": 3
+    },
+    {
+      "id": 4,
+      "name": "ERP & Business Systems",
+      "slug": "erp-business-systems",
+      "display_order": 4
+    },
+    {
+      "id": 5,
+      "name": "Branding",
+      "slug": "branding",
+      "display_order": 5
+    },
+    {
+      "id": 6,
+      "name": "Digital Marketing",
+      "slug": "digital-marketing",
+      "display_order": 6
+    },
+    {
+      "id": 7,
+      "name": "SEO",
+      "slug": "seo",
+      "display_order": 7
+    },
+    {
+      "id": 8,
+      "name": "IT & Technical Consulting",
+      "slug": "it-technical-consulting",
+      "display_order": 8
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "category_id": 1,
+      "title": "Full-stack web application development",
+      "description": "Frontend, backend, and database — built end-to-end as one working system.",
+      "long_description": "A web application involves more than a good-looking interface — it needs a reliable backend handling logic and a database structured to grow with your data. We build all three layers as one connected system, from the first wireframe through to a working, deployed product, so nothing gets lost in translation between \"design\" and \"build.\"",
+      "icon_name": "web-development-design",
+      "display_order": 1
+    },
+    {
+      "id": 2,
+      "category_id": 1,
+      "title": "Website design & UI/UX development",
+      "description": "Interfaces designed around how your users actually think and click.",
+      "long_description": "Good design isn't just about how a page looks — it's about whether someone can find what they need without thinking twice. We design interfaces around how your specific users actually behave, and work through the flow before it becomes expensive to change.",
+      "icon_name": "web-development-design",
+      "display_order": 2
+    },
+    {
+      "id": 3,
+      "category_id": 1,
+      "title": "E-commerce website development",
+      "description": "Online stores built to convert browsers into buyers.",
+      "long_description": "Online stores have their own requirements: a product catalog that's easy to manage, a checkout flow that doesn't lose customers halfway through, and secure payment handling. We build stores structured to convert browsers into buyers, with an admin side that's straightforward for your team to run day to day.",
+      "icon_name": "web-development-design",
+      "display_order": 3
+    },
+    {
+      "id": 4,
+      "category_id": 1,
+      "title": "Website redesign & modernization",
+      "description": "Bring an aging site up to modern speed, security, and design.",
+      "long_description": "An older site can quietly become a liability — slow to load, awkward on mobile, or built on technology that's no longer well supported. We assess what's worth keeping, rebuild what isn't, and bring the result up to modern speed, security, and design standards without starting completely from scratch where it isn't necessary.",
+      "icon_name": "web-development-design",
+      "display_order": 4
+    },
+    {
+      "id": 5,
+      "category_id": 1,
+      "title": "Progressive web apps (PWA)",
+      "description": "App-like experiences that load fast and work offline.",
+      "long_description": "A PWA behaves like a native app — fast to load, able to work with a patchy connection, and addable to a home screen — while still being built and maintained as a website. It's a practical middle ground when a full native app isn't justified yet but a plain website isn't quite enough.",
+      "icon_name": "web-development-design",
+      "display_order": 5
+    },
+    {
+      "id": 6,
+      "category_id": 1,
+      "title": "Landing page design",
+      "description": "Focused, high-converting pages for a single campaign or offer.",
+      "long_description": "A landing page has one job: convert visitors for a specific campaign or offer, without the distractions of a full site. We design these around a single clear action, so traffic from ads or campaigns has somewhere effective to land.",
+      "icon_name": "web-development-design",
+      "display_order": 6
+    },
+    {
+      "id": 7,
+      "category_id": 2,
+      "title": "Custom mobile app development (Android/iOS)",
+      "description": "Native apps built specifically for Android or iOS.",
+      "long_description": "Built specifically for the platform you need — Android, iOS, or both — using each platform's own tools and conventions rather than a generic template. That means an interface and a level of performance that feels native to the device it's running on.",
+      "icon_name": "mobile-development",
+      "display_order": 1
+    },
+    {
+      "id": 8,
+      "category_id": 2,
+      "title": "Cross-platform app development",
+      "description": "One codebase, shipped to Android and iOS together.",
+      "long_description": "One codebase, shipped to Android and iOS together, using frameworks built for exactly this — so you get both platforms without paying to build and maintain two separate apps in parallel.",
+      "icon_name": "mobile-development",
+      "display_order": 2
+    },
+    {
+      "id": 9,
+      "category_id": 2,
+      "title": "Mobile app UI/UX design",
+      "description": "Interfaces designed for thumbs, small screens, and short attention spans.",
+      "long_description": "Interfaces designed for thumbs, small screens, and short attention spans — very different constraints from designing for a desktop browser. We design and work through the flow before development starts, so the build isn't guessing at what users actually need.",
+      "icon_name": "mobile-development",
+      "display_order": 3
+    },
+    {
+      "id": 10,
+      "category_id": 2,
+      "title": "App maintenance & updates",
+      "description": "Ongoing fixes and OS updates that keep your app live in the stores.",
+      "long_description": "Apps don't stay finished — operating systems update, devices change, and small bugs surface once real users start using it. Ongoing maintenance keeps your app live in the stores and working properly as Android and iOS move forward underneath it.",
+      "icon_name": "mobile-development",
+      "display_order": 4
+    },
+    {
+      "id": 11,
+      "category_id": 3,
+      "title": "Custom business software development",
+      "description": "Purpose-built software for how your business actually operates.",
+      "long_description": "Purpose-built software designed around how your business actually operates, rather than a generic tool you have to adapt your process to fit. We start by understanding the real workflow before writing a line of code.",
+      "icon_name": "software-systems-development",
+      "display_order": 1
+    },
+    {
+      "id": 12,
+      "category_id": 3,
+      "title": "Backend & API development",
+      "description": "Secure, well-structured APIs built for clean data flow.",
+      "long_description": "The logic and data layer behind an application — secure, well-structured APIs that your website, mobile app, or other systems can rely on. Built for clean, predictable data flow rather than ad-hoc endpoints added as an afterthought.",
+      "icon_name": "software-systems-development",
+      "display_order": 2
+    },
+    {
+      "id": 13,
+      "category_id": 3,
+      "title": "Database design & architecture",
+      "description": "Relational structures built for integrity and performance at scale.",
+      "long_description": "The database is the part almost nobody sees and almost everything depends on. We design relational structures for data integrity and performance at scale, so queries stay fast and the data stays trustworthy as it grows.",
+      "icon_name": "software-systems-development",
+      "display_order": 3
+    },
+    {
+      "id": 14,
+      "category_id": 3,
+      "title": "Systems integration",
+      "description": "Connecting your software to banks, statutory bodies, and other APIs.",
+      "long_description": "Most businesses already run several tools — accounting software, payment providers, statutory or banking APIs — that don't talk to each other by default. We connect them, so data moves automatically instead of being re-entered by hand.",
+      "icon_name": "software-systems-development",
+      "display_order": 4
+    },
+    {
+      "id": 15,
+      "category_id": 3,
+      "title": "Software maintenance & support",
+      "description": "Ongoing updates and fixes that keep your software running.",
+      "long_description": "Software needs upkeep after launch: dependency updates, bug fixes, and small adjustments as your business changes. Ongoing maintenance keeps it running reliably instead of slowly falling behind.",
+      "icon_name": "software-systems-development",
+      "display_order": 5
+    },
+    {
+      "id": 16,
+      "category_id": 4,
+      "title": "ERP implementation & configuration",
+      "description": "An ERP platform configured around your actual workflows.",
+      "long_description": "An ERP platform is only as useful as its configuration. We set it up around your actual workflows — chart of accounts, inventory structure, approval flows — rather than leaving you to adapt to its defaults.",
+      "icon_name": "erp-business-systems",
+      "display_order": 1
+    },
+    {
+      "id": 17,
+      "category_id": 4,
+      "title": "HR & payroll system development",
+      "description": "HR and payroll tools that match your policies, not a template.",
+      "long_description": "HR and payroll tools built or configured to match your actual policies — leave structures, statutory deductions, approval chains — instead of a generic template that needs constant manual correction.",
+      "icon_name": "erp-business-systems",
+      "display_order": 2
+    },
+    {
+      "id": 18,
+      "category_id": 4,
+      "title": "CRM setup & customization",
+      "description": "A CRM configured around your real sales process.",
+      "long_description": "A CRM configured around your real sales process, not a theoretical one — the stages, fields, and reports that reflect how your team actually sells, so the data in it stays accurate enough to be useful.",
+      "icon_name": "erp-business-systems",
+      "display_order": 3
+    },
+    {
+      "id": 19,
+      "category_id": 4,
+      "title": "Business process automation",
+      "description": "Replace manual, repetitive workflows with automated ones.",
+      "long_description": "Manual, repetitive workflows — approvals, notifications, data entry between systems — replaced with automated ones, so staff spend time on judgment calls instead of repetitive administrative steps.",
+      "icon_name": "erp-business-systems",
+      "display_order": 4
+    },
+    {
+      "id": 20,
+      "category_id": 4,
+      "title": "Inventory & asset management systems",
+      "description": "Track stock and assets accurately, in real time.",
+      "long_description": "Track stock and assets accurately, in real time, instead of relying on periodic manual counts. Built to reflect what's actually happening in your business, not just what was true at last quarter's audit.",
+      "icon_name": "erp-business-systems",
+      "display_order": 5
+    },
+    {
+      "id": 21,
+      "category_id": 5,
+      "title": "Logo & visual identity design",
+      "description": "A distinct visual identity that's recognizable at a glance.",
+      "long_description": "A distinct visual identity that's recognizable at a glance — not just a logo in isolation, but a consistent system of color, type, and imagery that holds together across everywhere your business appears.",
+      "icon_name": "branding",
+      "display_order": 1
+    },
+    {
+      "id": 22,
+      "category_id": 5,
+      "title": "Brand strategy & positioning",
+      "description": "Clarify who you serve and what makes you different.",
+      "long_description": "Before any visuals get made, we clarify who you're actually serving and what makes you different from the alternatives they're considering — decisions that should drive the design, not follow it.",
+      "icon_name": "branding",
+      "display_order": 2
+    },
+    {
+      "id": 23,
+      "category_id": 5,
+      "title": "Brand guidelines & style guides",
+      "description": "A reference that keeps your brand consistent everywhere.",
+      "long_description": "A practical reference document — logo usage, color codes, typography rules — that keeps your brand consistent even as new materials get produced by different people over time.",
+      "icon_name": "branding",
+      "display_order": 3
+    },
+    {
+      "id": 24,
+      "category_id": 5,
+      "title": "Business collateral design",
+      "description": "Business cards, letterheads, and templates that match your brand.",
+      "long_description": "Business cards, letterheads, email signatures, and templates that match your brand properly, rather than being reinvented inconsistently each time something new is needed.",
+      "icon_name": "branding",
+      "display_order": 4
+    },
+    {
+      "id": 25,
+      "category_id": 6,
+      "title": "Social media marketing & management",
+      "description": "Consistent, on-brand social presence, planned and managed.",
+      "long_description": "Consistent, on-brand social presence — planned content, not sporadic posting — managed around what actually resonates with your specific audience rather than generic best practices.",
+      "icon_name": "digital-marketing",
+      "display_order": 1
+    },
+    {
+      "id": 26,
+      "category_id": 6,
+      "title": "Content marketing",
+      "description": "Content built to attract and inform your audience.",
+      "long_description": "Content built to attract and inform your audience — genuinely useful material that earns attention, rather than promotional content that gets scrolled past.",
+      "icon_name": "digital-marketing",
+      "display_order": 2
+    },
+    {
+      "id": 27,
+      "category_id": 6,
+      "title": "Email marketing campaigns",
+      "description": "Campaigns that nurture leads and keep customers coming back.",
+      "long_description": "Campaigns that nurture leads and keep existing customers coming back, sent to a list that's actually opted in and segmented, rather than a single generic blast to everyone.",
+      "icon_name": "digital-marketing",
+      "display_order": 3
+    },
+    {
+      "id": 28,
+      "category_id": 6,
+      "title": "Pay-per-click (PPC) advertising",
+      "description": "Paid campaigns optimized to bring in leads, not waste spend.",
+      "long_description": "Paid campaigns optimized to bring in qualified leads, not just clicks — budget spent deliberately on the audiences and keywords likely to actually convert.",
+      "icon_name": "digital-marketing",
+      "display_order": 4
+    },
+    {
+      "id": 29,
+      "category_id": 6,
+      "title": "Digital marketing strategy & consulting",
+      "description": "A clear, prioritized plan built around your goals and budget.",
+      "long_description": "A clear, prioritized plan built around your specific goals and budget — which channels are worth the investment right now, and which aren't yet, rather than a generic checklist.",
+      "icon_name": "digital-marketing",
+      "display_order": 5
+    },
+    {
+      "id": 30,
+      "category_id": 7,
+      "title": "On-page SEO optimization",
+      "description": "Your content and structure tuned to rank for searches that matter.",
+      "long_description": "Your content and page structure tuned to rank for the searches that actually matter to your business — titles, headings, and internal linking, not just keyword stuffing.",
+      "icon_name": "seo",
+      "display_order": 1
+    },
+    {
+      "id": 31,
+      "category_id": 7,
+      "title": "Technical SEO audits",
+      "description": "A technical review that finds what's holding your rankings back.",
+      "long_description": "A technical review that finds what's actually holding your rankings back — site speed, crawl errors, mobile issues — the foundational problems that content improvements alone can't fix.",
+      "icon_name": "seo",
+      "display_order": 2
+    },
+    {
+      "id": 32,
+      "category_id": 7,
+      "title": "Local SEO",
+      "description": "Show up in local search and maps when nearby customers look for you.",
+      "long_description": "Getting your business to show up in local search and Maps results when nearby customers are looking for exactly what you offer — accurate listings, consistent business information, and genuine local relevance signals.",
+      "icon_name": "seo",
+      "display_order": 3
+    },
+    {
+      "id": 33,
+      "category_id": 7,
+      "title": "SEO content strategy",
+      "description": "A content plan built around what your customers actually search.",
+      "long_description": "A content plan built around what your customers are actually searching for, not just what's easy to write about — so new content has a real chance of being found.",
+      "icon_name": "seo",
+      "display_order": 4
+    },
+    {
+      "id": 34,
+      "category_id": 7,
+      "title": "Keyword research & competitor analysis",
+      "description": "Know what customers search for and where competitors beat you.",
+      "long_description": "Understanding what your customers actually search for, and where your current competitors are outranking you and why — the research that should inform a strategy, not follow it.",
+      "icon_name": "seo",
+      "display_order": 5
+    },
+    {
+      "id": 35,
+      "category_id": 8,
+      "title": "Technology strategy consulting",
+      "description": "An outside, technical view on what to build, buy, or fix next.",
+      "long_description": "An outside, technical view on what to build, buy, or fix next — help prioritizing technical decisions against your actual goals and budget, not a generic best-practices checklist.",
+      "icon_name": "it-technical-consulting",
+      "display_order": 1
+    },
+    {
+      "id": 36,
+      "category_id": 8,
+      "title": "Digital transformation consulting",
+      "description": "A practical roadmap for moving manual processes online.",
+      "long_description": "A practical roadmap for moving manual, paper-based, or spreadsheet-driven processes online — sequenced realistically, rather than trying to change everything at once.",
+      "icon_name": "it-technical-consulting",
+      "display_order": 2
+    },
+    {
+      "id": 37,
+      "category_id": 8,
+      "title": "IT infrastructure consulting",
+      "description": "An honest assessment of your servers, networks, and hosting.",
+      "long_description": "An honest assessment of your servers, networks, and hosting setup — what's working, what's a risk, and what's worth changing, based on your actual scale and budget rather than a generic checklist.",
+      "icon_name": "it-technical-consulting",
+      "display_order": 3
+    },
+    {
+      "id": 38,
+      "category_id": 8,
+      "title": "System architecture consulting",
+      "description": "A second opinion on your system design before you build.",
+      "long_description": "A second opinion on your system design before you build — catching scalability, security, or integration issues while they're still a conversation, not a costly rewrite.",
+      "icon_name": "it-technical-consulting",
+      "display_order": 4
+    }
+  ]
+}

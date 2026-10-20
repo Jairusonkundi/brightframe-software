@@ -4,7 +4,7 @@
  * notifications (handlers/quote_handler.php and handlers/contact_handler.php).
  *
  * Relies on PHPMailer, installed via Composer. Run `composer install` from
- * the repo root once; config comes from config/.env:
+ * the repo root once; config comes from the project-root .env:
  *
  *   ADMIN_EMAIL     recipient for notifications (defaults to the owner)
  *   SMTP_HOST       relay host                        (default smtp.gmail.com)
@@ -17,7 +17,7 @@
  *
  * Gmail App Passwords require 2-Step Verification enabled on the account —
  * see Google's "App passwords" settings. Keep SMTP_PASS out of git: it lives
- * in config/.env (gitignored); config/.env.example only carries the naming
+ * in .env at the project root (gitignored); .env.example only carries the naming
  * convention.
  *
  * Always returns a bool and never throws — form handlers have already saved
@@ -25,7 +25,7 @@
  * not fatal.
  */
 
-require_once __DIR__ . '/../config/env.php';
+require_once __DIR__ . '/../config/functions.php';
 
 function send_email_notification(string $to, string $subject, string $plainBody, string $replyTo): bool
 {

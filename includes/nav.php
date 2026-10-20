@@ -5,7 +5,9 @@
  * Shows categories only (not all 38 individual services) — each links to
  * its section on services.php, which is where the full list lives.
  */
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/functions.php';
+
+$pdo = db();
 require_once __DIR__ . '/icons.php';
 
 try {
@@ -37,7 +39,7 @@ $navIsContact   = $navCurrentPage === 'contact.php';
 ?>
 <nav>
   <div class="wrap navbar-inner">
-    <a href="<?= $basePath ?>index.php" class="logo" aria-label="Brightframe Technologies — home">
+    <a href="<?= $basePath ?>" class="logo" aria-label="Brightframe Technologies — home">
       <svg width="30" height="30" viewBox="0 0 32 32" role="img" aria-hidden="true">
         <rect class="bf-logo-badge" x="1" y="1" width="30" height="30" rx="9" fill="#F4F7F8"/>
         <path class="bf-logo-frame" d="M6 13 L6 7 L13 7" stroke="#122533" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
@@ -54,7 +56,7 @@ $navIsContact   = $navCurrentPage === 'contact.php';
     </button>
 
     <div class="navlinks" id="primary-nav">
-      <a href="<?= $basePath ?>index.php" class="nav-link<?= $navIsHome ? ' is-current' : '' ?>">Home</a>
+      <a href="<?= $basePath ?>" class="nav-link<?= $navIsHome ? ' is-current' : '' ?>">Home</a>
 
       <div class="nav-dropdown">
         <button type="button" class="nav-link dropdown-toggle<?= $navIsServices ? ' is-current' : '' ?>" aria-expanded="false">
@@ -75,7 +77,7 @@ $navIsContact   = $navCurrentPage === 'contact.php';
                 </span>
               </a>
             <?php endforeach; ?>
-            <a class="dropdown-cat-viewall" href="<?= $basePath ?>services.php">
+            <a class="dropdown-cat-viewall" href="<?= $basePath ?>services/">
               View all services
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </a>
@@ -99,18 +101,18 @@ $navIsContact   = $navCurrentPage === 'contact.php';
           <svg class="chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
         </button>
         <div class="dropdown-panel dropdown-1col">
-          <a href="<?= $basePath ?>about.php"<?= $navCurrentPage === 'about.php' ? ' class="is-current"' : '' ?>>About Us</a>
-          <a href="<?= $basePath ?>about.php#team"<?= $navCurrentPage === 'about.php' ? ' class="is-current"' : '' ?>>Our Team</a>
-          <a href="<?= $basePath ?>why-us.php"<?= $navCurrentPage === 'why-us.php' ? ' class="is-current"' : '' ?>>Why Choose Us</a>
-          <a href="<?= $basePath ?>reviews.php"<?= $navCurrentPage === 'reviews.php' ? ' class="is-current"' : '' ?>>Reviews</a>
+          <a href="<?= $basePath ?>about/"<?= $navCurrentPage === 'about.php' ? ' class="is-current"' : '' ?>>About Us</a>
+          <a href="<?= $basePath ?>about/#team"<?= $navCurrentPage === 'about.php' ? ' class="is-current"' : '' ?>>Our Team</a>
+          <a href="<?= $basePath ?>why-us/"<?= $navCurrentPage === 'why-us.php' ? ' class="is-current"' : '' ?>>Why Choose Us</a>
+          <a href="<?= $basePath ?>reviews/"<?= $navCurrentPage === 'reviews.php' ? ' class="is-current"' : '' ?>>Reviews</a>
         </div>
       </div>
 
-      <a href="<?= $basePath ?>contact.php" class="nav-link<?= $navIsContact ? ' is-current' : '' ?>">Contact Us</a>
+      <a href="<?= $basePath ?>contact/" class="nav-link<?= $navIsContact ? ' is-current' : '' ?>">Contact Us</a>
 
       <!-- Mobile-only: primary CTA + theme toggle live inside the collapsed menu too -->
       <div class="nav-actions-mobile">
-        <a href="<?= $basePath ?>quote.php" class="nav-cta">Request a quote</a>
+        <a href="<?= $basePath ?>quote/" class="nav-cta">Request a quote</a>
         <button type="button" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode">
           <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
           <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
@@ -123,7 +125,7 @@ $navIsContact   = $navCurrentPage === 'contact.php';
         <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
         <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
       </button>
-      <a href="<?= $basePath ?>quote.php" class="nav-cta">Request a quote</a>
+      <a href="<?= $basePath ?>quote/" class="nav-cta">Request a quote</a>
     </div>
   </div>
 </nav>

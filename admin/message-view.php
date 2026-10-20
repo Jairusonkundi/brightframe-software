@@ -4,8 +4,10 @@
  * Viewing a 'new' message auto-advances it to 'read' (standard inbox
  * behavior) — doesn't touch it if it's already 'read' or 'replied'.
  */
+require_once __DIR__ . '/../config/functions.php';
 require_once __DIR__ . '/../includes/admin-auth.php';
-require_once __DIR__ . '/../config/db.php';
+
+$pdo = db();
 
 $id = (int) ($_GET['id'] ?? 0);
 if ($id <= 0) {

@@ -1,0 +1,148 @@
+# Brightframe Technologies — Apache Security & URL Rewriting
+#
+# Place this file at the project root (same level as index.php).
+# Requires mod_rewrite and mod_headers enabled.
+
+# ──────────────────────────────────────────────────────────────────────
+# Security: Deny access to sensitive files
+# ──────────────────────────────────────────────────────────────────────
+
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^\.env\.example$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^\.git">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(composer\.json|composer\.lock|phinx\.php)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^(database\.sql|seed_data\.sql)$">
+    Require all denied
+</FilesMatch>
+
+<FilesMatch "^error\.log$">
+    Require all denied
+</FilesMatch>
+
+# Block access to directories using RewriteRule (works in .htaccess)
+# ──────────────────────────────────────────────────────────────────────
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Block config/, db/, vendor/, includes/, handlers/
+    RewriteRule ^(config|db|vendor|includes|handlers)/ - [F,L,NC]
+
+    # ──────────────────────────────────────────────────────────────────
+    # Hide .php extensions — /about.php → /about/, /services/web-dev → /services/web-dev/
+    # ──────────────────────────────────────────────────────────────────
+
+    # 1. External redirect: /foo.php → /foo/ (301, SEO-friendly)
+    #    Only for GET/HEAD requests, not for POST (forms would lose data)
+    RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\ /([^.?\s]+\.php)(\?[^\s]*)?\ HTTP/
+    RewriteRule ^(.+)\.php$ /$1/ [R=301,L,NE]
+
+    # 2. Special case: /index.php/ → / (homepage)
+    RewriteCond %{REQUEST_METHOD} ^(GET|HEAD)$
+    RewriteCond %{THE_REQUEST} ^[A-Z]+\ /index\.php(\?[^\s]*)?\ HTTP/
+    RewriteRule ^index\.php$ / [R=301,L,NE]
+
+    # 3. Internal rewrite: /foo/ → /foo.php (if file exists)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^([^/]+)/$ $1.php [L]
+
+    # 4. Nested: /services/web-development-design/ → /services/web-development-design.php
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(services/.+)/$ $1.php [L]
+
+    # 5. Admin area: /admin/quotes/ → /admin/quotes.php
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(admin/.+)/$ $1.php [L]
+
+    # 6. Fallback: if someone requests /foo (no trailing slash), add it
+    #    Only when the corresponding .php file exists
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+    RewriteRule ^([^.]+)$ /$1/ [R=301,L,NE]
+</IfModule>
+
+# ──────────────────────────────────────────────────────────────────────
+# Security Headers
+# ──────────────────────────────────────────────────────────────────────
+
+<IfModule mod_headers.c>
+    # Prevent MIME sniffing
+    Header always set X-Content-Type-Options "nosniff"
+
+    # XSS protection (legacy but harmless)
+    Header always set X-XSS-Protection "1; mode=block"
+
+    # Clickjacking protection
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    # Referrer policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Content Security Policy — allows Google Fonts, inline scripts/styles for dynamic features
+    Header always set Content-Security-Policy \
+        "default-src 'self'; \
+         script-src 'self' 'unsafe-inline'; \
+         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; \
+         font-src 'self' data: https://fonts.gstatic.com; \
+         img-src 'self' data:; \
+         connect-src 'self'; \
+         frame-ancestors 'self'; \
+         form-action 'self'; \
+         base-uri 'self'"
+
+    # Permissions Policy (feature policy)
+    Header always set Permissions-Policy \
+        "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+
+    # Remove server signature
+    Header always unset Server
+    Header always unset X-Powered-By
+</IfModule>
+
+# ──────────────────────────────────────────────────────────────────────
+# MIME types for assets
+# ──────────────────────────────────────────────────────────────────────
+
+<IfModule mod_mime.c>
+    AddType image/svg+xml svg svgz
+    AddEncoding gzip svgz
+</IfModule>
+
+# ──────────────────────────────────────────────────────────────────────
+# Caching for static assets
+# ──────────────────────────────────────────────────────────────────────
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/json "access plus 0 seconds"
+</IfModule>
+
+# ──────────────────────────────────────────────────────────────────────
+# Prevent directory listings
+# ──────────────────────────────────────────────────────────────────────
+
+Options -Indexes

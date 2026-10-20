@@ -1,0 +1,475 @@
+{
+  "quotes": [
+    {
+      "name": "Grace Wanjiku",
+      "email": "grace.wanjiku@savannatech.co.ke",
+      "phone": "+254 712 345 678",
+      "project_details": "We need a modern e-commerce platform for our electronics retail business. Currently selling through Instagram DMs and WhatsApp, which is unsustainable at our scale. Need product catalog, M-Pesa integration, delivery tracking, and an admin dashboard for inventory.",
+      "budget_range": "KES 500,000 - 1,000,000",
+      "timeline": "2-3 months",
+      "status": "new",
+      "days_ago": 12
+    },
+    {
+      "name": "David Ochieng",
+      "email": "david@uplandsbrewing.co.ke",
+      "phone": "+254 723 456 789",
+      "project_details": "Our brewery needs a custom inventory and distribution management system. We track over 50 SKUs across 200+ bars and restaurants, currently using spreadsheets. Need real-time stock levels, order management, and delivery route optimization.",
+      "budget_range": "KES 1,000,000 - 2,000,000",
+      "timeline": "3-4 months",
+      "status": "new",
+      "days_ago": 10
+    },
+    {
+      "name": "Amina Hassan",
+      "email": "amina@swahilitechstartup.com",
+      "phone": "+254 734 567 890",
+      "project_details": "Looking for a cross-platform mobile app for our fintech startup. The app handles micro-loans for small traders — application, credit scoring, disbursement, and repayment tracking via M-Pesa. Need both Android and iOS from a single codebase.",
+      "budget_range": "KES 2,000,000 - 3,000,000",
+      "timeline": "4-6 months",
+      "status": "contacted",
+      "days_ago": 8
+    },
+    {
+      "name": "James Kamau",
+      "email": "james.kamau@highlandfarmltd.co.ke",
+      "phone": "+254 745 678 901",
+      "project_details": "We run a dairy farm with 200+ cows and need an ERP system to manage everything — feed inventory, milking records, veterinary schedules, milk collection and delivery to Brookside. Currently all on paper and it is chaos.",
+      "budget_range": "KES 1,500,000 - 2,500,000",
+      "timeline": "3-5 months",
+      "status": "in_discussion",
+      "days_ago": 7
+    },
+    {
+      "name": "Fatima Ali",
+      "email": "fatima@safaridiscounts.co.ke",
+      "phone": "+254 700 123 456",
+      "project_details": "Need a complete brand refresh and new website. Our current site looks like it was built in 2015. We are a travel agency specializing in East African safaris and need a visually stunning site with booking integration.",
+      "budget_range": "KES 300,000 - 600,000",
+      "timeline": "6-8 weeks",
+      "status": "new",
+      "days_ago": 5
+    },
+    {
+      "name": "Peter Njoroge",
+      "email": "peter@njoroge-law.co.ke",
+      "phone": "+254 711 234 567",
+      "project_details": "Our law firm needs a case management system. Track cases by client, court dates, document deadlines, billing hours. Need a client portal so clients can check their case status without calling us every day.",
+      "budget_range": "KES 800,000 - 1,200,000",
+      "timeline": "2-3 months",
+      "status": "contacted",
+      "days_ago": 4
+    },
+    {
+      "name": "Sarah Chebet",
+      "email": "sarah@tuitionhub.co.ke",
+      "phone": "+254 722 345 678",
+      "project_details": "We are building an EdTech platform for secondary school students in Kenya. Need video lessons, quizzes, progress tracking, and a parent dashboard. Looking at React Native for the mobile app and Node.js backend.",
+      "budget_range": "KES 3,000,000 - 5,000,000",
+      "timeline": "6-8 months",
+      "status": "new",
+      "days_ago": 3
+    },
+    {
+      "name": "Michael Otieno",
+      "email": "michael@otssecurity.co.ke",
+      "phone": "+254 733 456 789",
+      "project_details": "Our security company manages guards across multiple properties. Need a mobile app for guard check-in (QR code scanning at patrol points), incident reporting, shift scheduling, and a client portal showing real-time guard status.",
+      "budget_range": "KES 1,200,000 - 1,800,000",
+      "timeline": "3-4 months",
+      "status": "new",
+      "days_ago": 2
+    },
+    {
+      "name": "Lucy Wambui",
+      "email": "lucy@greenacres.co.ke",
+      "phone": "+254 744 567 890",
+      "project_details": "We sell organic produce to restaurants and hotels. Need a simple B2B ordering platform where our regular clients can place recurring orders, see availability, and track deliveries. M-Pesa and bank transfer payment.",
+      "budget_range": "KES 400,000 - 700,000",
+      "timeline": "6-8 weeks",
+      "status": "new",
+      "days_ago": 1
+    },
+    {
+      "name": "Brian Kipchoge",
+      "email": "brian@safarimarathon.co.ke",
+      "phone": "+254 701 234 567",
+      "project_details": "Looking for a event management platform for our annual marathon. Need registration, payment processing, bib number generation, timing integration, results posting, and participant communication. About 5,000 participants annually.",
+      "budget_range": "KES 600,000 - 900,000",
+      "timeline": "2-3 months",
+      "status": "closed",
+      "days_ago": 18
+    },
+    {
+      "name": "Nancy Akinyi",
+      "email": "nancy@eastlandspharmacy.co.ke",
+      "phone": "+254 712 876 543",
+      "project_details": "Our pharmacy chain has 4 locations and we need an inventory management system that tracks stock levels, expiry dates, and automatically generates re-order alerts. Need integration with our POS system.",
+      "budget_range": "KES 500,000 - 800,000",
+      "timeline": "2 months",
+      "status": "in_discussion",
+      "days_ago": 15
+    },
+    {
+      "name": "Kevin Mutua",
+      "email": "kevin@constructionke.co.ke",
+      "phone": "+254 723 987 654",
+      "project_details": "We are a construction company and need project management software. Track projects by phase, manage subcontractors, handle material procurement, budget tracking, and generate progress reports for clients.",
+      "budget_range": "KES 900,000 - 1,400,000",
+      "timeline": "3-4 months",
+      "status": "closed",
+      "days_ago": 20
+    }
+  ],
+  "quote_services": [
+    {
+      "quote_email": "grace.wanjiku@savannatech.co.ke",
+      "service_title": "E-commerce website development",
+      "service_id": 3
+    },
+    {
+      "quote_email": "grace.wanjiku@savannatech.co.ke",
+      "service_title": "Website design & UI/UX development",
+      "service_id": 2
+    },
+    {
+      "quote_email": "david@uplandsbrewing.co.ke",
+      "service_title": "Custom business software development",
+      "service_id": 11
+    },
+    {
+      "quote_email": "david@uplandsbrewing.co.ke",
+      "service_title": "Inventory & asset management systems",
+      "service_id": 20
+    },
+    {
+      "quote_email": "amina@swahilitechstartup.com",
+      "service_title": "Cross-platform app development",
+      "service_id": 8
+    },
+    {
+      "quote_email": "amina@swahilitechstartup.com",
+      "service_title": "Backend & API development",
+      "service_id": 12
+    },
+    {
+      "quote_email": "james.kamau@highlandfarmltd.co.ke",
+      "service_title": "ERP implementation & configuration",
+      "service_id": 16
+    },
+    {
+      "quote_email": "james.kamau@highlandfarmltd.co.ke",
+      "service_title": "Custom business software development",
+      "service_id": 11
+    },
+    {
+      "quote_email": "fatima@safaridiscounts.co.ke",
+      "service_title": "Logo & visual identity design",
+      "service_id": 21
+    },
+    {
+      "quote_email": "fatima@safaridiscounts.co.ke",
+      "service_title": "Website redesign & modernization",
+      "service_id": 4
+    },
+    {
+      "quote_email": "peter@njoroge-law.co.ke",
+      "service_title": "Custom business software development",
+      "service_id": 11
+    },
+    {
+      "quote_email": "peter@njoroge-law.co.ke",
+      "service_title": "Mobile app UI/UX design",
+      "service_id": 9
+    },
+    {
+      "quote_email": "sarah@tuitionhub.co.ke",
+      "service_title": "Cross-platform app development",
+      "service_id": 8
+    },
+    {
+      "quote_email": "sarah@tuitionhub.co.ke",
+      "service_title": "Backend & API development",
+      "service_id": 12
+    },
+    {
+      "quote_email": "sarah@tuitionhub.co.ke",
+      "service_title": "Database design & architecture",
+      "service_id": 13
+    },
+    {
+      "quote_email": "michael@otssecurity.co.ke",
+      "service_title": "Custom mobile app development (Android/iOS)",
+      "service_id": 7
+    },
+    {
+      "quote_email": "michael@otssecurity.co.ke",
+      "service_title": "Backend & API development",
+      "service_id": 12
+    },
+    {
+      "quote_email": "lucy@greenacres.co.ke",
+      "service_title": "E-commerce website development",
+      "service_id": 3
+    },
+    {
+      "quote_email": "lucy@greenacres.co.ke",
+      "service_title": "Progressive web apps (PWA)",
+      "service_id": 5
+    },
+    {
+      "quote_email": "brian@safarimarathon.co.ke",
+      "service_title": "Custom business software development",
+      "service_id": 11
+    },
+    {
+      "quote_email": "brian@safarimarathon.co.ke",
+      "service_title": "Website design & UI/UX development",
+      "service_id": 2
+    },
+    {
+      "quote_email": "nancy@eastlandspharmacy.co.ke",
+      "service_title": "Inventory & asset management systems",
+      "service_id": 20
+    },
+    {
+      "quote_email": "nancy@eastlandspharmacy.co.ke",
+      "service_title": "Systems integration",
+      "service_id": 14
+    },
+    {
+      "quote_email": "kevin@constructionke.co.ke",
+      "service_title": "Custom business software development",
+      "service_id": 11
+    },
+    {
+      "quote_email": "kevin@constructionke.co.ke",
+      "service_title": "HR & payroll system development",
+      "service_id": 17
+    }
+  ],
+  "messages": [
+    {
+      "name": "John Maina",
+      "email": "john.maina@gmail.com",
+      "subject": "Question about your services",
+      "message": "Hi, I am starting a small restaurant in Westlands and need a website. Do you also handle food delivery app integration? I saw competitors like Glovo and want something similar but for my own riders.",
+      "status": "replied",
+      "days_ago": 14
+    },
+    {
+      "name": "Esther Wairimu",
+      "email": "esther@wairimuenterprises.co.ke",
+      "subject": "Partnership inquiry",
+      "message": "We are an accounting firm and I think our clients could benefit from your ERP services. Would you be open to a referral partnership? We handle their books and often get asked about system implementation.",
+      "status": "read",
+      "days_ago": 11
+    },
+    {
+      "name": "Daniel Kiprotich",
+      "email": "daniel.kiprotich@yahoo.com",
+      "subject": "Pricing for mobile app",
+      "message": "Hello, I have an idea for a dating app for Kenyan professionals. Can you give me a rough estimate of how much it would cost to build? Just the MVP with user profiles, matching, and chat. Android first.",
+      "status": "new",
+      "days_ago": 9
+    },
+    {
+      "name": "Mary Njeri",
+      "email": "mary@njerifashion.co.ke",
+      "subject": "Social media help needed",
+      "message": "Our fashion brand is growing but our social media presence is weak. We post sporadically and our Instagram does not look professional. Do you offer social media management or just the strategy part?",
+      "status": "new",
+      "days_ago": 6
+    },
+    {
+      "name": "Patrick Odhiambo",
+      "email": "patrick@odhiamboassociates.com",
+      "subject": "SEO audit request",
+      "message": "We have a corporate law firm website that gets almost no organic traffic. We hired someone last year for SEO but nothing improved. Can you do an audit and tell us what is wrong? Happy to pay for the audit itself.",
+      "status": "new",
+      "days_ago": 3
+    },
+    {
+      "name": "Agnes Muthoni",
+      "email": "agnes@thekitchen.co.ke",
+      "subject": "E-commerce redesign",
+      "message": "Our WooCommerce store is slow and keeps breaking. We sell artisanal foods and have about 200 products. Would it be better to rebuild from scratch or try to fix what we have? Need advice on the right approach.",
+      "status": "read",
+      "days_ago": 2
+    },
+    {
+      "name": "Samuel Kipkorir",
+      "email": "samuel@gridsafaris.co.ke",
+      "subject": "Thank you and review",
+      "message": "Just wanted to say thanks for the work you did on our booking platform. It has been running smoothly for 6 months now and our clients love it. Will definitely recommend you to others in the tourism sector.",
+      "status": "replied",
+      "days_ago": 16
+    },
+    {
+      "name": "Rose Adhiambo",
+      "email": "rose@techwomenke.org",
+      "subject": "Free consultation?",
+      "message": "We are a non-profit that helps women get into tech. We need a simple website to showcase our programs and accept applications. Our budget is very limited as a non-profit. Do you offer any discounts for NGOs?",
+      "status": "new",
+      "days_ago": 5
+    },
+    {
+      "name": "Hassan Mohammed",
+      "email": "hassan@coastlogistics.co.ke",
+      "subject": "Integration question",
+      "message": "We use QuickBooks for accounting and a separate warehouse management system. Need them to talk to each other — currently manually exporting and importing CSV files daily. Is this something you handle?",
+      "status": "new",
+      "days_ago": 1
+    },
+    {
+      "name": "Janet Wakesho",
+      "email": "janet@wakeshoconsultants.co.ke",
+      "subject": "IT infrastructure advice",
+      "message": "We are moving our office and need advice on the new IT setup — server room, network design, WiFi coverage, security cameras, and VPN for remote workers. Do you consult on physical infrastructure or just software?",
+      "status": "read",
+      "days_ago": 8
+    }
+  ],
+  "reviews": [
+    {
+      "name": "James Kariuki",
+      "company": "Savanna Tech Solutions",
+      "rating": 5,
+      "review_text": "Brightframe built our company website and the result exceeded our expectations. Jairus took the time to understand our business before writing any code. The site loads fast, looks professional, and our inquiries doubled within the first month.",
+      "status": "pending",
+      "reject_reason": null,
+      "days_ago": 1
+    },
+    {
+      "name": "Faith Nekesa",
+      "company": "Green Valley Farms",
+      "rating": 4,
+      "review_text": "Working with Brightframe on our farm management system was a good experience. They delivered on time and the system works well. Communication was clear throughout the process. Minor delays on the reporting module but overall satisfied.",
+      "status": "pending",
+      "reject_reason": null,
+      "days_ago": 3
+    },
+    {
+      "name": "Alex Omondi",
+      "company": "Nairobi Digital Agency",
+      "rating": 5,
+      "review_text": "Hired Brightframe for backend API development on a client project. Very solid work — clean code, well-documented endpoints, and they caught a security issue in our original spec that we had missed. Will work with them again.",
+      "status": "pending",
+      "reject_reason": null,
+      "days_ago": 5
+    },
+    {
+      "name": "Daniel Wafula",
+      "company": "Wafula & Associates",
+      "rating": 5,
+      "review_text": "Our law firm needed a case management system and Brightframe delivered exactly what we described. The client portal alone has saved us hours of phone calls every week. Professional, responsive, and the system has been running without issues for 4 months now.",
+      "status": "approved",
+      "reject_reason": null,
+      "days_ago": 45
+    },
+    {
+      "name": "Maria Gonzalez",
+      "company": "East Africa Exports Ltd",
+      "rating": 5,
+      "review_text": "We needed an inventory system for our export business with multi-currency support. Brightframe built it from scratch and it handles everything — Shillings, Dollars, Euros — with proper conversion tracking. Best investment we made last year.",
+      "status": "approved",
+      "reject_reason": null,
+      "days_ago": 38
+    },
+    {
+      "name": "Robert Kimani",
+      "company": "TechHub Nairobi",
+      "rating": 4,
+      "review_text": "Good experience working with Brightframe on our co-working space management platform. They understood the unique needs of a shared workspace — booking, billing, member management — and built something that actually fits how we operate.",
+      "status": "approved",
+      "reject_reason": null,
+      "days_ago": 30
+    },
+    {
+      "name": "Aisha Osman",
+      "company": "Coast Fresh Seafood",
+      "rating": 5,
+      "review_text": "Our ordering system built by Brightframe has transformed how we manage wholesale orders. Our clients can now place orders online, track deliveries, and pay via M-Pesa. Before this, everything was WhatsApp messages and phone calls. Highly recommend.",
+      "status": "approved",
+      "reject_reason": null,
+      "days_ago": 25
+    },
+    {
+      "name": "Peter Ochieng",
+      "company": "Lakeview Hotels Group",
+      "rating": 4,
+      "review_text": "Brightframe developed our hotel booking engine. The integration with our existing PMS was smooth and the direct booking rate has increased by 15% since launch. Good work, would use again for our other properties.",
+      "status": "approved",
+      "reject_reason": null,
+      "days_ago": 20
+    },
+    {
+      "name": "Catherine Mumbi",
+      "company": "Mumbi Fashion House",
+      "rating": 5,
+      "review_text": "From branding to website to social media strategy — Brightframe handled everything for our fashion house launch. The brand identity they created is exactly what we envisioned. Our Instagram grew from 0 to 2,000 followers in the first month.",
+      "status": "approved",
+      "reject_reason": null,
+      "days_ago": 15
+    },
+    {
+      "name": "Samuel Lutta",
+      "company": "Lutta Construction Co.",
+      "rating": 4,
+      "review_text": "Project management system works well for our construction projects. The ability to track materials, labor costs, and milestones in one place has been very helpful. The mobile app for site foremen is particularly useful.",
+      "status": "approved",
+      "reject_reason": null,
+      "days_ago": 10
+    },
+    {
+      "name": "Nancy Achieng",
+      "company": "Wellness Center Nairobi",
+      "rating": 5,
+      "review_text": "Our appointment booking system has made managing our wellness center so much easier. Clients book online, get reminders, and we can see our schedule at a glance. The admin dashboard is clean and easy to use. Thank you Brightframe.",
+      "status": "approved",
+      "reject_reason": null,
+      "days_ago": 5
+    },
+    {
+      "name": "Anonymous User",
+      "company": null,
+      "rating": 5,
+      "review_text": "This is obviously the best software company in all of Africa. They built Google basically. Use them for everything.",
+      "status": "rejected",
+      "reject_reason": "Generic praise with no specific project details — cannot verify this is a real client.",
+      "days_ago": 20
+    },
+    {
+      "name": "Test Account",
+      "company": "Test Company",
+      "rating": 1,
+      "review_text": "Terrible experience. Would not recommend.",
+      "status": "rejected",
+      "reject_reason": "No details provided about what project or service was used. One-star review with no context — cannot verify authenticity.",
+      "days_ago": 12
+    },
+    {
+      "name": "Marketing Bot",
+      "company": "SEO Experts Inc",
+      "rating": 5,
+      "review_text": "Amazing services! Visit our website for the best SEO services in Kenya at affordable prices. Contact us at...",
+      "status": "rejected",
+      "reject_reason": "Spam/promotional content disguised as a review.",
+      "days_ago": 8
+    }
+  ],
+  "site_stats": [
+    {
+      "label": "Projects completed",
+      "value": "24"
+    },
+    {
+      "label": "Clients served",
+      "value": "18"
+    },
+    {
+      "label": "Businesses using our systems",
+      "value": "38"
+    }
+  ]
+}

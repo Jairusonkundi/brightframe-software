@@ -80,13 +80,13 @@ function render_star_rating(int $rating): string
 
 /**
  * Where a category's "learn more" link should point: its dedicated
- * services/<slug>.php page if one actually exists as a file, otherwise
- * falling back to its section on the main services.php catalog. Needed
+ * services/<slug>/ page if one actually exists as a file, otherwise
+ * falling back to its section on the main services/ catalog. Needed
  * because admin/services.php can create new categories in the database,
  * but a dedicated detail page is a separate static file that doesn't get
  * generated automatically (see the note at the top of admin/services.php)
  * — without this fallback, a category added there would produce dead
- * /services/<slug>.php links in the nav, footer, and homepage until a
+ * /services/<slug>/ links in the nav, footer, and homepage until a
  * developer added that file by hand.
  */
 function category_detail_url(string $slug, string $basePath = ''): string
@@ -97,7 +97,7 @@ function category_detail_url(string $slug, string $basePath = ''): string
     // but this function shouldn't trust that if the value came from
     // somewhere else (e.g. a direct database edit).
     if (preg_match('/^[a-z0-9-]+$/', $slug) && file_exists(__DIR__ . '/../services/' . $slug . '.php')) {
-        return $basePath . 'services/' . $slug . '.php';
+        return $basePath . 'services/' . $slug . '/';
     }
-    return $basePath . 'services.php#cat-' . $slug;
+    return $basePath . 'services/#cat-' . $slug;
 }

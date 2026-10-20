@@ -4,7 +4,9 @@
  * the "Request a quote" form (which lives at quote.php). This is for
  * someone with a question, not yet ready to describe a project.
  */
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/functions.php';
+
+$pdo = db();
 
 $pageTitle       = 'Contact Us — Brightframe Technologies';
 $pageDescription = 'Have a question for Brightframe Technologies? Send a message and we\'ll get back to you within a day.';
@@ -18,7 +20,7 @@ include __DIR__ . '/includes/header.php';
       <div class="contact-grid">
         <div class="contact-intro">
           <h2>Have a question? Get in touch</h2>
-          <p>Not ready to describe a full project yet? Send a quick message and we'll get back to you within a day. Ready to talk pricing instead? <a href="quote.php">Request a quote</a>.</p>
+          <p>Not ready to describe a full project yet? Send a quick message and we'll get back to you within a day. Ready to talk pricing instead? <a href="/quote/">Request a quote</a>.</p>
           <div class="contact-links">
             <a class="clink clink-primary" href="tel:+254743192585">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.68 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0 1 22 16.92Z"/></svg>

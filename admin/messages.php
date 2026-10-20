@@ -3,8 +3,10 @@
  * Admin: contact messages list. Same pattern as quotes.php but for the
  * simpler contact_messages table (no services, budget, or timeline).
  */
+require_once __DIR__ . '/../config/functions.php';
 require_once __DIR__ . '/../includes/admin-auth.php';
-require_once __DIR__ . '/../config/db.php';
+
+$pdo = db();
 
 $validStatuses = ['new', 'read', 'replied'];
 $statusFilter  = $_GET['status'] ?? '';

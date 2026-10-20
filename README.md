@@ -45,10 +45,11 @@ brightframe-software/
 │   ├── admin-layout-header.php # Admin sidebar shell (opens html, nav, badge counts) — see below
 │   └── admin-layout-footer.php # Closes the admin shell opened above
 ├── config/
-│   ├── db.php               # PDO connection (reads config/.env)
-│   ├── env.php               # Tiny .env parser (no Composer dependency)
-│   ├── .env.example          # Template — copy to .env and fill in your values
-│   └── .env                  # Your local credentials — gitignored, not committed
+│   └── functions.php         # .env loader, error logging, lazy PDO access (db())
+├── db/
+│   ├── migrations/           # Phinx schema + reference-data migrations
+│   ├── seeds/                # Optional demo/sample content (DemoContentSeeder)
+│   └── data/                 # JSON data used by migrations/seeds
 ├── handlers/
 │   ├── quote_handler.php    # Validates + saves + emails quote requests (quote_requests table)
 │   ├── contact_handler.php  # Validates + saves + emails contact messages (contact_messages table)
@@ -66,12 +67,15 @@ brightframe-software/
 │   ├── favicon.svg
 │   ├── og-image.svg
 │   └── founder-placeholder.svg   # Headshot placeholder — swap out when a real photo exists
-├── database.sql             # Full schema + seed data: service_categories, services,
-│                             #   quote_requests, quote_request_services, contact_messages,
-│                             #   reviews, site_stats, admin_users, login_attempts
+├── .env                     # Your local credentials/settings — gitignored, never committed
+├── .env.example             # Template — copy to .env and fill in your values
+├── phinx.php                # Phinx config (reads the same .env)
+├── database.sql             # Legacy reference schema — superseded by db/migrations
+├── seed_data.sql            # Legacy reference demo data — ported to DemoContentSeeder
+├── error.log                # Runtime errors land here (gitignored, created on demand)
 ├── sitemap.xml
 ├── robots.txt
-├── composer.json            # PHPMailer dependency — run `composer install` (see §5)
+├── composer.json            # PHPMailer + Phinx — run `composer install`
 ├── vendor/                  # Composer packages (gitignored, created by `composer install`)
 └── .gitignore
 ```
@@ -88,36 +92,44 @@ C:\xampp\htdocs\brightframe-software\
 If you're starting from a copy elsewhere, just move/copy the whole folder
 into `C:\xampp\htdocs\`.
 
-## 2. Import the database
+## 2. Create the database
+
+The application no longer creates or imports its schema from `database.sql`.
+Phinx migrations own the schema now. You only need an empty database (or an
+existing one from the old SQL import — migrations skip tables that already
+exist).
 
 1. Start MySQL in the XAMPP Control Panel.
 2. Open **phpMyAdmin** at `http://localhost/phpmyadmin`.
-3. Click **Import**, choose `database.sql` from this project, and run it.
-   This creates the `brightframe_db` database along with the
-   `service_categories`, `services`, `quote_requests`, and
-   `quote_request_services` tables, and seeds the 8 categories / 38
-   services catalog.
+3. Create a database named `brightframe_db` with collation
+   `utf8mb4_unicode_ci`.
 
-Alternatively, from the command line:
+Or from the command line:
 
 ```
-"C:\xampp\mysql\bin\mysql.exe" -u root -p < database.sql
+"C:\xampp\mysql\bin\mysql.exe" -u root -p -e "CREATE DATABASE brightframe_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
-## 3. Configure `config/db.php`
+## 3. Configure `.env` (project root)
 
-`db.php` never contains real credentials — it reads them from
-`config/.env`, which is gitignored.
+All settings live in `.env` at the project root — there is no `config/db.php`
+to edit, and no credentials are hardcoded anywhere. `config/functions.php`
+loads the file and exposes `env()` / `db()`.
 
-1. Copy `config/.env.example` to `config/.env`.
-2. Edit `config/.env` with your local MySQL credentials **and** email settings:
+1. Copy `.env.example` to `.env` (same folder).
+2. Edit `.env` with your MySQL credentials **and** email settings:
 
    ```
+   APP_ENV=development
+   APP_DEBUG=false
+   APP_TIMEZONE=Africa/Nairobi
+
    DB_HOST=localhost
    DB_NAME=brightframe_db
    DB_USER=root
    DB_PASS=
    DB_PORT=3306
+   DB_TIMEOUT=5
 
    ADMIN_EMAIL=jairusonkundi@gmail.com
 
@@ -141,31 +153,82 @@ Alternatively, from the command line:
    `SMTP_PASS` is the one secret you must supply yourself: Gmail won't
    accept your normal sign-in password via SMTP. Create an **App Password**
    (Google Account → *Security* → *2-Step Verification* → *App passwords*)
-   and paste it in — see includes/mailer.php for the full key list. If you
+   and paste it in — see `includes/mailer.php` for the full key list. If you
    leave `SMTP_USER`/`SMTP_PASS` empty the mailer falls back to PHP's
    `mail()` so local dev keeps working.
 
-## 4. Install PHP dependencies (email)
+   Leave `APP_DEBUG=false` on anything public. Errors are written to
+   `error.log` instead of being shown to visitors.
 
-Form notifications use PHPMailer, managed by Composer. Once, from the
-project root:
+## 4. Install PHP dependencies
+
+From the project root:
 
 ```
 composer install
 ```
 
-This creates `vendor/` (gitignored). Composer is the only requirement —
-there are no other dependencies. Skip this and the site still works; only
-the email notifications need it, and even then the forms still save to the
-database if the SMTP settings aren't filled in yet.
+This creates `vendor/` (gitignored) and installs both **PHPMailer** (form
+notifications) and **Phinx** (database migrations). The site still runs
+without PHPMailer — only email notifications need it — but Phinx is required
+to build the database.
 
-## 5. Start Apache and MySQL, then view the site
+## 5. Run the migrations
+
+```
+composer migrate          # php vendor/bin/phinx migrate
+composer migrate:status   # see what has run
+```
+
+That creates every table (`service_categories`, `services`,
+`quote_requests`, `quote_request_services`, `contact_messages`, `reviews`,
+`site_stats`, `admin_users`, `login_attempts`) and seeds the 8 categories,
+38 services, homepage stat labels, and the initial admin login.
+
+The migrations are safe to run against a database that was already set up
+with the old `database.sql` — existing tables and rows are left untouched,
+and Phinx records the schema version in its `phinxlog` table.
+
+To restore the demo leads/reviews that used to come from `seed_data.sql`
+(optional — useful on a fresh development install):
+
+```
+composer seed             # php vendor/bin/phinx seed:run
+# or explicitly:
+php vendor/bin/phinx seed:run -s DemoContentSeeder
+```
+
+`database.sql` and `seed_data.sql` are kept only as historical references;
+`db/migrations` + `db/seeds` are now the source of truth.
+
+## 6. Start Apache and MySQL, then view the site
 
 1. Open the XAMPP Control Panel and click **Start** next to both **Apache**
    and **MySQL**.
 2. Visit: `http://localhost/brightframe-software/`
 3. Admin panel (requires login — see "Admin login" below for the seeded
    username and how to change the password): `http://localhost/brightframe-software/admin/login.php`
+
+## If the database is unavailable
+
+The public site does **not** show a database error page. `db()` logs the
+real reason to `error.log` and returns an empty, read-only stand-in, so
+pages still render (service areas show a short "temporarily unavailable"
+message) while you fix the connection.
+
+Write paths fail honestly instead of pretending to save: the quote,
+contact, and review handlers return a friendly JSON error, and the admin
+area shows a "Database unavailable" page rather than silently doing
+nothing.
+
+Check `error.log` in the project root after any failure:
+
+```
+tail -n 50 error.log
+```
+
+The log is gitignored. If PHP cannot write there, check folder permissions
+(the web-server user needs write access to the project root).
 
 ## Quote request form notes
 
@@ -199,7 +262,7 @@ database if the SMTP settings aren't filled in yet.
 - **Email delivery**: notifications are sent via
   [PHPMailer](https://github.com/PHPMailer/PHPMailer) + SMTP (see
   `includes/mailer.php`), driven by the `ADMIN_EMAIL` / `SMTP_*` values in
-  `config/.env`. A failed email is logged but never breaks the form — the
+  the project-root `.env`. A failed email is logged but never breaks the form — the
   request is already saved to the database by that point. Both the quote
   handler and the contact handler go through the same helper, so changing
   the recipient or relay is a single `.env` edit.

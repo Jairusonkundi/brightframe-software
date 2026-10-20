@@ -2,7 +2,9 @@
 /**
  * Why Choose Us — standalone page (previously index.php #why-us).
  */
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/functions.php';
+
+$pdo = db();
 require_once __DIR__ . '/includes/illustrations.php';
 
 $pageTitle       = 'Why Choose Us — Brightframe Technologies';
@@ -69,8 +71,8 @@ include __DIR__ . '/includes/header.php';
         <h2>Let's build something clear</h2>
         <p>Tell us what you're building and we'll get back to you within a day with next steps — no obligation, no sales runaround.</p>
         <div class="cta-actions">
-          <a href="quote.php" class="btn btn-primary">Request a quote</a>
-          <a href="contact.php" class="btn btn-outline">Contact us</a>
+          <a href="/quote/" class="btn btn-primary">Request a quote</a>
+          <a href="/contact/" class="btn btn-outline">Contact us</a>
         </div>
         <p class="cta-note">Takes less than 5 minutes — no obligation, no commitment.</p>
       </div>

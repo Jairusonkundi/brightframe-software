@@ -4,7 +4,9 @@
  * one standalone page (previously the index.php #about/#process/#team
  * sections).
  */
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/functions.php';
+
+$pdo = db();
 require_once __DIR__ . '/includes/illustrations.php';
 
 $pageTitle       = 'About Us — Brightframe Technologies';

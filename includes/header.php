@@ -19,6 +19,11 @@ $canonicalPath   = strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
 // including this file, so shared asset/nav links still resolve correctly.
 // Root-level pages don't need to set anything.
 $basePath = $basePath ?? '';
+
+// CSP header (also in .htaccess/nginx.conf for Apache/Nginx; this ensures it works everywhere)
+if (!headers_sent()) {
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; form-action 'self'; base-uri 'self'");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
