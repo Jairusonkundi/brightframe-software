@@ -11,7 +11,9 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/functions.php';
+
+$pdo = db();
 
 function respond(bool $success, string $message, int $httpStatus = 200): void
 {
@@ -28,6 +30,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // silently report success so bots don't learn to avoid the field.
 if (!empty($_POST['website'])) {
     respond(true, 'Thanks for sharing your experience — it\'ll appear once reviewed.');
+}
+
+// Never pretend to save a review when the database is down.
+if (!db_available()) {
+    bf_log('Review not saved: database is unavailable.');
+    respond(false, 'Sorry, we couldn\'t save your review right now. Please try again in a few minutes.', 503);
 }
 
 $name       = trim($_POST['name'] ?? '');

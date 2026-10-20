@@ -78,14 +78,108 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /**
- * Sticky nav — gains a shadow once the page has scrolled past the topbar,
- * giving it a subtle "lifted" feel instead of an abrupt flat-to-shadow jump.
+ * Hero Slider — full-width image carousel with auto-rotate, nav buttons,
+ * and dot indicators. Pauses on hover/focus, respects reduced-motion.
  */
 document.addEventListener('DOMContentLoaded', function () {
+  var slider = document.querySelector('.hero-slider');
+  if (!slider) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var track = slider.querySelector('.hero-slider-track');
+  var slides = track.querySelectorAll('.hero-slider-slide');
+  var prevBtn = slider.querySelector('.hero-slider-prev');
+  var nextBtn = slider.querySelector('.hero-slider-next');
+  var dots = slider.querySelectorAll('.hero-slider-dot');
+  if (slides.length < 2) return;
+
+  var index = 0;
+  var intervalId = null;
+  var isPaused = false;
+
+  function showSlide(newIndex) {
+    if (newIndex < 0) newIndex = slides.length - 1;
+    if (newIndex >= slides.length) newIndex = 0;
+    slides[index].classList.remove('is-active');
+    dots[index].classList.remove('is-active');
+    index = newIndex;
+    slides[index].classList.add('is-active');
+    dots[index].classList.add('is-active');
+  }
+
+  function nextSlide() { showSlide(index + 1); }
+  function prevSlide() { showSlide(index - 1); }
+
+  function startAuto() {
+    stopAuto();
+    intervalId = setInterval(nextSlide, 5000);
+  }
+
+  function stopAuto() {
+    if (intervalId) {
+      clearInterval(intervalId);
+      intervalId = null;
+    }
+  }
+
+  // Button controls
+  prevBtn.addEventListener('click', function () {
+    prevSlide();
+    startAuto();
+  });
+  nextBtn.addEventListener('click', function () {
+    nextSlide();
+    startAuto();
+  });
+
+  // Dot indicators
+  dots.forEach(function (dot, i) {
+    dot.addEventListener('click', function () {
+      showSlide(i);
+      startAuto();
+    });
+  });
+
+  // Pause on hover/focus
+  slider.addEventListener('mouseenter', stopAuto);
+  slider.addEventListener('mouseleave', startAuto);
+  slider.addEventListener('focusin', stopAuto);
+  slider.addEventListener('focusout', startAuto);
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function (e) {
+    if (!slider.matches(':hover') && !slider.matches(':focus-within')) return;
+    if (e.key === 'ArrowLeft') { prevSlide(); startAuto(); }
+    if (e.key === 'ArrowRight') { nextSlide(); startAuto(); }
+  });
+
+  // Touch/swipe support
+  var touchStartX = 0;
+  slider.addEventListener('touchstart', function (e) { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+  slider.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) {
+      dx < 0 ? nextSlide() : prevSlide();
+      startAuto();
+    }
+  }, { passive: true });
+
+  startAuto();
+});
+
+/**
+ * Sticky nav & header — hide topbar on scroll, move nav to top, add shadow.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  var siteHeader = document.querySelector('.site-header');
   var nav = document.querySelector('nav');
-  if (!nav) return;
+  if (!siteHeader || !nav) return;
+
+  var topbarHeight = 38; // topbar height in px
 
   function updateScrolledState() {
+    var scrolled = window.scrollY > topbarHeight;
+    siteHeader.classList.toggle('scrolled', scrolled);
     nav.classList.toggle('is-scrolled', window.scrollY > 8);
   }
   updateScrolledState();

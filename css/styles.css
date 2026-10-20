@@ -66,6 +66,10 @@
   --bf-shadow-sm: 0 1px 2px rgba(18,37,51,0.04), 0 6px 16px rgba(18,37,51,0.06);
   --bf-shadow-md: 0 14px 30px rgba(18,37,51,0.10);
   --header-h: 114px; /* topbar (38px) + nav (76px) — used to offset anchor scrolling */
+  --nav-bg: var(--bf-ice);      /* Nav bar background */
+  --nav-text: var(--bf-navy);   /* Nav link text */
+  --nav-active: var(--bf-teal); /* Active nav link */
+  --topbar-bg: var(--bf-teal);  /* Topbar background */
 }
 
 /* Dark sections (header, hero, CTA band, footer, admin sidebar, login
@@ -156,64 +160,63 @@ html.reveal-js .reveal.is-visible { opacity: 1; transform: translateY(0); }
 .reveal-delay-4 { transition-delay: .32s; }
 
 /* ---------------------------------------------------------------------
-   Utility topbar (location/hours, phone/email/social) — top strip of the
-   navy header.
+   Utility topbar (location/hours, phone/email/social) — top strip with teal background.
    --------------------------------------------------------------------- */
-.topbar { background: var(--bf-dark-section); color: var(--bf-on-dark-soft); font-size: 12.5px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+.topbar { background: var(--topbar-bg); color: var(--bf-white); font-size: 12.5px; }
 .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 38px; gap: 20px; }
 .topbar-left, .topbar-right { display: flex; align-items: center; gap: 20px; }
 .topbar-item { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-.topbar-item svg { flex: none; opacity: 0.85; color: var(--bf-teal); }
-.topbar-link { transition: color .18s ease; }
-.topbar-link:hover, .topbar-link:focus-visible { color: var(--bf-white); }
-.topbar-social { display: flex; align-items: center; gap: 6px; margin-left: 4px; padding-left: 16px; border-left: 1px solid rgba(255,255,255,0.16); }
+.topbar-item svg { flex: none; opacity: 0.9; color: var(--bf-white); }
+.topbar-link { transition: opacity .18s ease; color: var(--bf-white); }
+.topbar-link:hover, .topbar-link:focus-visible { opacity: 0.8; }
+.topbar-social { display: flex; align-items: center; gap: 6px; margin-left: 4px; padding-left: 16px; border-left: 1px solid rgba(255,255,255,0.2); }
 .topbar-social a, .topbar-social-disabled {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 7px; margin: -7px 0;
   width: 34px; height: 34px; border-radius: 50%;
-  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
   color: var(--bf-white); transition: background .18s ease, color .18s ease, border-color .18s ease;
 }
-.topbar-social a:hover, .topbar-social a:focus-visible { background: var(--bf-teal); color: var(--bf-navy); border-color: var(--bf-teal); }
+.topbar-social a:hover, .topbar-social a:focus-visible { background: var(--bf-white); color: var(--bf-teal); border-color: var(--bf-white); }
 /* Facebook/Instagram placeholders: present in the layout, visibly inactive
    (no hover state, default cursor) — not yet clickable, not pretending to be. */
-.topbar-social-disabled { opacity: 0.45; cursor: default; }
+.topbar-social-disabled { opacity: 0.5; cursor: default; }
 
 /* ---------------------------------------------------------------------
-   Site header — topbar + nav stick together as one unit. Previously only
-   <nav> was sticky while the topbar scrolled away on its own, which read
-   as broken (two bars behaving differently right next to each other).
+   Site header — topbar + nav stick together. Topbar hides on scroll, nav moves to top.
    --------------------------------------------------------------------- */
 .site-header { position: sticky; top: 0; z-index: 50; }
+.site-header.scrolled .topbar { display: none; }
+.site-header.scrolled nav { top: 0; }
 
 /* ---------------------------------------------------------------------
-   Main navigation — navy bar with white logo; links in soft white, the
-   active/current link gets a teal-tinted pill with teal text.
+   Main navigation — light ice bar with navy text; active/current link gets teal.
    --------------------------------------------------------------------- */
 nav {
   position: relative;
-  background: var(--bf-dark-section);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  box-shadow: 0 0 0 rgba(18,37,51,0);
-  transition: box-shadow .25s ease, background .25s ease;
-  --bf-logo-frame: var(--bf-white);
-  --bf-logo-badge: rgba(255,255,255,0.08);
+  top: 0;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--bf-line);
+  box-shadow: none;
+  transition: box-shadow .25s ease, top .3s ease;
+  --bf-logo-frame: var(--bf-navy);
+  --bf-logo-badge: var(--bf-ice);
 }
 nav.is-scrolled {
-  box-shadow: 0 8px 24px rgba(18,37,51,0.22);
+  box-shadow: 0 8px 24px rgba(18,37,51,0.12);
 }
-nav .logo { color: var(--bf-white); }
+nav .logo { color: var(--bf-navy); }
 nav a.logo:hover, nav a.logo:focus-visible { color: var(--bf-teal); }
 .navbar-inner { display: flex; align-items: center; justify-content: space-between; height: 76px; gap: 24px; }
-.navlinks { display: flex; align-items: center; gap: 12px; font-size: 14.5px; font-weight: 600; color: var(--bf-on-dark-soft); }
+.navlinks { display: flex; align-items: center; gap: 12px; font-size: 14.5px; font-weight: 600; color: var(--nav-text); }
 .nav-link {
   display: inline-flex; align-items: center; gap: 5px; position: relative;
   transition: color .18s ease, background .18s ease; background: none; border: none;
   font: inherit; cursor: pointer; padding: 8px 14px; border-radius: 999px;
-  color: inherit; white-space: nowrap;
+  color: var(--nav-text); white-space: nowrap;
 }
-.nav-link:hover, .nav-link:focus-visible { color: var(--bf-white); background: rgba(255,255,255,0.08); }
-.nav-link.is-current { color: var(--bf-teal); background: rgba(0,200,191,0.12); }
+.nav-link:hover, .nav-link:focus-visible { color: var(--nav-active); background: var(--bf-accent-soft); }
+.nav-link.is-current { color: var(--nav-active); background: var(--bf-accent-soft); }
 .nav-link-muted { color: var(--bf-on-dark-soft); opacity: .8; cursor: default; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .soon-badge { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; background: rgba(255,255,255,0.10); color: var(--bf-on-dark-soft); padding: 2px 7px; border-radius: 999px; }
 
@@ -481,6 +484,48 @@ nav .btn-text-cta:hover, nav .btn-text-cta:focus-visible { color: var(--bf-teal)
   .hero h1 { font-size: 38px; }
   .hero p.lede { font-size: 17px; }
   .hero-stats { gap: 28px; margin-top: 48px; }
+}
+
+/* =======================================================================
+   About Hero — Deep Navy section replacing old hero, same visual style
+   ======================================================================= */
+.about-hero {
+  padding: 110px 0 90px; position: relative; overflow: hidden;
+  color: var(--bf-text);
+  background:
+    radial-gradient(900px 500px at 92% 6%, rgba(0,200,191,0.14), transparent 55%),
+    radial-gradient(760px 440px at 6% 94%, rgba(0,200,191,0.08), transparent 55%),
+    var(--bf-dark-section);
+}
+.about-hero-grid {
+  position: absolute; inset: 0; opacity: 0.6;
+  background-image:
+    radial-gradient(circle at 85% 20%, rgba(0,200,191,0.10), transparent 45%),
+    radial-gradient(circle at 10% 85%, rgba(0,200,191,0.06), transparent 45%);
+}
+.about-hero-inner { position: relative; z-index: 1; }
+.about-hero-layout { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 32px; align-items: center; }
+.about-hero-art { display: flex; align-items: center; justify-content: center; }
+.about-hero-art svg { width: 100%; height: auto; max-width: 480px; }
+@media (max-width: 1024px) {
+  .about-hero-layout { grid-template-columns: 1fr; }
+  .about-hero-art { order: -1; max-width: 360px; margin: 0 auto 8px; }
+}
+@media (max-width: 560px) {
+  .about-hero-art { max-width: 280px; }
+}
+.about-hero-actions { display: flex; gap: 14px; margin-top: 38px; flex-wrap: wrap; }
+.about-hero-stats {
+  display: flex; gap: 48px; margin-top: 64px; flex-wrap: wrap;
+  border-top: 1px solid var(--bf-border); padding-top: 32px;
+}
+.about-hero-stats .item .n { font-size: 26px; font-weight: 700; color: var(--bf-heading); font-family: 'Space Grotesk'; }
+.about-hero-stats .item .l { font-size: 13px; color: var(--bf-text-soft); margin-top: 4px; }
+@media (max-width: 560px) {
+  .about-hero { padding: 80px 0 64px; }
+  .about-hero h1 { font-size: 38px; }
+  .about-hero p.lede { font-size: 17px; }
+  .about-hero-stats { gap: 28px; margin-top: 48px; }
 }
 
 .logostrip-section { padding: 44px 0; border-bottom: 1px solid var(--bf-border); overflow: hidden; }
@@ -1356,6 +1401,167 @@ footer {
 @media (max-width: 560px) {
   .stats-section { padding: 36px 0; }
   .stat-value { font-size: 34px; }
+}
+
+/* =======================================================================
+   Hero Slider — full-width image carousel with centered content
+   ======================================================================= */
+.hero-slider {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  overflow: hidden;
+  background: var(--bf-navy);
+}
+@media (max-width: 768px) {
+  .hero-slider { height: 460px; }
+}
+@media (max-width: 480px) {
+  .hero-slider { height: 400px; }
+}
+.hero-slider-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.hero-slider-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.8s ease, visibility 0s 0.8s;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 80px;
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+.hero-slider-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.8s ease;
+  z-index: 1;
+}
+.hero-slider-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(18,37,51,0.65) 0%, rgba(18,37,51,0.45) 50%, rgba(18,37,51,0.55) 100%);
+  z-index: 1;
+}
+.hero-slider-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  padding: 0 24px;
+  text-align: center;
+  color: var(--bf-white);
+  animation: heroSliderFadeUp 0.8s ease both;
+}
+@keyframes heroSliderFadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.hero-slider-slide:not(.is-active) .hero-slider-content {
+  animation: none;
+  opacity: 0;
+}
+.hero-slider-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  color: var(--bf-white);
+}
+.hero-slider-subtitle {
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  line-height: 1.6;
+  color: rgba(255,255,255,0.85);
+  max-width: 700px;
+  margin: 0 auto 28px;
+}
+.hero-slider-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 36px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  background: var(--bf-teal);
+  color: var(--bf-navy);
+  border: none;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0,200,191,0.35);
+}
+.hero-slider-cta:hover,
+.hero-slider-cta:focus-visible {
+  background: var(--bf-teal-hover);
+  color: var(--bf-navy);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0,200,191,0.45);
+  outline: none;
+}
+.hero-slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.12);
+  color: var(--bf-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  z-index: 3;
+  backdrop-filter: blur(4px);
+}
+.hero-slider-btn:hover,
+.hero-slider-btn:focus-visible {
+  background: rgba(255,255,255,0.22);
+  transform: translateY(-50%) scale(1.08);
+  outline: none;
+}
+.hero-slider-prev { left: 24px; }
+.hero-slider-next { right: 24px; }
+@media (max-width: 640px) {
+  .hero-slider-btn { width: 44px; height: 44px; }
+  .hero-slider-prev { left: 12px; }
+  .hero-slider-next { right: 12px; }
+}
+.hero-slider-dots {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+}
+.hero-slider-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.hero-slider-dot:hover,
+.hero-slider-dot:focus-visible {
+  background: rgba(255,255,255,0.7);
+  transform: scale(1.2);
+  outline: none;
+}
+.hero-slider-dot.is-active {
+  background: var(--bf-white);
+  transform: scale(1.25);
 }
 
 /* ---------------------------------------------------------------------

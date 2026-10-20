@@ -9,7 +9,9 @@
 
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/functions.php';
+
+$pdo = db();
 
 function respond(bool $success, string $message, int $httpStatus = 200): void
 {
@@ -26,6 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // silently report success so bots don't learn to avoid the field.
 if (!empty($_POST['website'])) {
     respond(true, "Thanks — we'll be in touch soon.");
+}
+
+// Never pretend to save a lead when the database is down — log it and tell
+// the visitor honestly so they can retry instead of assuming it went through.
+if (!db_available()) {
+    bf_log('Quote request not saved: database is unavailable.');
+    respond(false, 'Sorry, we couldn\'t save your request right now. Please try again in a few minutes.', 503);
 }
 
 $name           = trim($_POST['name'] ?? '');
@@ -114,13 +123,15 @@ try {
 
     $pdo->commit();
 } catch (PDOException $e) {
-    $pdo->rollBack();
-    error_log('Failed to save quote request: ' . $e->getMessage());
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    bf_log('Failed to save quote request: ' . $e->getMessage());
     respond(false, 'Sorry, we could not save your request. Please try again later.', 500);
 }
 
 // --- Notify by email ------------------------------------------------------
-// Sent through includes/mailer.php (PHPMailer + SMTP from config/.env).
+// Sent through includes/mailer.php (PHPMailer + SMTP from the root .env).
 // Delivery failing never breaks the flow — the request is already saved.
 require_once __DIR__ . '/../includes/mailer.php';
 

@@ -5,7 +5,9 @@
  * on contact.php. Field names/ids unchanged so handlers/quote_handler.php
  * and js/main.js keep working without modification.
  */
-require_once __DIR__ . '/config/db.php';
+require_once __DIR__ . '/config/functions.php';
+
+$pdo = db();
 
 $pageTitle       = 'Request a Quote — Brightframe Technologies';
 $pageDescription = 'Tell us about your project and get a quote — we\'ll get back to you within a day with next steps.';
@@ -54,7 +56,7 @@ include __DIR__ . '/includes/header.php';
       <div class="contact-grid">
         <div class="contact-intro">
           <h2>Request a quote</h2>
-          <p>Tell us about your project and get a quote — we'll get back to you within a day with next steps. Just have a question instead? <a href="contact.php">Contact us</a>.</p>
+          <p>Tell us about your project and get a quote — we'll get back to you within a day with next steps. Just have a question instead? <a href="/contact/">Contact us</a>.</p>
           <?php if ($preselectedCategoryName): ?>
             <p class="quote-preselect-note">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>

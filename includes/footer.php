@@ -4,7 +4,9 @@
  * table as the nav and homepage) — self-contained like nav.php, so it
  * works regardless of what the including page already loaded.
  */
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/functions.php';
+
+$pdo = db();
 require_once __DIR__ . '/icons.php';
 
 try {
@@ -62,11 +64,11 @@ $basePath = $basePath ?? '';
 
       <div class="footer-col">
         <div class="footer-col-head">Company</div>
-        <a href="<?= $basePath ?>about.php">About Us</a>
-        <a href="<?= $basePath ?>about.php#team">Our Team</a>
-        <a href="<?= $basePath ?>why-us.php">Why Choose Us</a>
-        <a href="<?= $basePath ?>reviews.php">Reviews</a>
-        <a href="<?= $basePath ?>contact.php">Contact Us</a>
+        <a href="<?= $basePath ?>about/">About Us</a>
+        <a href="<?= $basePath ?>about/#team">Our Team</a>
+        <a href="<?= $basePath ?>why-us/">Why Choose Us</a>
+        <a href="<?= $basePath ?>reviews/">Reviews</a>
+        <a href="<?= $basePath ?>contact/">Contact Us</a>
       </div>
 
       <div class="footer-col">
@@ -87,8 +89,8 @@ $basePath = $basePath ?? '';
     <div class="footer-bottom">
       <div>&copy; <?= date('Y') ?> Brightframe Technologies Limited &middot; Nairobi, Kenya</div>
       <div class="footer-legal">
-        <a href="<?= $basePath ?>privacy-policy.php">Privacy Policy</a>
-        <a href="<?= $basePath ?>terms.php">Terms</a>
+        <a href="<?= $basePath ?>privacy-policy/">Privacy Policy</a>
+        <a href="<?= $basePath ?>terms/">Terms</a>
       </div>
     </div>
   </div>

@@ -5,7 +5,9 @@
  * value is still empty — see database.sql's note on the `site_stats`
  * table for why nothing is seeded with numbers by default.
  */
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/functions.php';
+
+$pdo = db();
 
 try {
     $siteStats = $pdo->query(

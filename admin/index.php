@@ -4,8 +4,10 @@
  * (new quotes, new messages, pending reviews) plus a merged recent-
  * activity feed across all three submission types.
  */
+require_once __DIR__ . '/../config/functions.php';
 require_once __DIR__ . '/../includes/admin-auth.php';
-require_once __DIR__ . '/../config/db.php';
+
+$pdo = db();
 
 try {
     $newQuoteCount    = (int) $pdo->query("SELECT COUNT(*) FROM quote_requests WHERE status = 'new'")->fetchColumn();

@@ -1,12 +1,21 @@
 {
     "name": "brightframe/brightframe-technologies",
-    "description": "Brightframe Technologies — company website with quote/contact form email notifications (PHPMailer + SMTP)",
+    "description": "Brightframe Technologies — company website with quote/contact forms, SMTP email, and Phinx database migrations",
     "type": "project",
+    "license": "proprietary",
     "require": {
         "php": ">=8.0",
-        "phpmailer/phpmailer": "^6.9"
+        "phpmailer/phpmailer": "^6.9",
+        "robmorgan/phinx": "^0.16.12"
     },
     "config": {
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "scripts": {
+        "migrate": "@php vendor/bin/phinx migrate",
+        "migrate:status": "@php vendor/bin/phinx status",
+        "migrate:rollback": "@php vendor/bin/phinx rollback",
+        "seed": "@php vendor/bin/phinx seed:run"
     }
 }

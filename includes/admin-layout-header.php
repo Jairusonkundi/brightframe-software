@@ -6,7 +6,7 @@
  * messages, reviews, services, stats) before including this, then
  * includes admin-layout-footer.php at the end.
  *
- * Expects includes/admin-auth.php and config/db.php to already be
+ * Expects config/functions.php and includes/admin-auth.php to already be
  * required by the including page (both are needed before this: auth
  * must run first to gate the page, and $pdo is used below for the
  * sidebar's badge counts).
@@ -43,6 +43,11 @@ $adminNavItems = [
 $adminUsername = $_SESSION['admin_username'] ?? 'Admin';
 $adminInitial  = strtoupper(substr(trim($adminUsername), 0, 1)) ?: 'A';
 $adminSection  = $adminNavItems[$adminActive]['label'] ?? 'Admin';
+
+// CSP header for admin pages
+if (!headers_sent()) {
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; form-action 'self'; base-uri 'self'");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

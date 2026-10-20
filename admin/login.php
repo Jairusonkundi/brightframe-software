@@ -10,7 +10,10 @@
  * way so a wrong username doesn't confirm which part was wrong, and
  * session_regenerate_id() on success to prevent session fixation.
  */
-require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/../config/functions.php';
+
+$pdo         = db();
+$dbAvailable = db_available();
 
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
@@ -35,10 +38,17 @@ if (!preg_match('/^[a-zA-Z0-9_-]+\.php$/', $redirect)) {
     $redirect = 'index.php';
 }
 
+// CSP header for login page
+if (!headers_sent()) {
+    header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; form-action 'self'; base-uri 'self'");
+}
+
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+    if (!$dbAvailable) {
+        $error = 'The database is temporarily unavailable. Please try again in a few minutes.';
+    } elseif (empty($_POST['csrf_token']) || empty($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $error = 'Your session expired. Please try again.';
     } else {
         $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
@@ -139,6 +149,10 @@ $pageTitle = 'Admin Login — Brightframe Technologies';
     <h1>Admin Login</h1>
     <p class="admin-login-sub">Sign in to manage submissions, reviews, and site stats.</p>
 
+    <?php if (!$dbAvailable): ?>
+      <p class="admin-login-error">The database is temporarily unavailable, so sign-in is disabled. Please check your .env settings and try again later.</p>
+    <?php endif; ?>
+
     <?php if ($error): ?>
       <p class="admin-login-error"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
     <?php endif; ?>
@@ -154,7 +168,7 @@ $pageTitle = 'Admin Login — Brightframe Technologies';
         <label for="password">Password</label>
         <input id="password" name="password" type="password" autocomplete="current-password" required>
       </div>
-      <button type="submit" class="admin-btn admin-btn-primary admin-login-submit">Log in</button>
+      <button type="submit" class="admin-btn admin-btn-primary admin-login-submit"<?= $dbAvailable ? '' : ' disabled' ?>>Log in</button>
     </form>
   </div>
 </div>
